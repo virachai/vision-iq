@@ -1,22 +1,19 @@
 {
-  "name": "@repo/jest-presets",
-  "version": "0.0.0",
-  "private": true,
-  "license": "MIT",
-  "files": [
-    "browser/jest-preset.ts",
-    "node/jest-preset.ts"
-  ],
-  "dependencies": {
-    "jest": "^29.7.0",
-    "ts-jest": "^29.2.5"
-  },
-  "devDependencies": {
-    "jest-environment-jsdom": "^29.7.0",
-    "@repo/biome-config": "workspace:*"
-  },
-  "scripts": {
-    "lint": "biome check .",
-    "format": "biome format . --write"
-  }
+	"name": "@repo/jest-presets",
+	"version": "0.0.0",
+	"private": true,
+	"license": "MIT",
+	"files": ["browser/jest-preset.ts", "node/jest-preset.ts"],
+	"dependencies": {
+		"jest": "^29.7.0",
+		"ts-jest": "^29.2.5"
+	},
+	"devDependencies": {
+		"jest-environment-jsdom": "^29.7.0",
+		"@repo/biome-config": "workspace:*"
+	},
+	"scripts": {
+		"lint": "biome check .",
+		"format": "biome format . --write"
+	}
 }

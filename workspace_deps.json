@@ -1,1373 +1,1373 @@
 [
-  {
-    "name": "kitchen-sink",
-    "path": "D:\\dev\\antigravity\\vision-iq",
-    "private": true,
-    "devDependencies": {
-      "prettier": {
-        "from": "prettier",
-        "version": "3.6.0",
-        "resolved": "https://registry.npmjs.org/prettier/-/prettier-3.6.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\prettier@3.6.0\\node_modules\\prettier"
-      },
-      "turbo": {
-        "from": "turbo",
-        "version": "2.8.6",
-        "resolved": "https://registry.npmjs.org/turbo/-/turbo-2.8.6.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\turbo@2.8.6\\node_modules\\turbo"
-      }
-    },
-    "unsavedDependencies": {
-      "eslint": {
-        "from": "eslint",
-        "version": "link:node_modules/.pnpm/eslint@9.39.0/node_modules/eslint",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint@9.39.0\\node_modules\\eslint"
-      },
-      "eslint-config-prettier": {
-        "from": "eslint-config-prettier",
-        "version": "link:node_modules/.pnpm/eslint-config-prettier@10.1.1_eslint@9.39.0/node_modules/eslint-config-prettier",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint-config-prettier@10.1.1_eslint@9.39.0\\node_modules\\eslint-config-prettier"
-      },
-      "eslint-plugin-only-warn": {
-        "from": "eslint-plugin-only-warn",
-        "version": "link:node_modules/.pnpm/eslint-plugin-only-warn@1.1.0/node_modules/eslint-plugin-only-warn",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint-plugin-only-warn@1.1.0\\node_modules\\eslint-plugin-only-warn"
-      },
-      "eslint-plugin-react": {
-        "from": "eslint-plugin-react",
-        "version": "link:node_modules/.pnpm/eslint-plugin-react@7.37.5_eslint@9.39.0/node_modules/eslint-plugin-react",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint-plugin-react@7.37.5_eslint@9.39.0\\node_modules\\eslint-plugin-react"
-      },
-      "eslint-plugin-react-hooks": {
-        "from": "eslint-plugin-react-hooks",
-        "version": "link:node_modules/.pnpm/eslint-plugin-react-hooks@7.0.1_eslint@9.39.0/node_modules/eslint-plugin-react-hooks",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint-plugin-react-hooks@7.0.1_eslint@9.39.0\\node_modules\\eslint-plugin-react-hooks"
-      },
-      "eslint-plugin-turbo": {
-        "from": "eslint-plugin-turbo",
-        "version": "link:node_modules/.pnpm/eslint-plugin-turbo@2.6.0_eslint@9.39.0_turbo@2.8.6/node_modules/eslint-plugin-turbo",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint-plugin-turbo@2.6.0_eslint@9.39.0_turbo@2.8.6\\node_modules\\eslint-plugin-turbo"
-      },
-      "eslint-scope": {
-        "from": "eslint-scope",
-        "version": "link:node_modules/.pnpm/eslint-scope@7.2.2/node_modules/eslint-scope",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint-scope@7.2.2\\node_modules\\eslint-scope"
-      },
-      "eslint-visitor-keys": {
-        "from": "eslint-visitor-keys",
-        "version": "link:node_modules/.pnpm/eslint-visitor-keys@3.4.3/node_modules/eslint-visitor-keys",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint-visitor-keys@3.4.3\\node_modules\\eslint-visitor-keys"
-      },
-      "typescript-eslint": {
-        "from": "typescript-eslint",
-        "version": "link:node_modules/.pnpm/typescript-eslint@8.46.2_eslint@9.39.0_typescript@5.9.3/node_modules/typescript-eslint",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript-eslint@8.46.2_eslint@9.39.0_typescript@5.9.3\\node_modules\\typescript-eslint"
-      },
-      "@eslint/config-array": {
-        "from": "@eslint/config-array",
-        "version": "link:node_modules/.pnpm/@eslint+config-array@0.21.1/node_modules/@eslint/config-array",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@eslint+config-array@0.21.1\\node_modules\\@eslint\\config-array"
-      },
-      "@eslint/config-helpers": {
-        "from": "@eslint/config-helpers",
-        "version": "link:node_modules/.pnpm/@eslint+config-helpers@0.4.2/node_modules/@eslint/config-helpers",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@eslint+config-helpers@0.4.2\\node_modules\\@eslint\\config-helpers"
-      },
-      "@eslint/core": {
-        "from": "@eslint/core",
-        "version": "link:node_modules/.pnpm/@eslint+core@0.17.0/node_modules/@eslint/core",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@eslint+core@0.17.0\\node_modules\\@eslint\\core"
-      },
-      "@eslint/eslintrc": {
-        "from": "@eslint/eslintrc",
-        "version": "link:node_modules/.pnpm/@eslint+eslintrc@2.1.4/node_modules/@eslint/eslintrc",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@eslint+eslintrc@2.1.4\\node_modules\\@eslint\\eslintrc"
-      },
-      "@eslint/js": {
-        "from": "@eslint/js",
-        "version": "link:node_modules/.pnpm/@eslint+js@9.39.0/node_modules/@eslint/js",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@eslint+js@9.39.0\\node_modules\\@eslint\\js"
-      },
-      "@eslint/object-schema": {
-        "from": "@eslint/object-schema",
-        "version": "link:node_modules/.pnpm/@eslint+object-schema@2.1.7/node_modules/@eslint/object-schema",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@eslint+object-schema@2.1.7\\node_modules\\@eslint\\object-schema"
-      },
-      "@eslint/plugin-kit": {
-        "from": "@eslint/plugin-kit",
-        "version": "link:node_modules/.pnpm/@eslint+plugin-kit@0.4.1/node_modules/@eslint/plugin-kit",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@eslint+plugin-kit@0.4.1\\node_modules\\@eslint\\plugin-kit"
-      },
-      "@eslint-community/eslint-utils": {
-        "from": "@eslint-community/eslint-utils",
-        "version": "link:node_modules/.pnpm/@eslint-community+eslint-utils@4.9.0_eslint@8.57.1/node_modules/@eslint-community/eslint-utils",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@eslint-community+eslint-utils@4.9.0_eslint@8.57.1\\node_modules\\@eslint-community\\eslint-utils"
-      },
-      "@eslint-community/regexpp": {
-        "from": "@eslint-community/regexpp",
-        "version": "link:node_modules/.pnpm/@eslint-community+regexpp@4.12.2/node_modules/@eslint-community/regexpp",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@eslint-community+regexpp@4.12.2\\node_modules\\@eslint-community\\regexpp"
-      },
-      "@next/eslint-plugin-next": {
-        "from": "@next/eslint-plugin-next",
-        "version": "link:node_modules/.pnpm/@next+eslint-plugin-next@14.2.35/node_modules/@next/eslint-plugin-next",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@next+eslint-plugin-next@14.2.35\\node_modules\\@next\\eslint-plugin-next"
-      },
-      "@types/eslint": {
-        "from": "@types/eslint",
-        "version": "link:node_modules/.pnpm/@types+eslint@9.6.1/node_modules/@types/eslint",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+eslint@9.6.1\\node_modules\\@types\\eslint"
-      },
-      "@types/eslint-scope": {
-        "from": "@types/eslint-scope",
-        "version": "link:node_modules/.pnpm/@types+eslint-scope@3.7.7/node_modules/@types/eslint-scope",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+eslint-scope@3.7.7\\node_modules\\@types\\eslint-scope"
-      },
-      "@typescript-eslint/parser": {
-        "from": "@typescript-eslint/parser",
-        "version": "link:node_modules/.pnpm/@typescript-eslint+parser@8.46.2_eslint@9.39.0_typescript@5.9.3/node_modules/@typescript-eslint/parser",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@typescript-eslint+parser@8.46.2_eslint@9.39.0_typescript@5.9.3\\node_modules\\@typescript-eslint\\parser"
-      },
-      "@typescript-eslint/eslint-plugin": {
-        "from": "@typescript-eslint/eslint-plugin",
-        "version": "link:node_modules/.pnpm/@typescript-eslint+eslint-plugin@8.46.2_@typescript-eslint+parser@8.46.2_eslint@9.39.0_typescript@5.9.3/node_modules/@typescript-eslint/eslint-plugin",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@typescript-eslint+eslint-plugin@8.46.2_@typescript-eslint+parser@8.46.2_eslint@9.39.0_typescript@5.9.3\\node_modules\\@typescript-eslint\\eslint-plugin"
-      },
-      "@typescript-eslint/project-service": {
-        "from": "@typescript-eslint/project-service",
-        "version": "link:node_modules/.pnpm/@typescript-eslint+project-service@8.46.2_typescript@5.9.3/node_modules/@typescript-eslint/project-service",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@typescript-eslint+project-service@8.46.2_typescript@5.9.3\\node_modules\\@typescript-eslint\\project-service"
-      },
-      "@typescript-eslint/scope-manager": {
-        "from": "@typescript-eslint/scope-manager",
-        "version": "link:node_modules/.pnpm/@typescript-eslint+scope-manager@8.46.2/node_modules/@typescript-eslint/scope-manager",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@typescript-eslint+scope-manager@8.46.2\\node_modules\\@typescript-eslint\\scope-manager"
-      },
-      "@typescript-eslint/tsconfig-utils": {
-        "from": "@typescript-eslint/tsconfig-utils",
-        "version": "link:node_modules/.pnpm/@typescript-eslint+tsconfig-utils@8.46.2_typescript@5.9.3/node_modules/@typescript-eslint/tsconfig-utils",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@typescript-eslint+tsconfig-utils@8.46.2_typescript@5.9.3\\node_modules\\@typescript-eslint\\tsconfig-utils"
-      },
-      "@typescript-eslint/type-utils": {
-        "from": "@typescript-eslint/type-utils",
-        "version": "link:node_modules/.pnpm/@typescript-eslint+type-utils@8.46.2_eslint@9.39.0_typescript@5.9.3/node_modules/@typescript-eslint/type-utils",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@typescript-eslint+type-utils@8.46.2_eslint@9.39.0_typescript@5.9.3\\node_modules\\@typescript-eslint\\type-utils"
-      },
-      "@typescript-eslint/types": {
-        "from": "@typescript-eslint/types",
-        "version": "link:node_modules/.pnpm/@typescript-eslint+types@8.46.2/node_modules/@typescript-eslint/types",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@typescript-eslint+types@8.46.2\\node_modules\\@typescript-eslint\\types"
-      },
-      "@typescript-eslint/typescript-estree": {
-        "from": "@typescript-eslint/typescript-estree",
-        "version": "link:node_modules/.pnpm/@typescript-eslint+typescript-estree@8.46.2_typescript@5.9.3/node_modules/@typescript-eslint/typescript-estree",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@typescript-eslint+typescript-estree@8.46.2_typescript@5.9.3\\node_modules\\@typescript-eslint\\typescript-estree"
-      },
-      "@typescript-eslint/utils": {
-        "from": "@typescript-eslint/utils",
-        "version": "link:node_modules/.pnpm/@typescript-eslint+utils@8.46.2_eslint@9.39.0_typescript@5.9.3/node_modules/@typescript-eslint/utils",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@typescript-eslint+utils@8.46.2_eslint@9.39.0_typescript@5.9.3\\node_modules\\@typescript-eslint\\utils"
-      },
-      "@typescript-eslint/visitor-keys": {
-        "from": "@typescript-eslint/visitor-keys",
-        "version": "link:node_modules/.pnpm/@typescript-eslint+visitor-keys@8.46.2/node_modules/@typescript-eslint/visitor-keys",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@typescript-eslint+visitor-keys@8.46.2\\node_modules\\@typescript-eslint\\visitor-keys"
-      }
-    }
-  },
-  {
-    "name": "admin",
-    "version": "1.0.0",
-    "path": "D:\\dev\\antigravity\\vision-iq\\apps\\admin",
-    "private": true,
-    "dependencies": {
-      "@repo/ui": {
-        "from": "@repo/ui",
-        "version": "link:../../packages/ui",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\ui"
-      },
-      "react": {
-        "from": "react",
-        "version": "18.3.1",
-        "resolved": "https://registry.npmjs.org/react/-/react-18.3.1.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\react@18.3.1\\node_modules\\react"
-      },
-      "react-dom": {
-        "from": "react-dom",
-        "version": "18.3.1",
-        "resolved": "https://registry.npmjs.org/react-dom/-/react-dom-18.3.1.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\react-dom@18.3.1_react@18.3.1\\node_modules\\react-dom"
-      }
-    },
-    "devDependencies": {
-      "@repo/eslint-config": {
-        "from": "@repo/eslint-config",
-        "version": "link:../../packages/config-eslint",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-eslint"
-      },
-      "@repo/typescript-config": {
-        "from": "@repo/typescript-config",
-        "version": "link:../../packages/config-typescript",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-typescript"
-      },
-      "@types/react": {
-        "from": "@types/react",
-        "version": "18.3.18",
-        "resolved": "https://registry.npmjs.org/@types/react/-/react-18.3.18.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+react@18.3.18\\node_modules\\@types\\react"
-      },
-      "@types/react-dom": {
-        "from": "@types/react-dom",
-        "version": "18.3.5",
-        "resolved": "https://registry.npmjs.org/@types/react-dom/-/react-dom-18.3.5.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+react-dom@18.3.5_@types+react@18.3.18\\node_modules\\@types\\react-dom"
-      },
-      "@vitejs/plugin-react": {
-        "from": "@vitejs/plugin-react",
-        "version": "4.7.0",
-        "resolved": "https://registry.npmjs.org/@vitejs/plugin-react/-/plugin-react-4.7.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@vitejs+plugin-react@4.7.0_vite@5.4.14\\node_modules\\@vitejs\\plugin-react"
-      },
-      "eslint": {
-        "from": "eslint",
-        "version": "9.39.0",
-        "resolved": "https://registry.npmjs.org/eslint/-/eslint-9.39.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint@9.39.0\\node_modules\\eslint"
-      },
-      "typescript": {
-        "from": "typescript",
-        "version": "5.9.3",
-        "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript@5.9.3\\node_modules\\typescript"
-      },
-      "vite": {
-        "from": "vite",
-        "version": "5.4.14",
-        "resolved": "https://registry.npmjs.org/vite/-/vite-5.4.14.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\vite@5.4.14\\node_modules\\vite"
-      }
-    }
-  },
-  {
-    "name": "api",
-    "version": "1.0.0",
-    "path": "D:\\dev\\antigravity\\vision-iq\\apps\\api",
-    "private": true,
-    "dependencies": {
-      "@repo/logger": {
-        "from": "@repo/logger",
-        "version": "link:../../packages/logger",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\logger"
-      },
-      "body-parser": {
-        "from": "body-parser",
-        "version": "1.20.3",
-        "resolved": "https://registry.npmjs.org/body-parser/-/body-parser-1.20.3.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\body-parser@1.20.3\\node_modules\\body-parser"
-      },
-      "cors": {
-        "from": "cors",
-        "version": "2.8.5",
-        "resolved": "https://registry.npmjs.org/cors/-/cors-2.8.5.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\cors@2.8.5\\node_modules\\cors"
-      },
-      "express": {
-        "from": "express",
-        "version": "4.21.2",
-        "resolved": "https://registry.npmjs.org/express/-/express-4.21.2.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express"
-      },
-      "morgan": {
-        "from": "morgan",
-        "version": "1.10.0",
-        "resolved": "https://registry.npmjs.org/morgan/-/morgan-1.10.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\morgan@1.10.0\\node_modules\\morgan"
-      }
-    },
-    "devDependencies": {
-      "@jest/globals": {
-        "from": "@jest/globals",
-        "version": "30.2.0",
-        "resolved": "https://registry.npmjs.org/@jest/globals/-/globals-30.2.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@jest+globals@30.2.0\\node_modules\\@jest\\globals"
-      },
-      "@repo/eslint-config": {
-        "from": "@repo/eslint-config",
-        "version": "link:../../packages/config-eslint",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-eslint"
-      },
-      "@repo/jest-presets": {
-        "from": "@repo/jest-presets",
-        "version": "link:../../packages/jest-presets",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\jest-presets"
-      },
-      "@repo/typescript-config": {
-        "from": "@repo/typescript-config",
-        "version": "link:../../packages/config-typescript",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-typescript"
-      },
-      "@types/body-parser": {
-        "from": "@types/body-parser",
-        "version": "1.19.5",
-        "resolved": "https://registry.npmjs.org/@types/body-parser/-/body-parser-1.19.5.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+body-parser@1.19.5\\node_modules\\@types\\body-parser"
-      },
-      "@types/cors": {
-        "from": "@types/cors",
-        "version": "2.8.17",
-        "resolved": "https://registry.npmjs.org/@types/cors/-/cors-2.8.17.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+cors@2.8.17\\node_modules\\@types\\cors"
-      },
-      "@types/express": {
-        "from": "@types/express",
-        "version": "4.17.21",
-        "resolved": "https://registry.npmjs.org/@types/express/-/express-4.17.21.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+express@4.17.21\\node_modules\\@types\\express"
-      },
-      "@types/morgan": {
-        "from": "@types/morgan",
-        "version": "1.9.9",
-        "resolved": "https://registry.npmjs.org/@types/morgan/-/morgan-1.9.9.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+morgan@1.9.9\\node_modules\\@types\\morgan"
-      },
-      "@types/node": {
-        "from": "@types/node",
-        "version": "22.15.3",
-        "resolved": "https://registry.npmjs.org/@types/node/-/node-22.15.3.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+node@22.15.3\\node_modules\\@types\\node"
-      },
-      "@types/supertest": {
-        "from": "@types/supertest",
-        "version": "6.0.2",
-        "resolved": "https://registry.npmjs.org/@types/supertest/-/supertest-6.0.2.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+supertest@6.0.2\\node_modules\\@types\\supertest"
-      },
-      "eslint": {
-        "from": "eslint",
-        "version": "9.39.0",
-        "resolved": "https://registry.npmjs.org/eslint/-/eslint-9.39.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint@9.39.0\\node_modules\\eslint"
-      },
-      "jest": {
-        "from": "jest",
-        "version": "30.2.0",
-        "resolved": "https://registry.npmjs.org/jest/-/jest-30.2.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\jest@30.2.0_@types+node@22.15.3\\node_modules\\jest"
-      },
-      "supertest": {
-        "from": "supertest",
-        "version": "7.1.0",
-        "resolved": "https://registry.npmjs.org/supertest/-/supertest-7.1.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\supertest@7.1.0\\node_modules\\supertest"
-      },
-      "tsdown": {
-        "from": "tsdown",
-        "version": "0.9.3",
-        "resolved": "https://registry.npmjs.org/tsdown/-/tsdown-0.9.3.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\tsdown@0.9.3_typescript@5.9.3\\node_modules\\tsdown"
-      },
-      "typescript": {
-        "from": "typescript",
-        "version": "5.9.3",
-        "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript@5.9.3\\node_modules\\typescript"
-      }
-    }
-  },
-  {
-    "name": "blog",
-    "version": "1.0.0",
-    "path": "D:\\dev\\antigravity\\vision-iq\\apps\\blog",
-    "private": true,
-    "dependencies": {
-      "@remix-run/node": {
-        "from": "@remix-run/node",
-        "version": "2.16.0",
-        "resolved": "https://registry.npmjs.org/@remix-run/node/-/node-2.16.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@remix-run+node@2.16.0_typescript@5.9.3\\node_modules\\@remix-run\\node"
-      },
-      "@remix-run/react": {
-        "from": "@remix-run/react",
-        "version": "2.16.0",
-        "resolved": "https://registry.npmjs.org/@remix-run/react/-/react-2.16.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@remix-run+react@2.16.0_react-dom@18.3.1_react@18.3.1_typescript@5.9.3\\node_modules\\@remix-run\\react"
-      },
-      "@remix-run/server-runtime": {
-        "from": "@remix-run/server-runtime",
-        "version": "2.16.0",
-        "resolved": "https://registry.npmjs.org/@remix-run/server-runtime/-/server-runtime-2.16.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@remix-run+server-runtime@2.16.0_typescript@5.9.3\\node_modules\\@remix-run\\server-runtime"
-      },
-      "@repo/ui": {
-        "from": "@repo/ui",
-        "version": "link:../../packages/ui",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\ui"
-      },
-      "@vercel/analytics": {
-        "from": "@vercel/analytics",
-        "version": "1.5.0",
-        "resolved": "https://registry.npmjs.org/@vercel/analytics/-/analytics-1.5.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@vercel+analytics@1.5.0_@remix-run+react@2.16.0_react@18.3.1\\node_modules\\@vercel\\analytics"
-      },
-      "@vercel/remix": {
-        "from": "@vercel/remix",
-        "version": "2.16.6",
-        "resolved": "https://registry.npmjs.org/@vercel/remix/-/remix-2.16.6.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@vercel+remix@2.16.6_@remix-run+dev@2.16.0_@remix-run+node@2.16.0_@remix-run+server-runtime@2_eq7hrb7botxgfazylak6vat2xi\\node_modules\\@vercel\\remix"
-      },
-      "isbot": {
-        "from": "isbot",
-        "version": "5.1.23",
-        "resolved": "https://registry.npmjs.org/isbot/-/isbot-5.1.23.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\isbot@5.1.23\\node_modules\\isbot"
-      },
-      "react": {
-        "from": "react",
-        "version": "18.3.1",
-        "resolved": "https://registry.npmjs.org/react/-/react-18.3.1.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\react@18.3.1\\node_modules\\react"
-      },
-      "react-dom": {
-        "from": "react-dom",
-        "version": "18.3.1",
-        "resolved": "https://registry.npmjs.org/react-dom/-/react-dom-18.3.1.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\react-dom@18.3.1_react@18.3.1\\node_modules\\react-dom"
-      }
-    },
-    "devDependencies": {
-      "@remix-run/dev": {
-        "from": "@remix-run/dev",
-        "version": "2.16.0",
-        "resolved": "https://registry.npmjs.org/@remix-run/dev/-/dev-2.16.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@remix-run+dev@2.16.0_@remix-run+react@2.16.0_typescript@5.9.3_vite@5.4.14\\node_modules\\@remix-run\\dev"
-      },
-      "@repo/eslint-config": {
-        "from": "@repo/eslint-config",
-        "version": "link:../../packages/config-eslint",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-eslint"
-      },
-      "@types/react": {
-        "from": "@types/react",
-        "version": "18.3.18",
-        "resolved": "https://registry.npmjs.org/@types/react/-/react-18.3.18.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+react@18.3.18\\node_modules\\@types\\react"
-      },
-      "@types/react-dom": {
-        "from": "@types/react-dom",
-        "version": "18.3.5",
-        "resolved": "https://registry.npmjs.org/@types/react-dom/-/react-dom-18.3.5.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+react-dom@18.3.5_@types+react@18.3.18\\node_modules\\@types\\react-dom"
-      },
-      "@typescript-eslint/eslint-plugin": {
-        "from": "@typescript-eslint/eslint-plugin",
-        "version": "8.46.2",
-        "resolved": "https://registry.npmjs.org/@typescript-eslint/eslint-plugin/-/eslint-plugin-8.46.2.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@typescript-eslint+eslint-plugin@8.46.2_@typescript-eslint+parser@8.46.2_eslint@9.39.0_typescript@5.9.3\\node_modules\\@typescript-eslint\\eslint-plugin"
-      },
-      "@typescript-eslint/parser": {
-        "from": "@typescript-eslint/parser",
-        "version": "8.46.2",
-        "resolved": "https://registry.npmjs.org/@typescript-eslint/parser/-/parser-8.46.2.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@typescript-eslint+parser@8.46.2_eslint@9.39.0_typescript@5.9.3\\node_modules\\@typescript-eslint\\parser"
-      },
-      "autoprefixer": {
-        "from": "autoprefixer",
-        "version": "10.4.20",
-        "resolved": "https://registry.npmjs.org/autoprefixer/-/autoprefixer-10.4.20.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\autoprefixer@10.4.20_postcss@8.5.1\\node_modules\\autoprefixer"
-      },
-      "eslint": {
-        "from": "eslint",
-        "version": "9.39.0",
-        "resolved": "https://registry.npmjs.org/eslint/-/eslint-9.39.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint@9.39.0\\node_modules\\eslint"
-      },
-      "typescript": {
-        "from": "typescript",
-        "version": "5.9.3",
-        "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript@5.9.3\\node_modules\\typescript"
-      },
-      "vite": {
-        "from": "vite",
-        "version": "5.4.14",
-        "resolved": "https://registry.npmjs.org/vite/-/vite-5.4.14.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\vite@5.4.14\\node_modules\\vite"
-      },
-      "vite-tsconfig-paths": {
-        "from": "vite-tsconfig-paths",
-        "version": "4.2.1",
-        "resolved": "https://registry.npmjs.org/vite-tsconfig-paths/-/vite-tsconfig-paths-4.2.1.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\vite-tsconfig-paths@4.2.1_typescript@5.9.3_vite@5.4.14\\node_modules\\vite-tsconfig-paths"
-      }
-    }
-  },
-  {
-    "name": "api",
-    "version": "1.0.0",
-    "path": "D:\\dev\\antigravity\\vision-iq\\apps\\nestjs-api",
-    "private": true,
-    "dependencies": {
-      "@nestjs/common": {
-        "from": "@nestjs/common",
-        "version": "11.1.13",
-        "resolved": "https://registry.npmjs.org/@nestjs/common/-/common-11.1.13.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@nestjs+common@11.1.13_reflect-metadata@0.2.2_rxjs@7.8.2\\node_modules\\@nestjs\\common"
-      },
-      "@nestjs/core": {
-        "from": "@nestjs/core",
-        "version": "11.1.13",
-        "resolved": "https://registry.npmjs.org/@nestjs/core/-/core-11.1.13.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@nestjs+core@11.1.13_@nestjs+common@11.1.13_@nestjs+platform-express@11.1.13_reflect-metadata@0.2.2_rxjs@7.8.2\\node_modules\\@nestjs\\core"
-      },
-      "@nestjs/platform-express": {
-        "from": "@nestjs/platform-express",
-        "version": "11.1.13",
-        "resolved": "https://registry.npmjs.org/@nestjs/platform-express/-/platform-express-11.1.13.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@nestjs+platform-express@11.1.13_@nestjs+common@11.1.13_@nestjs+core@11.1.13\\node_modules\\@nestjs\\platform-express"
-      },
-      "@repo/api": {
-        "from": "@repo/api",
-        "version": "link:../../packages/api",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\api"
-      },
-      "reflect-metadata": {
-        "from": "reflect-metadata",
-        "version": "0.2.2",
-        "resolved": "https://registry.npmjs.org/reflect-metadata/-/reflect-metadata-0.2.2.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\reflect-metadata@0.2.2\\node_modules\\reflect-metadata"
-      },
-      "rxjs": {
-        "from": "rxjs",
-        "version": "7.8.2",
-        "resolved": "https://registry.npmjs.org/rxjs/-/rxjs-7.8.2.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\rxjs@7.8.2\\node_modules\\rxjs"
-      }
-    },
-    "devDependencies": {
-      "@jest/globals": {
-        "from": "@jest/globals",
-        "version": "29.7.0",
-        "resolved": "https://registry.npmjs.org/@jest/globals/-/globals-29.7.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@jest+globals@29.7.0\\node_modules\\@jest\\globals"
-      },
-      "@nestjs/cli": {
-        "from": "@nestjs/cli",
-        "version": "11.0.16",
-        "resolved": "https://registry.npmjs.org/@nestjs/cli/-/cli-11.0.16.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@nestjs+cli@11.0.16_@types+node@22.19.11\\node_modules\\@nestjs\\cli"
-      },
-      "@nestjs/schematics": {
-        "from": "@nestjs/schematics",
-        "version": "11.0.9",
-        "resolved": "https://registry.npmjs.org/@nestjs/schematics/-/schematics-11.0.9.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@nestjs+schematics@11.0.9_typescript@5.5.4\\node_modules\\@nestjs\\schematics"
-      },
-      "@nestjs/testing": {
-        "from": "@nestjs/testing",
-        "version": "11.1.13",
-        "resolved": "https://registry.npmjs.org/@nestjs/testing/-/testing-11.1.13.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@nestjs+testing@11.1.13_@nestjs+common@11.1.13_@nestjs+core@11.1.13_@nestjs+platform-express@11.1.13\\node_modules\\@nestjs\\testing"
-      },
-      "@repo/eslint-config": {
-        "from": "@repo/eslint-config",
-        "version": "link:../../packages/config-eslint",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-eslint"
-      },
-      "@repo/jest-presets": {
-        "from": "@repo/jest-presets",
-        "version": "link:../../packages/jest-presets",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\jest-presets"
-      },
-      "@repo/typescript-config": {
-        "from": "@repo/typescript-config",
-        "version": "link:../../packages/config-typescript",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-typescript"
-      },
-      "@types/express": {
-        "from": "@types/express",
-        "version": "4.17.25",
-        "resolved": "https://registry.npmjs.org/@types/express/-/express-4.17.25.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+express@4.17.25\\node_modules\\@types\\express"
-      },
-      "@types/node": {
-        "from": "@types/node",
-        "version": "22.19.11",
-        "resolved": "https://registry.npmjs.org/@types/node/-/node-22.19.11.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+node@22.19.11\\node_modules\\@types\\node"
-      },
-      "@types/supertest": {
-        "from": "@types/supertest",
-        "version": "6.0.3",
-        "resolved": "https://registry.npmjs.org/@types/supertest/-/supertest-6.0.3.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+supertest@6.0.3\\node_modules\\@types\\supertest"
-      },
-      "eslint": {
-        "from": "eslint",
-        "version": "9.39.2",
-        "resolved": "https://registry.npmjs.org/eslint/-/eslint-9.39.2.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint@9.39.2\\node_modules\\eslint"
-      },
-      "jest": {
-        "from": "jest",
-        "version": "29.7.0",
-        "resolved": "https://registry.npmjs.org/jest/-/jest-29.7.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\jest@29.7.0_@types+node@22.19.11_ts-node@10.9.2\\node_modules\\jest"
-      },
-      "source-map-support": {
-        "from": "source-map-support",
-        "version": "0.5.21",
-        "resolved": "https://registry.npmjs.org/source-map-support/-/source-map-support-0.5.21.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\source-map-support@0.5.21\\node_modules\\source-map-support"
-      },
-      "supertest": {
-        "from": "supertest",
-        "version": "7.2.2",
-        "resolved": "https://registry.npmjs.org/supertest/-/supertest-7.2.2.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\supertest@7.2.2\\node_modules\\supertest"
-      },
-      "ts-jest": {
-        "from": "ts-jest",
-        "version": "29.4.6",
-        "resolved": "https://registry.npmjs.org/ts-jest/-/ts-jest-29.4.6.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\ts-jest@29.4.6_@babel+core@7.28.5_jest@29.7.0_typescript@5.5.4\\node_modules\\ts-jest"
-      },
-      "ts-loader": {
-        "from": "ts-loader",
-        "version": "9.5.4",
-        "resolved": "https://registry.npmjs.org/ts-loader/-/ts-loader-9.5.4.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\ts-loader@9.5.4_typescript@5.5.4_webpack@5.105.1\\node_modules\\ts-loader"
-      },
-      "ts-node": {
-        "from": "ts-node",
-        "version": "10.9.2",
-        "resolved": "https://registry.npmjs.org/ts-node/-/ts-node-10.9.2.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\ts-node@10.9.2_@types+node@22.19.11_typescript@5.5.4\\node_modules\\ts-node"
-      },
-      "tsconfig-paths": {
-        "from": "tsconfig-paths",
-        "version": "4.2.0",
-        "resolved": "https://registry.npmjs.org/tsconfig-paths/-/tsconfig-paths-4.2.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\tsconfig-paths@4.2.0\\node_modules\\tsconfig-paths"
-      },
-      "typescript": {
-        "from": "typescript",
-        "version": "5.5.4",
-        "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.5.4.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript@5.5.4\\node_modules\\typescript"
-      }
-    }
-  },
-  {
-    "name": "nextjs-dashboard",
-    "path": "D:\\dev\\antigravity\\vision-iq\\apps\\nextjs-dashboard",
-    "private": true,
-    "dependencies": {
-      "@heroicons/react": {
-        "from": "@heroicons/react",
-        "version": "2.2.0",
-        "resolved": "https://registry.npmjs.org/@heroicons/react/-/react-2.2.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@heroicons+react@2.2.0_react@19.2.4\\node_modules\\@heroicons\\react"
-      },
-      "@tailwindcss/forms": {
-        "from": "@tailwindcss/forms",
-        "version": "0.5.11",
-        "resolved": "https://registry.npmjs.org/@tailwindcss/forms/-/forms-0.5.11.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@tailwindcss+forms@0.5.11_tailwindcss@3.4.17\\node_modules\\@tailwindcss\\forms"
-      },
-      "autoprefixer": {
-        "from": "autoprefixer",
-        "version": "10.4.20",
-        "resolved": "https://registry.npmjs.org/autoprefixer/-/autoprefixer-10.4.20.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\autoprefixer@10.4.20_postcss@8.5.1\\node_modules\\autoprefixer"
-      },
-      "bcrypt": {
-        "from": "bcrypt",
-        "version": "5.1.1",
-        "resolved": "https://registry.npmjs.org/bcrypt/-/bcrypt-5.1.1.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\bcrypt@5.1.1\\node_modules\\bcrypt"
-      },
-      "clsx": {
-        "from": "clsx",
-        "version": "2.1.1",
-        "resolved": "https://registry.npmjs.org/clsx/-/clsx-2.1.1.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\clsx@2.1.1\\node_modules\\clsx"
-      },
-      "next": {
-        "from": "next",
-        "version": "16.1.6",
-        "resolved": "https://registry.npmjs.org/next/-/next-16.1.6.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\next@16.1.6_react-dom@19.2.4_react@19.2.4\\node_modules\\next"
-      },
-      "next-auth": {
-        "from": "next-auth",
-        "version": "5.0.0-beta.25",
-        "resolved": "https://registry.npmjs.org/next-auth/-/next-auth-5.0.0-beta.25.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\next-auth@5.0.0-beta.25_next@16.1.6_react@19.2.4\\node_modules\\next-auth"
-      },
-      "postcss": {
-        "from": "postcss",
-        "version": "8.5.1",
-        "resolved": "https://registry.npmjs.org/postcss/-/postcss-8.5.1.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\postcss@8.5.1\\node_modules\\postcss"
-      },
-      "postgres": {
-        "from": "postgres",
-        "version": "3.4.8",
-        "resolved": "https://registry.npmjs.org/postgres/-/postgres-3.4.8.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\postgres@3.4.8\\node_modules\\postgres"
-      },
-      "react": {
-        "from": "react",
-        "version": "19.2.4",
-        "resolved": "https://registry.npmjs.org/react/-/react-19.2.4.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\react@19.2.4\\node_modules\\react"
-      },
-      "react-dom": {
-        "from": "react-dom",
-        "version": "19.2.4",
-        "resolved": "https://registry.npmjs.org/react-dom/-/react-dom-19.2.4.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\react-dom@19.2.4_react@19.2.4\\node_modules\\react-dom"
-      },
-      "tailwindcss": {
-        "from": "tailwindcss",
-        "version": "3.4.17",
-        "resolved": "https://registry.npmjs.org/tailwindcss/-/tailwindcss-3.4.17.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\tailwindcss@3.4.17\\node_modules\\tailwindcss"
-      },
-      "typescript": {
-        "from": "typescript",
-        "version": "5.7.3",
-        "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.7.3.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript@5.7.3\\node_modules\\typescript"
-      },
-      "use-debounce": {
-        "from": "use-debounce",
-        "version": "10.1.0",
-        "resolved": "https://registry.npmjs.org/use-debounce/-/use-debounce-10.1.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\use-debounce@10.1.0_react@19.2.4\\node_modules\\use-debounce"
-      },
-      "zod": {
-        "from": "zod",
-        "version": "3.25.76",
-        "resolved": "https://registry.npmjs.org/zod/-/zod-3.25.76.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\zod@3.25.76\\node_modules\\zod"
-      }
-    },
-    "devDependencies": {
-      "@types/bcrypt": {
-        "from": "@types/bcrypt",
-        "version": "5.0.2",
-        "resolved": "https://registry.npmjs.org/@types/bcrypt/-/bcrypt-5.0.2.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+bcrypt@5.0.2\\node_modules\\@types\\bcrypt"
-      },
-      "@types/node": {
-        "from": "@types/node",
-        "version": "22.10.7",
-        "resolved": "https://registry.npmjs.org/@types/node/-/node-22.10.7.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+node@22.10.7\\node_modules\\@types\\node"
-      },
-      "@types/react": {
-        "from": "@types/react",
-        "version": "19.0.7",
-        "resolved": "https://registry.npmjs.org/@types/react/-/react-19.0.7.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+react@19.0.7\\node_modules\\@types\\react"
-      },
-      "@types/react-dom": {
-        "from": "@types/react-dom",
-        "version": "19.0.3",
-        "resolved": "https://registry.npmjs.org/@types/react-dom/-/react-dom-19.0.3.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+react-dom@19.0.3_@types+react@19.0.7\\node_modules\\@types\\react-dom"
-      }
-    }
-  },
-  {
-    "name": "prisma-web",
-    "version": "1.0.0",
-    "path": "D:\\dev\\antigravity\\vision-iq\\apps\\prisma-web",
-    "private": true,
-    "dependencies": {
-      "next": {
-        "from": "next",
-        "version": "14.2.35",
-        "resolved": "https://registry.npmjs.org/next/-/next-14.2.35.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\next@14.2.35_react-dom@18.3.1_react@18.3.1\\node_modules\\next"
-      },
-      "react": {
-        "from": "react",
-        "version": "18.3.1",
-        "resolved": "https://registry.npmjs.org/react/-/react-18.3.1.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\react@18.3.1\\node_modules\\react"
-      },
-      "react-dom": {
-        "from": "react-dom",
-        "version": "18.3.1",
-        "resolved": "https://registry.npmjs.org/react-dom/-/react-dom-18.3.1.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\react-dom@18.3.1_react@18.3.1\\node_modules\\react-dom"
-      }
-    },
-    "devDependencies": {
-      "@next/eslint-plugin-next": {
-        "from": "@next/eslint-plugin-next",
-        "version": "14.2.35",
-        "resolved": "https://registry.npmjs.org/@next/eslint-plugin-next/-/eslint-plugin-next-14.2.35.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@next+eslint-plugin-next@14.2.35\\node_modules\\@next\\eslint-plugin-next"
-      },
-      "@repo/database": {
-        "from": "@repo/database",
-        "version": "link:../../packages/database",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\database"
-      },
-      "@repo/eslint-config": {
-        "from": "@repo/eslint-config",
-        "version": "link:../../packages/config-eslint",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-eslint"
-      },
-      "@repo/typescript-config": {
-        "from": "@repo/typescript-config",
-        "version": "link:../../packages/config-typescript",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-typescript"
-      },
-      "@types/node": {
-        "from": "@types/node",
-        "version": "20.19.33",
-        "resolved": "https://registry.npmjs.org/@types/node/-/node-20.19.33.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+node@20.19.33\\node_modules\\@types\\node"
-      },
-      "@types/react": {
-        "from": "@types/react",
-        "version": "18.3.18",
-        "resolved": "https://registry.npmjs.org/@types/react/-/react-18.3.18.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+react@18.3.18\\node_modules\\@types\\react"
-      },
-      "@types/react-dom": {
-        "from": "@types/react-dom",
-        "version": "18.3.5",
-        "resolved": "https://registry.npmjs.org/@types/react-dom/-/react-dom-18.3.5.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+react-dom@18.3.5_@types+react@18.3.18\\node_modules\\@types\\react-dom"
-      },
-      "eslint": {
-        "from": "eslint",
-        "version": "8.57.1",
-        "resolved": "https://registry.npmjs.org/eslint/-/eslint-8.57.1.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint@8.57.1\\node_modules\\eslint"
-      },
-      "typescript": {
-        "from": "typescript",
-        "version": "5.5.4",
-        "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.5.4.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript@5.5.4\\node_modules\\typescript"
-      }
-    }
-  },
-  {
-    "name": "storefront",
-    "version": "1.0.0",
-    "path": "D:\\dev\\antigravity\\vision-iq\\apps\\storefront",
-    "private": true,
-    "dependencies": {
-      "@repo/logger": {
-        "from": "@repo/logger",
-        "version": "link:../../packages/logger",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\logger"
-      },
-      "@repo/ui": {
-        "from": "@repo/ui",
-        "version": "link:../../packages/ui",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\ui"
-      },
-      "next": {
-        "from": "next",
-        "version": "16.1.5",
-        "resolved": "https://registry.npmjs.org/next/-/next-16.1.5.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\next@16.1.5_react-dom@19.2.0_react@19.2.0\\node_modules\\next"
-      },
-      "react": {
-        "from": "react",
-        "version": "19.2.0",
-        "resolved": "https://registry.npmjs.org/react/-/react-19.2.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\react@19.2.0\\node_modules\\react"
-      },
-      "react-dom": {
-        "from": "react-dom",
-        "version": "19.2.0",
-        "resolved": "https://registry.npmjs.org/react-dom/-/react-dom-19.2.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\react-dom@19.2.0_react@19.2.0\\node_modules\\react-dom"
-      }
-    },
-    "devDependencies": {
-      "@next/eslint-plugin-next": {
-        "from": "@next/eslint-plugin-next",
-        "version": "15.4.2",
-        "resolved": "https://registry.npmjs.org/@next/eslint-plugin-next/-/eslint-plugin-next-15.4.2.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@next+eslint-plugin-next@15.4.2\\node_modules\\@next\\eslint-plugin-next"
-      },
-      "@repo/eslint-config": {
-        "from": "@repo/eslint-config",
-        "version": "link:../../packages/config-eslint",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-eslint"
-      },
-      "@repo/typescript-config": {
-        "from": "@repo/typescript-config",
-        "version": "link:../../packages/config-typescript",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-typescript"
-      },
-      "@types/node": {
-        "from": "@types/node",
-        "version": "22.15.3",
-        "resolved": "https://registry.npmjs.org/@types/node/-/node-22.15.3.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+node@22.15.3\\node_modules\\@types\\node"
-      },
-      "@types/react": {
-        "from": "@types/react",
-        "version": "19.1.0",
-        "resolved": "https://registry.npmjs.org/@types/react/-/react-19.1.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+react@19.1.0\\node_modules\\@types\\react"
-      },
-      "@types/react-dom": {
-        "from": "@types/react-dom",
-        "version": "19.1.1",
-        "resolved": "https://registry.npmjs.org/@types/react-dom/-/react-dom-19.1.1.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+react-dom@19.1.1_@types+react@19.1.0\\node_modules\\@types\\react-dom"
-      },
-      "eslint": {
-        "from": "eslint",
-        "version": "9.39.0",
-        "resolved": "https://registry.npmjs.org/eslint/-/eslint-9.39.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint@9.39.0\\node_modules\\eslint"
-      },
-      "typescript": {
-        "from": "typescript",
-        "version": "5.9.3",
-        "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript@5.9.3\\node_modules\\typescript"
-      }
-    }
-  },
-  {
-    "name": "@repo/api",
-    "version": "0.0.0",
-    "path": "D:\\dev\\antigravity\\vision-iq\\packages\\api",
-    "private": true,
-    "dependencies": {
-      "@nestjs/mapped-types": {
-        "from": "@nestjs/mapped-types",
-        "version": "2.1.0",
-        "resolved": "https://registry.npmjs.org/@nestjs/mapped-types/-/mapped-types-2.1.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@nestjs+mapped-types@2.1.0_@nestjs+common@11.1.13_reflect-metadata@0.2.2\\node_modules\\@nestjs\\mapped-types"
-      }
-    },
-    "devDependencies": {
-      "@repo/eslint-config": {
-        "from": "@repo/eslint-config",
-        "version": "link:../config-eslint",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-eslint"
-      },
-      "@repo/typescript-config": {
-        "from": "@repo/typescript-config",
-        "version": "link:../config-typescript",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-typescript"
-      },
-      "@types/node": {
-        "from": "@types/node",
-        "version": "22.19.11",
-        "resolved": "https://registry.npmjs.org/@types/node/-/node-22.19.11.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+node@22.19.11\\node_modules\\@types\\node"
-      },
-      "ts-loader": {
-        "from": "ts-loader",
-        "version": "9.5.4",
-        "resolved": "https://registry.npmjs.org/ts-loader/-/ts-loader-9.5.4.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\ts-loader@9.5.4_typescript@5.5.4_webpack@5.105.1\\node_modules\\ts-loader"
-      },
-      "ts-node": {
-        "from": "ts-node",
-        "version": "10.9.2",
-        "resolved": "https://registry.npmjs.org/ts-node/-/ts-node-10.9.2.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\ts-node@10.9.2_@types+node@22.19.11_typescript@5.5.4\\node_modules\\ts-node"
-      },
-      "typescript": {
-        "from": "typescript",
-        "version": "5.5.4",
-        "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.5.4.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript@5.5.4\\node_modules\\typescript"
-      }
-    }
-  },
-  {
-    "name": "@repo/eslint-config",
-    "version": "0.0.0",
-    "path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-eslint",
-    "private": true,
-    "devDependencies": {
-      "@eslint/js": {
-        "from": "@eslint/js",
-        "version": "9.39.0",
-        "resolved": "https://registry.npmjs.org/@eslint/js/-/js-9.39.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@eslint+js@9.39.0\\node_modules\\@eslint\\js"
-      },
-      "@next/eslint-plugin-next": {
-        "from": "@next/eslint-plugin-next",
-        "version": "15.4.2",
-        "resolved": "https://registry.npmjs.org/@next/eslint-plugin-next/-/eslint-plugin-next-15.4.2.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@next+eslint-plugin-next@15.4.2\\node_modules\\@next\\eslint-plugin-next"
-      },
-      "eslint": {
-        "from": "eslint",
-        "version": "9.39.0",
-        "resolved": "https://registry.npmjs.org/eslint/-/eslint-9.39.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint@9.39.0\\node_modules\\eslint"
-      },
-      "eslint-config-prettier": {
-        "from": "eslint-config-prettier",
-        "version": "10.1.1",
-        "resolved": "https://registry.npmjs.org/eslint-config-prettier/-/eslint-config-prettier-10.1.1.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint-config-prettier@10.1.1_eslint@9.39.0\\node_modules\\eslint-config-prettier"
-      },
-      "eslint-plugin-only-warn": {
-        "from": "eslint-plugin-only-warn",
-        "version": "1.1.0",
-        "resolved": "https://registry.npmjs.org/eslint-plugin-only-warn/-/eslint-plugin-only-warn-1.1.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint-plugin-only-warn@1.1.0\\node_modules\\eslint-plugin-only-warn"
-      },
-      "eslint-plugin-react": {
-        "from": "eslint-plugin-react",
-        "version": "7.37.5",
-        "resolved": "https://registry.npmjs.org/eslint-plugin-react/-/eslint-plugin-react-7.37.5.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint-plugin-react@7.37.5_eslint@9.39.0\\node_modules\\eslint-plugin-react"
-      },
-      "eslint-plugin-react-hooks": {
-        "from": "eslint-plugin-react-hooks",
-        "version": "7.0.1",
-        "resolved": "https://registry.npmjs.org/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-7.0.1.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint-plugin-react-hooks@7.0.1_eslint@9.39.0\\node_modules\\eslint-plugin-react-hooks"
-      },
-      "eslint-plugin-turbo": {
-        "from": "eslint-plugin-turbo",
-        "version": "2.6.0",
-        "resolved": "https://registry.npmjs.org/eslint-plugin-turbo/-/eslint-plugin-turbo-2.6.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint-plugin-turbo@2.6.0_eslint@9.39.0_turbo@2.8.6\\node_modules\\eslint-plugin-turbo"
-      },
-      "globals": {
-        "from": "globals",
-        "version": "16.5.0",
-        "resolved": "https://registry.npmjs.org/globals/-/globals-16.5.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\globals@16.5.0\\node_modules\\globals"
-      },
-      "typescript": {
-        "from": "typescript",
-        "version": "5.9.3",
-        "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript@5.9.3\\node_modules\\typescript"
-      },
-      "typescript-eslint": {
-        "from": "typescript-eslint",
-        "version": "8.46.2",
-        "resolved": "https://registry.npmjs.org/typescript-eslint/-/typescript-eslint-8.46.2.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript-eslint@8.46.2_eslint@9.39.0_typescript@5.9.3\\node_modules\\typescript-eslint"
-      }
-    }
-  },
-  {
-    "name": "@repo/typescript-config",
-    "version": "0.0.0",
-    "path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-typescript",
-    "private": true
-  },
-  {
-    "name": "@repo/database",
-    "version": "1.0.0",
-    "path": "D:\\dev\\antigravity\\vision-iq\\packages\\database",
-    "private": false,
-    "dependencies": {
-      "@prisma/client": {
-        "from": "@prisma/client",
-        "version": "7.3.0",
-        "resolved": "https://registry.npmjs.org/@prisma/client/-/client-7.3.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@prisma+client@7.3.0_prisma@7.3.0_typescript@5.5.4\\node_modules\\@prisma\\client"
-      },
-      "@prisma/client-runtime-utils": {
-        "from": "@prisma/client-runtime-utils",
-        "version": "7.2.0",
-        "resolved": "https://registry.npmjs.org/@prisma/client-runtime-utils/-/client-runtime-utils-7.2.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@prisma+client-runtime-utils@7.2.0\\node_modules\\@prisma\\client-runtime-utils"
-      },
-      "dotenv": {
-        "from": "dotenv",
-        "version": "17.2.4",
-        "resolved": "https://registry.npmjs.org/dotenv/-/dotenv-17.2.4.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\dotenv@17.2.4\\node_modules\\dotenv"
-      },
-      "pg": {
-        "from": "pg",
-        "version": "8.18.0",
-        "resolved": "https://registry.npmjs.org/pg/-/pg-8.18.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\pg@8.18.0\\node_modules\\pg"
-      }
-    },
-    "devDependencies": {
-      "@repo/eslint-config": {
-        "from": "@repo/eslint-config",
-        "version": "link:../config-eslint",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-eslint"
-      },
-      "@repo/typescript-config": {
-        "from": "@repo/typescript-config",
-        "version": "link:../config-typescript",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-typescript"
-      },
-      "@types/pg": {
-        "from": "@types/pg",
-        "version": "8.16.0",
-        "resolved": "https://registry.npmjs.org/@types/pg/-/pg-8.16.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+pg@8.16.0\\node_modules\\@types\\pg"
-      },
-      "eslint": {
-        "from": "eslint",
-        "version": "8.57.1",
-        "resolved": "https://registry.npmjs.org/eslint/-/eslint-8.57.1.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint@8.57.1\\node_modules\\eslint"
-      },
-      "prisma": {
-        "from": "prisma",
-        "version": "7.3.0",
-        "resolved": "https://registry.npmjs.org/prisma/-/prisma-7.3.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\prisma@7.3.0_@types+react@18.3.18_react-dom@19.2.4_react@19.2.4_typescript@5.5.4\\node_modules\\prisma"
-      },
-      "rimraf": {
-        "from": "rimraf",
-        "version": "5.0.10",
-        "resolved": "https://registry.npmjs.org/rimraf/-/rimraf-5.0.10.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\rimraf@5.0.10\\node_modules\\rimraf"
-      },
-      "tsup": {
-        "from": "tsup",
-        "version": "8.5.1",
-        "resolved": "https://registry.npmjs.org/tsup/-/tsup-8.5.1.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\tsup@8.5.1_tsx@4.19.1_typescript@5.5.4\\node_modules\\tsup"
-      },
-      "tsx": {
-        "from": "tsx",
-        "version": "4.19.1",
-        "resolved": "https://registry.npmjs.org/tsx/-/tsx-4.19.1.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\tsx@4.19.1\\node_modules\\tsx"
-      },
-      "typescript": {
-        "from": "typescript",
-        "version": "5.5.4",
-        "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.5.4.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript@5.5.4\\node_modules\\typescript"
-      }
-    }
-  },
-  {
-    "name": "@repo/jest-config",
-    "version": "0.0.0",
-    "path": "D:\\dev\\antigravity\\vision-iq\\packages\\jest-config",
-    "private": true,
-    "devDependencies": {
-      "@jest/types": {
-        "from": "@jest/types",
-        "version": "29.6.3",
-        "resolved": "https://registry.npmjs.org/@jest/types/-/types-29.6.3.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@jest+types@29.6.3\\node_modules\\@jest\\types"
-      },
-      "jest": {
-        "from": "jest",
-        "version": "29.7.0",
-        "resolved": "https://registry.npmjs.org/jest/-/jest-29.7.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\jest@29.7.0_@types+node@22.19.11_ts-node@10.9.2\\node_modules\\jest"
-      },
-      "next": {
-        "from": "next",
-        "version": "16.0.10",
-        "resolved": "https://registry.npmjs.org/next/-/next-16.0.10.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\next@16.0.10_@babel+core@7.28.5_react-dom@19.2.4_react@19.2.4\\node_modules\\next"
-      },
-      "typescript": {
-        "from": "typescript",
-        "version": "5.9.3",
-        "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript@5.9.3\\node_modules\\typescript"
-      }
-    }
-  },
-  {
-    "name": "@repo/jest-presets",
-    "version": "0.0.0",
-    "path": "D:\\dev\\antigravity\\vision-iq\\packages\\jest-presets",
-    "private": true,
-    "dependencies": {
-      "jest": {
-        "from": "jest",
-        "version": "30.2.0",
-        "resolved": "https://registry.npmjs.org/jest/-/jest-30.2.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\jest@30.2.0_@types+node@22.15.3\\node_modules\\jest"
-      },
-      "ts-jest": {
-        "from": "ts-jest",
-        "version": "29.4.6",
-        "resolved": "https://registry.npmjs.org/ts-jest/-/ts-jest-29.4.6.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\ts-jest@29.4.6_@babel+core@7.28.5_jest@30.2.0_typescript@5.9.3\\node_modules\\ts-jest"
-      }
-    },
-    "devDependencies": {
-      "jest-environment-jsdom": {
-        "from": "jest-environment-jsdom",
-        "version": "30.2.0",
-        "resolved": "https://registry.npmjs.org/jest-environment-jsdom/-/jest-environment-jsdom-30.2.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\jest-environment-jsdom@30.2.0\\node_modules\\jest-environment-jsdom"
-      }
-    }
-  },
-  {
-    "name": "@repo/logger",
-    "version": "0.0.0",
-    "path": "D:\\dev\\antigravity\\vision-iq\\packages\\logger",
-    "private": true,
-    "devDependencies": {
-      "@jest/globals": {
-        "from": "@jest/globals",
-        "version": "30.2.0",
-        "resolved": "https://registry.npmjs.org/@jest/globals/-/globals-30.2.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@jest+globals@30.2.0\\node_modules\\@jest\\globals"
-      },
-      "@repo/eslint-config": {
-        "from": "@repo/eslint-config",
-        "version": "link:../config-eslint",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-eslint"
-      },
-      "@repo/jest-presets": {
-        "from": "@repo/jest-presets",
-        "version": "link:../jest-presets",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\jest-presets"
-      },
-      "@repo/typescript-config": {
-        "from": "@repo/typescript-config",
-        "version": "link:../config-typescript",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-typescript"
-      },
-      "@types/node": {
-        "from": "@types/node",
-        "version": "22.15.3",
-        "resolved": "https://registry.npmjs.org/@types/node/-/node-22.15.3.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+node@22.15.3\\node_modules\\@types\\node"
-      },
-      "bunchee": {
-        "from": "bunchee",
-        "version": "6.4.0",
-        "resolved": "https://registry.npmjs.org/bunchee/-/bunchee-6.4.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\bunchee@6.4.0_typescript@5.9.3\\node_modules\\bunchee"
-      },
-      "eslint": {
-        "from": "eslint",
-        "version": "9.39.0",
-        "resolved": "https://registry.npmjs.org/eslint/-/eslint-9.39.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint@9.39.0\\node_modules\\eslint"
-      },
-      "jest": {
-        "from": "jest",
-        "version": "30.2.0",
-        "resolved": "https://registry.npmjs.org/jest/-/jest-30.2.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\jest@30.2.0_@types+node@22.15.3\\node_modules\\jest"
-      },
-      "typescript": {
-        "from": "typescript",
-        "version": "5.9.3",
-        "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript@5.9.3\\node_modules\\typescript"
-      }
-    }
-  },
-  {
-    "name": "@repo/ui",
-    "version": "0.0.0",
-    "path": "D:\\dev\\antigravity\\vision-iq\\packages\\ui",
-    "private": true,
-    "dependencies": {
-      "@swc/helpers": {
-        "from": "@swc/helpers",
-        "version": "0.5.18",
-        "resolved": "https://registry.npmjs.org/@swc/helpers/-/helpers-0.5.18.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@swc+helpers@0.5.18\\node_modules\\@swc\\helpers"
-      },
-      "@types/react": {
-        "from": "@types/react",
-        "version": "18.3.18",
-        "resolved": "https://registry.npmjs.org/@types/react/-/react-18.3.18.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+react@18.3.18\\node_modules\\@types\\react"
-      },
-      "@types/react-dom": {
-        "from": "@types/react-dom",
-        "version": "18.3.5",
-        "resolved": "https://registry.npmjs.org/@types/react-dom/-/react-dom-18.3.5.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+react-dom@18.3.5_@types+react@18.3.18\\node_modules\\@types\\react-dom"
-      },
-      "react": {
-        "from": "react",
-        "version": "18.3.1",
-        "resolved": "https://registry.npmjs.org/react/-/react-18.3.1.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\react@18.3.1\\node_modules\\react"
-      },
-      "react-dom": {
-        "from": "react-dom",
-        "version": "18.3.1",
-        "resolved": "https://registry.npmjs.org/react-dom/-/react-dom-18.3.1.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\react-dom@18.3.1_react@18.3.1\\node_modules\\react-dom"
-      }
-    },
-    "devDependencies": {
-      "@jest/globals": {
-        "from": "@jest/globals",
-        "version": "30.2.0",
-        "resolved": "https://registry.npmjs.org/@jest/globals/-/globals-30.2.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@jest+globals@30.2.0\\node_modules\\@jest\\globals"
-      },
-      "@repo/eslint-config": {
-        "from": "@repo/eslint-config",
-        "version": "link:../config-eslint",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-eslint"
-      },
-      "@repo/jest-presets": {
-        "from": "@repo/jest-presets",
-        "version": "link:../jest-presets",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\jest-presets"
-      },
-      "@repo/typescript-config": {
-        "from": "@repo/typescript-config",
-        "version": "link:../config-typescript",
-        "path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-typescript"
-      },
-      "@types/node": {
-        "from": "@types/node",
-        "version": "22.15.3",
-        "resolved": "https://registry.npmjs.org/@types/node/-/node-22.15.3.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+node@22.15.3\\node_modules\\@types\\node"
-      },
-      "bunchee": {
-        "from": "bunchee",
-        "version": "6.4.0",
-        "resolved": "https://registry.npmjs.org/bunchee/-/bunchee-6.4.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\bunchee@6.4.0_typescript@5.9.3\\node_modules\\bunchee"
-      },
-      "eslint": {
-        "from": "eslint",
-        "version": "9.39.0",
-        "resolved": "https://registry.npmjs.org/eslint/-/eslint-9.39.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint@9.39.0\\node_modules\\eslint"
-      },
-      "jest": {
-        "from": "jest",
-        "version": "30.2.0",
-        "resolved": "https://registry.npmjs.org/jest/-/jest-30.2.0.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\jest@30.2.0_@types+node@22.15.3\\node_modules\\jest"
-      },
-      "typescript": {
-        "from": "typescript",
-        "version": "5.9.3",
-        "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz",
-        "path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript@5.9.3\\node_modules\\typescript"
-      }
-    }
-  }
+	{
+		"name": "kitchen-sink",
+		"path": "D:\\dev\\antigravity\\vision-iq",
+		"private": true,
+		"devDependencies": {
+			"prettier": {
+				"from": "prettier",
+				"version": "3.6.0",
+				"resolved": "https://registry.npmjs.org/prettier/-/prettier-3.6.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\prettier@3.6.0\\node_modules\\prettier"
+			},
+			"turbo": {
+				"from": "turbo",
+				"version": "2.8.6",
+				"resolved": "https://registry.npmjs.org/turbo/-/turbo-2.8.6.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\turbo@2.8.6\\node_modules\\turbo"
+			}
+		},
+		"unsavedDependencies": {
+			"eslint": {
+				"from": "eslint",
+				"version": "link:node_modules/.pnpm/eslint@9.39.0/node_modules/eslint",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint@9.39.0\\node_modules\\eslint"
+			},
+			"eslint-config-prettier": {
+				"from": "eslint-config-prettier",
+				"version": "link:node_modules/.pnpm/eslint-config-prettier@10.1.1_eslint@9.39.0/node_modules/eslint-config-prettier",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint-config-prettier@10.1.1_eslint@9.39.0\\node_modules\\eslint-config-prettier"
+			},
+			"eslint-plugin-only-warn": {
+				"from": "eslint-plugin-only-warn",
+				"version": "link:node_modules/.pnpm/eslint-plugin-only-warn@1.1.0/node_modules/eslint-plugin-only-warn",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint-plugin-only-warn@1.1.0\\node_modules\\eslint-plugin-only-warn"
+			},
+			"eslint-plugin-react": {
+				"from": "eslint-plugin-react",
+				"version": "link:node_modules/.pnpm/eslint-plugin-react@7.37.5_eslint@9.39.0/node_modules/eslint-plugin-react",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint-plugin-react@7.37.5_eslint@9.39.0\\node_modules\\eslint-plugin-react"
+			},
+			"eslint-plugin-react-hooks": {
+				"from": "eslint-plugin-react-hooks",
+				"version": "link:node_modules/.pnpm/eslint-plugin-react-hooks@7.0.1_eslint@9.39.0/node_modules/eslint-plugin-react-hooks",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint-plugin-react-hooks@7.0.1_eslint@9.39.0\\node_modules\\eslint-plugin-react-hooks"
+			},
+			"eslint-plugin-turbo": {
+				"from": "eslint-plugin-turbo",
+				"version": "link:node_modules/.pnpm/eslint-plugin-turbo@2.6.0_eslint@9.39.0_turbo@2.8.6/node_modules/eslint-plugin-turbo",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint-plugin-turbo@2.6.0_eslint@9.39.0_turbo@2.8.6\\node_modules\\eslint-plugin-turbo"
+			},
+			"eslint-scope": {
+				"from": "eslint-scope",
+				"version": "link:node_modules/.pnpm/eslint-scope@7.2.2/node_modules/eslint-scope",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint-scope@7.2.2\\node_modules\\eslint-scope"
+			},
+			"eslint-visitor-keys": {
+				"from": "eslint-visitor-keys",
+				"version": "link:node_modules/.pnpm/eslint-visitor-keys@3.4.3/node_modules/eslint-visitor-keys",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint-visitor-keys@3.4.3\\node_modules\\eslint-visitor-keys"
+			},
+			"typescript-eslint": {
+				"from": "typescript-eslint",
+				"version": "link:node_modules/.pnpm/typescript-eslint@8.46.2_eslint@9.39.0_typescript@5.9.3/node_modules/typescript-eslint",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript-eslint@8.46.2_eslint@9.39.0_typescript@5.9.3\\node_modules\\typescript-eslint"
+			},
+			"@eslint/config-array": {
+				"from": "@eslint/config-array",
+				"version": "link:node_modules/.pnpm/@eslint+config-array@0.21.1/node_modules/@eslint/config-array",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@eslint+config-array@0.21.1\\node_modules\\@eslint\\config-array"
+			},
+			"@eslint/config-helpers": {
+				"from": "@eslint/config-helpers",
+				"version": "link:node_modules/.pnpm/@eslint+config-helpers@0.4.2/node_modules/@eslint/config-helpers",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@eslint+config-helpers@0.4.2\\node_modules\\@eslint\\config-helpers"
+			},
+			"@eslint/core": {
+				"from": "@eslint/core",
+				"version": "link:node_modules/.pnpm/@eslint+core@0.17.0/node_modules/@eslint/core",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@eslint+core@0.17.0\\node_modules\\@eslint\\core"
+			},
+			"@eslint/eslintrc": {
+				"from": "@eslint/eslintrc",
+				"version": "link:node_modules/.pnpm/@eslint+eslintrc@2.1.4/node_modules/@eslint/eslintrc",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@eslint+eslintrc@2.1.4\\node_modules\\@eslint\\eslintrc"
+			},
+			"@eslint/js": {
+				"from": "@eslint/js",
+				"version": "link:node_modules/.pnpm/@eslint+js@9.39.0/node_modules/@eslint/js",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@eslint+js@9.39.0\\node_modules\\@eslint\\js"
+			},
+			"@eslint/object-schema": {
+				"from": "@eslint/object-schema",
+				"version": "link:node_modules/.pnpm/@eslint+object-schema@2.1.7/node_modules/@eslint/object-schema",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@eslint+object-schema@2.1.7\\node_modules\\@eslint\\object-schema"
+			},
+			"@eslint/plugin-kit": {
+				"from": "@eslint/plugin-kit",
+				"version": "link:node_modules/.pnpm/@eslint+plugin-kit@0.4.1/node_modules/@eslint/plugin-kit",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@eslint+plugin-kit@0.4.1\\node_modules\\@eslint\\plugin-kit"
+			},
+			"@eslint-community/eslint-utils": {
+				"from": "@eslint-community/eslint-utils",
+				"version": "link:node_modules/.pnpm/@eslint-community+eslint-utils@4.9.0_eslint@8.57.1/node_modules/@eslint-community/eslint-utils",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@eslint-community+eslint-utils@4.9.0_eslint@8.57.1\\node_modules\\@eslint-community\\eslint-utils"
+			},
+			"@eslint-community/regexpp": {
+				"from": "@eslint-community/regexpp",
+				"version": "link:node_modules/.pnpm/@eslint-community+regexpp@4.12.2/node_modules/@eslint-community/regexpp",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@eslint-community+regexpp@4.12.2\\node_modules\\@eslint-community\\regexpp"
+			},
+			"@next/eslint-plugin-next": {
+				"from": "@next/eslint-plugin-next",
+				"version": "link:node_modules/.pnpm/@next+eslint-plugin-next@14.2.35/node_modules/@next/eslint-plugin-next",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@next+eslint-plugin-next@14.2.35\\node_modules\\@next\\eslint-plugin-next"
+			},
+			"@types/eslint": {
+				"from": "@types/eslint",
+				"version": "link:node_modules/.pnpm/@types+eslint@9.6.1/node_modules/@types/eslint",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+eslint@9.6.1\\node_modules\\@types\\eslint"
+			},
+			"@types/eslint-scope": {
+				"from": "@types/eslint-scope",
+				"version": "link:node_modules/.pnpm/@types+eslint-scope@3.7.7/node_modules/@types/eslint-scope",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+eslint-scope@3.7.7\\node_modules\\@types\\eslint-scope"
+			},
+			"@typescript-eslint/parser": {
+				"from": "@typescript-eslint/parser",
+				"version": "link:node_modules/.pnpm/@typescript-eslint+parser@8.46.2_eslint@9.39.0_typescript@5.9.3/node_modules/@typescript-eslint/parser",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@typescript-eslint+parser@8.46.2_eslint@9.39.0_typescript@5.9.3\\node_modules\\@typescript-eslint\\parser"
+			},
+			"@typescript-eslint/eslint-plugin": {
+				"from": "@typescript-eslint/eslint-plugin",
+				"version": "link:node_modules/.pnpm/@typescript-eslint+eslint-plugin@8.46.2_@typescript-eslint+parser@8.46.2_eslint@9.39.0_typescript@5.9.3/node_modules/@typescript-eslint/eslint-plugin",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@typescript-eslint+eslint-plugin@8.46.2_@typescript-eslint+parser@8.46.2_eslint@9.39.0_typescript@5.9.3\\node_modules\\@typescript-eslint\\eslint-plugin"
+			},
+			"@typescript-eslint/project-service": {
+				"from": "@typescript-eslint/project-service",
+				"version": "link:node_modules/.pnpm/@typescript-eslint+project-service@8.46.2_typescript@5.9.3/node_modules/@typescript-eslint/project-service",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@typescript-eslint+project-service@8.46.2_typescript@5.9.3\\node_modules\\@typescript-eslint\\project-service"
+			},
+			"@typescript-eslint/scope-manager": {
+				"from": "@typescript-eslint/scope-manager",
+				"version": "link:node_modules/.pnpm/@typescript-eslint+scope-manager@8.46.2/node_modules/@typescript-eslint/scope-manager",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@typescript-eslint+scope-manager@8.46.2\\node_modules\\@typescript-eslint\\scope-manager"
+			},
+			"@typescript-eslint/tsconfig-utils": {
+				"from": "@typescript-eslint/tsconfig-utils",
+				"version": "link:node_modules/.pnpm/@typescript-eslint+tsconfig-utils@8.46.2_typescript@5.9.3/node_modules/@typescript-eslint/tsconfig-utils",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@typescript-eslint+tsconfig-utils@8.46.2_typescript@5.9.3\\node_modules\\@typescript-eslint\\tsconfig-utils"
+			},
+			"@typescript-eslint/type-utils": {
+				"from": "@typescript-eslint/type-utils",
+				"version": "link:node_modules/.pnpm/@typescript-eslint+type-utils@8.46.2_eslint@9.39.0_typescript@5.9.3/node_modules/@typescript-eslint/type-utils",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@typescript-eslint+type-utils@8.46.2_eslint@9.39.0_typescript@5.9.3\\node_modules\\@typescript-eslint\\type-utils"
+			},
+			"@typescript-eslint/types": {
+				"from": "@typescript-eslint/types",
+				"version": "link:node_modules/.pnpm/@typescript-eslint+types@8.46.2/node_modules/@typescript-eslint/types",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@typescript-eslint+types@8.46.2\\node_modules\\@typescript-eslint\\types"
+			},
+			"@typescript-eslint/typescript-estree": {
+				"from": "@typescript-eslint/typescript-estree",
+				"version": "link:node_modules/.pnpm/@typescript-eslint+typescript-estree@8.46.2_typescript@5.9.3/node_modules/@typescript-eslint/typescript-estree",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@typescript-eslint+typescript-estree@8.46.2_typescript@5.9.3\\node_modules\\@typescript-eslint\\typescript-estree"
+			},
+			"@typescript-eslint/utils": {
+				"from": "@typescript-eslint/utils",
+				"version": "link:node_modules/.pnpm/@typescript-eslint+utils@8.46.2_eslint@9.39.0_typescript@5.9.3/node_modules/@typescript-eslint/utils",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@typescript-eslint+utils@8.46.2_eslint@9.39.0_typescript@5.9.3\\node_modules\\@typescript-eslint\\utils"
+			},
+			"@typescript-eslint/visitor-keys": {
+				"from": "@typescript-eslint/visitor-keys",
+				"version": "link:node_modules/.pnpm/@typescript-eslint+visitor-keys@8.46.2/node_modules/@typescript-eslint/visitor-keys",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@typescript-eslint+visitor-keys@8.46.2\\node_modules\\@typescript-eslint\\visitor-keys"
+			}
+		}
+	},
+	{
+		"name": "admin",
+		"version": "1.0.0",
+		"path": "D:\\dev\\antigravity\\vision-iq\\apps\\admin",
+		"private": true,
+		"dependencies": {
+			"@repo/ui": {
+				"from": "@repo/ui",
+				"version": "link:../../packages/ui",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\ui"
+			},
+			"react": {
+				"from": "react",
+				"version": "18.3.1",
+				"resolved": "https://registry.npmjs.org/react/-/react-18.3.1.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\react@18.3.1\\node_modules\\react"
+			},
+			"react-dom": {
+				"from": "react-dom",
+				"version": "18.3.1",
+				"resolved": "https://registry.npmjs.org/react-dom/-/react-dom-18.3.1.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\react-dom@18.3.1_react@18.3.1\\node_modules\\react-dom"
+			}
+		},
+		"devDependencies": {
+			"@repo/eslint-config": {
+				"from": "@repo/eslint-config",
+				"version": "link:../../packages/config-eslint",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-eslint"
+			},
+			"@repo/typescript-config": {
+				"from": "@repo/typescript-config",
+				"version": "link:../../packages/config-typescript",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-typescript"
+			},
+			"@types/react": {
+				"from": "@types/react",
+				"version": "18.3.18",
+				"resolved": "https://registry.npmjs.org/@types/react/-/react-18.3.18.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+react@18.3.18\\node_modules\\@types\\react"
+			},
+			"@types/react-dom": {
+				"from": "@types/react-dom",
+				"version": "18.3.5",
+				"resolved": "https://registry.npmjs.org/@types/react-dom/-/react-dom-18.3.5.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+react-dom@18.3.5_@types+react@18.3.18\\node_modules\\@types\\react-dom"
+			},
+			"@vitejs/plugin-react": {
+				"from": "@vitejs/plugin-react",
+				"version": "4.7.0",
+				"resolved": "https://registry.npmjs.org/@vitejs/plugin-react/-/plugin-react-4.7.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@vitejs+plugin-react@4.7.0_vite@5.4.14\\node_modules\\@vitejs\\plugin-react"
+			},
+			"eslint": {
+				"from": "eslint",
+				"version": "9.39.0",
+				"resolved": "https://registry.npmjs.org/eslint/-/eslint-9.39.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint@9.39.0\\node_modules\\eslint"
+			},
+			"typescript": {
+				"from": "typescript",
+				"version": "5.9.3",
+				"resolved": "https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript@5.9.3\\node_modules\\typescript"
+			},
+			"vite": {
+				"from": "vite",
+				"version": "5.4.14",
+				"resolved": "https://registry.npmjs.org/vite/-/vite-5.4.14.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\vite@5.4.14\\node_modules\\vite"
+			}
+		}
+	},
+	{
+		"name": "api",
+		"version": "1.0.0",
+		"path": "D:\\dev\\antigravity\\vision-iq\\apps\\api",
+		"private": true,
+		"dependencies": {
+			"@repo/logger": {
+				"from": "@repo/logger",
+				"version": "link:../../packages/logger",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\logger"
+			},
+			"body-parser": {
+				"from": "body-parser",
+				"version": "1.20.3",
+				"resolved": "https://registry.npmjs.org/body-parser/-/body-parser-1.20.3.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\body-parser@1.20.3\\node_modules\\body-parser"
+			},
+			"cors": {
+				"from": "cors",
+				"version": "2.8.5",
+				"resolved": "https://registry.npmjs.org/cors/-/cors-2.8.5.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\cors@2.8.5\\node_modules\\cors"
+			},
+			"express": {
+				"from": "express",
+				"version": "4.21.2",
+				"resolved": "https://registry.npmjs.org/express/-/express-4.21.2.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express"
+			},
+			"morgan": {
+				"from": "morgan",
+				"version": "1.10.0",
+				"resolved": "https://registry.npmjs.org/morgan/-/morgan-1.10.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\morgan@1.10.0\\node_modules\\morgan"
+			}
+		},
+		"devDependencies": {
+			"@jest/globals": {
+				"from": "@jest/globals",
+				"version": "30.2.0",
+				"resolved": "https://registry.npmjs.org/@jest/globals/-/globals-30.2.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@jest+globals@30.2.0\\node_modules\\@jest\\globals"
+			},
+			"@repo/eslint-config": {
+				"from": "@repo/eslint-config",
+				"version": "link:../../packages/config-eslint",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-eslint"
+			},
+			"@repo/jest-presets": {
+				"from": "@repo/jest-presets",
+				"version": "link:../../packages/jest-presets",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\jest-presets"
+			},
+			"@repo/typescript-config": {
+				"from": "@repo/typescript-config",
+				"version": "link:../../packages/config-typescript",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-typescript"
+			},
+			"@types/body-parser": {
+				"from": "@types/body-parser",
+				"version": "1.19.5",
+				"resolved": "https://registry.npmjs.org/@types/body-parser/-/body-parser-1.19.5.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+body-parser@1.19.5\\node_modules\\@types\\body-parser"
+			},
+			"@types/cors": {
+				"from": "@types/cors",
+				"version": "2.8.17",
+				"resolved": "https://registry.npmjs.org/@types/cors/-/cors-2.8.17.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+cors@2.8.17\\node_modules\\@types\\cors"
+			},
+			"@types/express": {
+				"from": "@types/express",
+				"version": "4.17.21",
+				"resolved": "https://registry.npmjs.org/@types/express/-/express-4.17.21.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+express@4.17.21\\node_modules\\@types\\express"
+			},
+			"@types/morgan": {
+				"from": "@types/morgan",
+				"version": "1.9.9",
+				"resolved": "https://registry.npmjs.org/@types/morgan/-/morgan-1.9.9.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+morgan@1.9.9\\node_modules\\@types\\morgan"
+			},
+			"@types/node": {
+				"from": "@types/node",
+				"version": "22.15.3",
+				"resolved": "https://registry.npmjs.org/@types/node/-/node-22.15.3.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+node@22.15.3\\node_modules\\@types\\node"
+			},
+			"@types/supertest": {
+				"from": "@types/supertest",
+				"version": "6.0.2",
+				"resolved": "https://registry.npmjs.org/@types/supertest/-/supertest-6.0.2.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+supertest@6.0.2\\node_modules\\@types\\supertest"
+			},
+			"eslint": {
+				"from": "eslint",
+				"version": "9.39.0",
+				"resolved": "https://registry.npmjs.org/eslint/-/eslint-9.39.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint@9.39.0\\node_modules\\eslint"
+			},
+			"jest": {
+				"from": "jest",
+				"version": "30.2.0",
+				"resolved": "https://registry.npmjs.org/jest/-/jest-30.2.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\jest@30.2.0_@types+node@22.15.3\\node_modules\\jest"
+			},
+			"supertest": {
+				"from": "supertest",
+				"version": "7.1.0",
+				"resolved": "https://registry.npmjs.org/supertest/-/supertest-7.1.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\supertest@7.1.0\\node_modules\\supertest"
+			},
+			"tsdown": {
+				"from": "tsdown",
+				"version": "0.9.3",
+				"resolved": "https://registry.npmjs.org/tsdown/-/tsdown-0.9.3.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\tsdown@0.9.3_typescript@5.9.3\\node_modules\\tsdown"
+			},
+			"typescript": {
+				"from": "typescript",
+				"version": "5.9.3",
+				"resolved": "https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript@5.9.3\\node_modules\\typescript"
+			}
+		}
+	},
+	{
+		"name": "blog",
+		"version": "1.0.0",
+		"path": "D:\\dev\\antigravity\\vision-iq\\apps\\blog",
+		"private": true,
+		"dependencies": {
+			"@remix-run/node": {
+				"from": "@remix-run/node",
+				"version": "2.16.0",
+				"resolved": "https://registry.npmjs.org/@remix-run/node/-/node-2.16.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@remix-run+node@2.16.0_typescript@5.9.3\\node_modules\\@remix-run\\node"
+			},
+			"@remix-run/react": {
+				"from": "@remix-run/react",
+				"version": "2.16.0",
+				"resolved": "https://registry.npmjs.org/@remix-run/react/-/react-2.16.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@remix-run+react@2.16.0_react-dom@18.3.1_react@18.3.1_typescript@5.9.3\\node_modules\\@remix-run\\react"
+			},
+			"@remix-run/server-runtime": {
+				"from": "@remix-run/server-runtime",
+				"version": "2.16.0",
+				"resolved": "https://registry.npmjs.org/@remix-run/server-runtime/-/server-runtime-2.16.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@remix-run+server-runtime@2.16.0_typescript@5.9.3\\node_modules\\@remix-run\\server-runtime"
+			},
+			"@repo/ui": {
+				"from": "@repo/ui",
+				"version": "link:../../packages/ui",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\ui"
+			},
+			"@vercel/analytics": {
+				"from": "@vercel/analytics",
+				"version": "1.5.0",
+				"resolved": "https://registry.npmjs.org/@vercel/analytics/-/analytics-1.5.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@vercel+analytics@1.5.0_@remix-run+react@2.16.0_react@18.3.1\\node_modules\\@vercel\\analytics"
+			},
+			"@vercel/remix": {
+				"from": "@vercel/remix",
+				"version": "2.16.6",
+				"resolved": "https://registry.npmjs.org/@vercel/remix/-/remix-2.16.6.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@vercel+remix@2.16.6_@remix-run+dev@2.16.0_@remix-run+node@2.16.0_@remix-run+server-runtime@2_eq7hrb7botxgfazylak6vat2xi\\node_modules\\@vercel\\remix"
+			},
+			"isbot": {
+				"from": "isbot",
+				"version": "5.1.23",
+				"resolved": "https://registry.npmjs.org/isbot/-/isbot-5.1.23.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\isbot@5.1.23\\node_modules\\isbot"
+			},
+			"react": {
+				"from": "react",
+				"version": "18.3.1",
+				"resolved": "https://registry.npmjs.org/react/-/react-18.3.1.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\react@18.3.1\\node_modules\\react"
+			},
+			"react-dom": {
+				"from": "react-dom",
+				"version": "18.3.1",
+				"resolved": "https://registry.npmjs.org/react-dom/-/react-dom-18.3.1.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\react-dom@18.3.1_react@18.3.1\\node_modules\\react-dom"
+			}
+		},
+		"devDependencies": {
+			"@remix-run/dev": {
+				"from": "@remix-run/dev",
+				"version": "2.16.0",
+				"resolved": "https://registry.npmjs.org/@remix-run/dev/-/dev-2.16.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@remix-run+dev@2.16.0_@remix-run+react@2.16.0_typescript@5.9.3_vite@5.4.14\\node_modules\\@remix-run\\dev"
+			},
+			"@repo/eslint-config": {
+				"from": "@repo/eslint-config",
+				"version": "link:../../packages/config-eslint",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-eslint"
+			},
+			"@types/react": {
+				"from": "@types/react",
+				"version": "18.3.18",
+				"resolved": "https://registry.npmjs.org/@types/react/-/react-18.3.18.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+react@18.3.18\\node_modules\\@types\\react"
+			},
+			"@types/react-dom": {
+				"from": "@types/react-dom",
+				"version": "18.3.5",
+				"resolved": "https://registry.npmjs.org/@types/react-dom/-/react-dom-18.3.5.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+react-dom@18.3.5_@types+react@18.3.18\\node_modules\\@types\\react-dom"
+			},
+			"@typescript-eslint/eslint-plugin": {
+				"from": "@typescript-eslint/eslint-plugin",
+				"version": "8.46.2",
+				"resolved": "https://registry.npmjs.org/@typescript-eslint/eslint-plugin/-/eslint-plugin-8.46.2.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@typescript-eslint+eslint-plugin@8.46.2_@typescript-eslint+parser@8.46.2_eslint@9.39.0_typescript@5.9.3\\node_modules\\@typescript-eslint\\eslint-plugin"
+			},
+			"@typescript-eslint/parser": {
+				"from": "@typescript-eslint/parser",
+				"version": "8.46.2",
+				"resolved": "https://registry.npmjs.org/@typescript-eslint/parser/-/parser-8.46.2.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@typescript-eslint+parser@8.46.2_eslint@9.39.0_typescript@5.9.3\\node_modules\\@typescript-eslint\\parser"
+			},
+			"autoprefixer": {
+				"from": "autoprefixer",
+				"version": "10.4.20",
+				"resolved": "https://registry.npmjs.org/autoprefixer/-/autoprefixer-10.4.20.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\autoprefixer@10.4.20_postcss@8.5.1\\node_modules\\autoprefixer"
+			},
+			"eslint": {
+				"from": "eslint",
+				"version": "9.39.0",
+				"resolved": "https://registry.npmjs.org/eslint/-/eslint-9.39.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint@9.39.0\\node_modules\\eslint"
+			},
+			"typescript": {
+				"from": "typescript",
+				"version": "5.9.3",
+				"resolved": "https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript@5.9.3\\node_modules\\typescript"
+			},
+			"vite": {
+				"from": "vite",
+				"version": "5.4.14",
+				"resolved": "https://registry.npmjs.org/vite/-/vite-5.4.14.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\vite@5.4.14\\node_modules\\vite"
+			},
+			"vite-tsconfig-paths": {
+				"from": "vite-tsconfig-paths",
+				"version": "4.2.1",
+				"resolved": "https://registry.npmjs.org/vite-tsconfig-paths/-/vite-tsconfig-paths-4.2.1.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\vite-tsconfig-paths@4.2.1_typescript@5.9.3_vite@5.4.14\\node_modules\\vite-tsconfig-paths"
+			}
+		}
+	},
+	{
+		"name": "api",
+		"version": "1.0.0",
+		"path": "D:\\dev\\antigravity\\vision-iq\\apps\\nestjs-api",
+		"private": true,
+		"dependencies": {
+			"@nestjs/common": {
+				"from": "@nestjs/common",
+				"version": "11.1.13",
+				"resolved": "https://registry.npmjs.org/@nestjs/common/-/common-11.1.13.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@nestjs+common@11.1.13_reflect-metadata@0.2.2_rxjs@7.8.2\\node_modules\\@nestjs\\common"
+			},
+			"@nestjs/core": {
+				"from": "@nestjs/core",
+				"version": "11.1.13",
+				"resolved": "https://registry.npmjs.org/@nestjs/core/-/core-11.1.13.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@nestjs+core@11.1.13_@nestjs+common@11.1.13_@nestjs+platform-express@11.1.13_reflect-metadata@0.2.2_rxjs@7.8.2\\node_modules\\@nestjs\\core"
+			},
+			"@nestjs/platform-express": {
+				"from": "@nestjs/platform-express",
+				"version": "11.1.13",
+				"resolved": "https://registry.npmjs.org/@nestjs/platform-express/-/platform-express-11.1.13.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@nestjs+platform-express@11.1.13_@nestjs+common@11.1.13_@nestjs+core@11.1.13\\node_modules\\@nestjs\\platform-express"
+			},
+			"@repo/api": {
+				"from": "@repo/api",
+				"version": "link:../../packages/api",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\api"
+			},
+			"reflect-metadata": {
+				"from": "reflect-metadata",
+				"version": "0.2.2",
+				"resolved": "https://registry.npmjs.org/reflect-metadata/-/reflect-metadata-0.2.2.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\reflect-metadata@0.2.2\\node_modules\\reflect-metadata"
+			},
+			"rxjs": {
+				"from": "rxjs",
+				"version": "7.8.2",
+				"resolved": "https://registry.npmjs.org/rxjs/-/rxjs-7.8.2.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\rxjs@7.8.2\\node_modules\\rxjs"
+			}
+		},
+		"devDependencies": {
+			"@jest/globals": {
+				"from": "@jest/globals",
+				"version": "29.7.0",
+				"resolved": "https://registry.npmjs.org/@jest/globals/-/globals-29.7.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@jest+globals@29.7.0\\node_modules\\@jest\\globals"
+			},
+			"@nestjs/cli": {
+				"from": "@nestjs/cli",
+				"version": "11.0.16",
+				"resolved": "https://registry.npmjs.org/@nestjs/cli/-/cli-11.0.16.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@nestjs+cli@11.0.16_@types+node@22.19.11\\node_modules\\@nestjs\\cli"
+			},
+			"@nestjs/schematics": {
+				"from": "@nestjs/schematics",
+				"version": "11.0.9",
+				"resolved": "https://registry.npmjs.org/@nestjs/schematics/-/schematics-11.0.9.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@nestjs+schematics@11.0.9_typescript@5.5.4\\node_modules\\@nestjs\\schematics"
+			},
+			"@nestjs/testing": {
+				"from": "@nestjs/testing",
+				"version": "11.1.13",
+				"resolved": "https://registry.npmjs.org/@nestjs/testing/-/testing-11.1.13.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@nestjs+testing@11.1.13_@nestjs+common@11.1.13_@nestjs+core@11.1.13_@nestjs+platform-express@11.1.13\\node_modules\\@nestjs\\testing"
+			},
+			"@repo/eslint-config": {
+				"from": "@repo/eslint-config",
+				"version": "link:../../packages/config-eslint",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-eslint"
+			},
+			"@repo/jest-presets": {
+				"from": "@repo/jest-presets",
+				"version": "link:../../packages/jest-presets",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\jest-presets"
+			},
+			"@repo/typescript-config": {
+				"from": "@repo/typescript-config",
+				"version": "link:../../packages/config-typescript",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-typescript"
+			},
+			"@types/express": {
+				"from": "@types/express",
+				"version": "4.17.25",
+				"resolved": "https://registry.npmjs.org/@types/express/-/express-4.17.25.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+express@4.17.25\\node_modules\\@types\\express"
+			},
+			"@types/node": {
+				"from": "@types/node",
+				"version": "22.19.11",
+				"resolved": "https://registry.npmjs.org/@types/node/-/node-22.19.11.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+node@22.19.11\\node_modules\\@types\\node"
+			},
+			"@types/supertest": {
+				"from": "@types/supertest",
+				"version": "6.0.3",
+				"resolved": "https://registry.npmjs.org/@types/supertest/-/supertest-6.0.3.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+supertest@6.0.3\\node_modules\\@types\\supertest"
+			},
+			"eslint": {
+				"from": "eslint",
+				"version": "9.39.2",
+				"resolved": "https://registry.npmjs.org/eslint/-/eslint-9.39.2.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint@9.39.2\\node_modules\\eslint"
+			},
+			"jest": {
+				"from": "jest",
+				"version": "29.7.0",
+				"resolved": "https://registry.npmjs.org/jest/-/jest-29.7.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\jest@29.7.0_@types+node@22.19.11_ts-node@10.9.2\\node_modules\\jest"
+			},
+			"source-map-support": {
+				"from": "source-map-support",
+				"version": "0.5.21",
+				"resolved": "https://registry.npmjs.org/source-map-support/-/source-map-support-0.5.21.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\source-map-support@0.5.21\\node_modules\\source-map-support"
+			},
+			"supertest": {
+				"from": "supertest",
+				"version": "7.2.2",
+				"resolved": "https://registry.npmjs.org/supertest/-/supertest-7.2.2.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\supertest@7.2.2\\node_modules\\supertest"
+			},
+			"ts-jest": {
+				"from": "ts-jest",
+				"version": "29.4.6",
+				"resolved": "https://registry.npmjs.org/ts-jest/-/ts-jest-29.4.6.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\ts-jest@29.4.6_@babel+core@7.28.5_jest@29.7.0_typescript@5.5.4\\node_modules\\ts-jest"
+			},
+			"ts-loader": {
+				"from": "ts-loader",
+				"version": "9.5.4",
+				"resolved": "https://registry.npmjs.org/ts-loader/-/ts-loader-9.5.4.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\ts-loader@9.5.4_typescript@5.5.4_webpack@5.105.1\\node_modules\\ts-loader"
+			},
+			"ts-node": {
+				"from": "ts-node",
+				"version": "10.9.2",
+				"resolved": "https://registry.npmjs.org/ts-node/-/ts-node-10.9.2.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\ts-node@10.9.2_@types+node@22.19.11_typescript@5.5.4\\node_modules\\ts-node"
+			},
+			"tsconfig-paths": {
+				"from": "tsconfig-paths",
+				"version": "4.2.0",
+				"resolved": "https://registry.npmjs.org/tsconfig-paths/-/tsconfig-paths-4.2.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\tsconfig-paths@4.2.0\\node_modules\\tsconfig-paths"
+			},
+			"typescript": {
+				"from": "typescript",
+				"version": "5.5.4",
+				"resolved": "https://registry.npmjs.org/typescript/-/typescript-5.5.4.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript@5.5.4\\node_modules\\typescript"
+			}
+		}
+	},
+	{
+		"name": "nextjs-dashboard",
+		"path": "D:\\dev\\antigravity\\vision-iq\\apps\\nextjs-dashboard",
+		"private": true,
+		"dependencies": {
+			"@heroicons/react": {
+				"from": "@heroicons/react",
+				"version": "2.2.0",
+				"resolved": "https://registry.npmjs.org/@heroicons/react/-/react-2.2.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@heroicons+react@2.2.0_react@19.2.4\\node_modules\\@heroicons\\react"
+			},
+			"@tailwindcss/forms": {
+				"from": "@tailwindcss/forms",
+				"version": "0.5.11",
+				"resolved": "https://registry.npmjs.org/@tailwindcss/forms/-/forms-0.5.11.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@tailwindcss+forms@0.5.11_tailwindcss@3.4.17\\node_modules\\@tailwindcss\\forms"
+			},
+			"autoprefixer": {
+				"from": "autoprefixer",
+				"version": "10.4.20",
+				"resolved": "https://registry.npmjs.org/autoprefixer/-/autoprefixer-10.4.20.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\autoprefixer@10.4.20_postcss@8.5.1\\node_modules\\autoprefixer"
+			},
+			"bcrypt": {
+				"from": "bcrypt",
+				"version": "5.1.1",
+				"resolved": "https://registry.npmjs.org/bcrypt/-/bcrypt-5.1.1.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\bcrypt@5.1.1\\node_modules\\bcrypt"
+			},
+			"clsx": {
+				"from": "clsx",
+				"version": "2.1.1",
+				"resolved": "https://registry.npmjs.org/clsx/-/clsx-2.1.1.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\clsx@2.1.1\\node_modules\\clsx"
+			},
+			"next": {
+				"from": "next",
+				"version": "16.1.6",
+				"resolved": "https://registry.npmjs.org/next/-/next-16.1.6.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\next@16.1.6_react-dom@19.2.4_react@19.2.4\\node_modules\\next"
+			},
+			"next-auth": {
+				"from": "next-auth",
+				"version": "5.0.0-beta.25",
+				"resolved": "https://registry.npmjs.org/next-auth/-/next-auth-5.0.0-beta.25.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\next-auth@5.0.0-beta.25_next@16.1.6_react@19.2.4\\node_modules\\next-auth"
+			},
+			"postcss": {
+				"from": "postcss",
+				"version": "8.5.1",
+				"resolved": "https://registry.npmjs.org/postcss/-/postcss-8.5.1.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\postcss@8.5.1\\node_modules\\postcss"
+			},
+			"postgres": {
+				"from": "postgres",
+				"version": "3.4.8",
+				"resolved": "https://registry.npmjs.org/postgres/-/postgres-3.4.8.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\postgres@3.4.8\\node_modules\\postgres"
+			},
+			"react": {
+				"from": "react",
+				"version": "19.2.4",
+				"resolved": "https://registry.npmjs.org/react/-/react-19.2.4.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\react@19.2.4\\node_modules\\react"
+			},
+			"react-dom": {
+				"from": "react-dom",
+				"version": "19.2.4",
+				"resolved": "https://registry.npmjs.org/react-dom/-/react-dom-19.2.4.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\react-dom@19.2.4_react@19.2.4\\node_modules\\react-dom"
+			},
+			"tailwindcss": {
+				"from": "tailwindcss",
+				"version": "3.4.17",
+				"resolved": "https://registry.npmjs.org/tailwindcss/-/tailwindcss-3.4.17.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\tailwindcss@3.4.17\\node_modules\\tailwindcss"
+			},
+			"typescript": {
+				"from": "typescript",
+				"version": "5.7.3",
+				"resolved": "https://registry.npmjs.org/typescript/-/typescript-5.7.3.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript@5.7.3\\node_modules\\typescript"
+			},
+			"use-debounce": {
+				"from": "use-debounce",
+				"version": "10.1.0",
+				"resolved": "https://registry.npmjs.org/use-debounce/-/use-debounce-10.1.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\use-debounce@10.1.0_react@19.2.4\\node_modules\\use-debounce"
+			},
+			"zod": {
+				"from": "zod",
+				"version": "3.25.76",
+				"resolved": "https://registry.npmjs.org/zod/-/zod-3.25.76.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\zod@3.25.76\\node_modules\\zod"
+			}
+		},
+		"devDependencies": {
+			"@types/bcrypt": {
+				"from": "@types/bcrypt",
+				"version": "5.0.2",
+				"resolved": "https://registry.npmjs.org/@types/bcrypt/-/bcrypt-5.0.2.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+bcrypt@5.0.2\\node_modules\\@types\\bcrypt"
+			},
+			"@types/node": {
+				"from": "@types/node",
+				"version": "22.10.7",
+				"resolved": "https://registry.npmjs.org/@types/node/-/node-22.10.7.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+node@22.10.7\\node_modules\\@types\\node"
+			},
+			"@types/react": {
+				"from": "@types/react",
+				"version": "19.0.7",
+				"resolved": "https://registry.npmjs.org/@types/react/-/react-19.0.7.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+react@19.0.7\\node_modules\\@types\\react"
+			},
+			"@types/react-dom": {
+				"from": "@types/react-dom",
+				"version": "19.0.3",
+				"resolved": "https://registry.npmjs.org/@types/react-dom/-/react-dom-19.0.3.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+react-dom@19.0.3_@types+react@19.0.7\\node_modules\\@types\\react-dom"
+			}
+		}
+	},
+	{
+		"name": "prisma-web",
+		"version": "1.0.0",
+		"path": "D:\\dev\\antigravity\\vision-iq\\apps\\prisma-web",
+		"private": true,
+		"dependencies": {
+			"next": {
+				"from": "next",
+				"version": "14.2.35",
+				"resolved": "https://registry.npmjs.org/next/-/next-14.2.35.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\next@14.2.35_react-dom@18.3.1_react@18.3.1\\node_modules\\next"
+			},
+			"react": {
+				"from": "react",
+				"version": "18.3.1",
+				"resolved": "https://registry.npmjs.org/react/-/react-18.3.1.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\react@18.3.1\\node_modules\\react"
+			},
+			"react-dom": {
+				"from": "react-dom",
+				"version": "18.3.1",
+				"resolved": "https://registry.npmjs.org/react-dom/-/react-dom-18.3.1.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\react-dom@18.3.1_react@18.3.1\\node_modules\\react-dom"
+			}
+		},
+		"devDependencies": {
+			"@next/eslint-plugin-next": {
+				"from": "@next/eslint-plugin-next",
+				"version": "14.2.35",
+				"resolved": "https://registry.npmjs.org/@next/eslint-plugin-next/-/eslint-plugin-next-14.2.35.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@next+eslint-plugin-next@14.2.35\\node_modules\\@next\\eslint-plugin-next"
+			},
+			"@repo/database": {
+				"from": "@repo/database",
+				"version": "link:../../packages/database",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\database"
+			},
+			"@repo/eslint-config": {
+				"from": "@repo/eslint-config",
+				"version": "link:../../packages/config-eslint",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-eslint"
+			},
+			"@repo/typescript-config": {
+				"from": "@repo/typescript-config",
+				"version": "link:../../packages/config-typescript",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-typescript"
+			},
+			"@types/node": {
+				"from": "@types/node",
+				"version": "20.19.33",
+				"resolved": "https://registry.npmjs.org/@types/node/-/node-20.19.33.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+node@20.19.33\\node_modules\\@types\\node"
+			},
+			"@types/react": {
+				"from": "@types/react",
+				"version": "18.3.18",
+				"resolved": "https://registry.npmjs.org/@types/react/-/react-18.3.18.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+react@18.3.18\\node_modules\\@types\\react"
+			},
+			"@types/react-dom": {
+				"from": "@types/react-dom",
+				"version": "18.3.5",
+				"resolved": "https://registry.npmjs.org/@types/react-dom/-/react-dom-18.3.5.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+react-dom@18.3.5_@types+react@18.3.18\\node_modules\\@types\\react-dom"
+			},
+			"eslint": {
+				"from": "eslint",
+				"version": "8.57.1",
+				"resolved": "https://registry.npmjs.org/eslint/-/eslint-8.57.1.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint@8.57.1\\node_modules\\eslint"
+			},
+			"typescript": {
+				"from": "typescript",
+				"version": "5.5.4",
+				"resolved": "https://registry.npmjs.org/typescript/-/typescript-5.5.4.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript@5.5.4\\node_modules\\typescript"
+			}
+		}
+	},
+	{
+		"name": "storefront",
+		"version": "1.0.0",
+		"path": "D:\\dev\\antigravity\\vision-iq\\apps\\storefront",
+		"private": true,
+		"dependencies": {
+			"@repo/logger": {
+				"from": "@repo/logger",
+				"version": "link:../../packages/logger",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\logger"
+			},
+			"@repo/ui": {
+				"from": "@repo/ui",
+				"version": "link:../../packages/ui",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\ui"
+			},
+			"next": {
+				"from": "next",
+				"version": "16.1.5",
+				"resolved": "https://registry.npmjs.org/next/-/next-16.1.5.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\next@16.1.5_react-dom@19.2.0_react@19.2.0\\node_modules\\next"
+			},
+			"react": {
+				"from": "react",
+				"version": "19.2.0",
+				"resolved": "https://registry.npmjs.org/react/-/react-19.2.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\react@19.2.0\\node_modules\\react"
+			},
+			"react-dom": {
+				"from": "react-dom",
+				"version": "19.2.0",
+				"resolved": "https://registry.npmjs.org/react-dom/-/react-dom-19.2.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\react-dom@19.2.0_react@19.2.0\\node_modules\\react-dom"
+			}
+		},
+		"devDependencies": {
+			"@next/eslint-plugin-next": {
+				"from": "@next/eslint-plugin-next",
+				"version": "15.4.2",
+				"resolved": "https://registry.npmjs.org/@next/eslint-plugin-next/-/eslint-plugin-next-15.4.2.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@next+eslint-plugin-next@15.4.2\\node_modules\\@next\\eslint-plugin-next"
+			},
+			"@repo/eslint-config": {
+				"from": "@repo/eslint-config",
+				"version": "link:../../packages/config-eslint",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-eslint"
+			},
+			"@repo/typescript-config": {
+				"from": "@repo/typescript-config",
+				"version": "link:../../packages/config-typescript",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-typescript"
+			},
+			"@types/node": {
+				"from": "@types/node",
+				"version": "22.15.3",
+				"resolved": "https://registry.npmjs.org/@types/node/-/node-22.15.3.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+node@22.15.3\\node_modules\\@types\\node"
+			},
+			"@types/react": {
+				"from": "@types/react",
+				"version": "19.1.0",
+				"resolved": "https://registry.npmjs.org/@types/react/-/react-19.1.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+react@19.1.0\\node_modules\\@types\\react"
+			},
+			"@types/react-dom": {
+				"from": "@types/react-dom",
+				"version": "19.1.1",
+				"resolved": "https://registry.npmjs.org/@types/react-dom/-/react-dom-19.1.1.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+react-dom@19.1.1_@types+react@19.1.0\\node_modules\\@types\\react-dom"
+			},
+			"eslint": {
+				"from": "eslint",
+				"version": "9.39.0",
+				"resolved": "https://registry.npmjs.org/eslint/-/eslint-9.39.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint@9.39.0\\node_modules\\eslint"
+			},
+			"typescript": {
+				"from": "typescript",
+				"version": "5.9.3",
+				"resolved": "https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript@5.9.3\\node_modules\\typescript"
+			}
+		}
+	},
+	{
+		"name": "@repo/api",
+		"version": "0.0.0",
+		"path": "D:\\dev\\antigravity\\vision-iq\\packages\\api",
+		"private": true,
+		"dependencies": {
+			"@nestjs/mapped-types": {
+				"from": "@nestjs/mapped-types",
+				"version": "2.1.0",
+				"resolved": "https://registry.npmjs.org/@nestjs/mapped-types/-/mapped-types-2.1.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@nestjs+mapped-types@2.1.0_@nestjs+common@11.1.13_reflect-metadata@0.2.2\\node_modules\\@nestjs\\mapped-types"
+			}
+		},
+		"devDependencies": {
+			"@repo/eslint-config": {
+				"from": "@repo/eslint-config",
+				"version": "link:../config-eslint",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-eslint"
+			},
+			"@repo/typescript-config": {
+				"from": "@repo/typescript-config",
+				"version": "link:../config-typescript",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-typescript"
+			},
+			"@types/node": {
+				"from": "@types/node",
+				"version": "22.19.11",
+				"resolved": "https://registry.npmjs.org/@types/node/-/node-22.19.11.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+node@22.19.11\\node_modules\\@types\\node"
+			},
+			"ts-loader": {
+				"from": "ts-loader",
+				"version": "9.5.4",
+				"resolved": "https://registry.npmjs.org/ts-loader/-/ts-loader-9.5.4.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\ts-loader@9.5.4_typescript@5.5.4_webpack@5.105.1\\node_modules\\ts-loader"
+			},
+			"ts-node": {
+				"from": "ts-node",
+				"version": "10.9.2",
+				"resolved": "https://registry.npmjs.org/ts-node/-/ts-node-10.9.2.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\ts-node@10.9.2_@types+node@22.19.11_typescript@5.5.4\\node_modules\\ts-node"
+			},
+			"typescript": {
+				"from": "typescript",
+				"version": "5.5.4",
+				"resolved": "https://registry.npmjs.org/typescript/-/typescript-5.5.4.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript@5.5.4\\node_modules\\typescript"
+			}
+		}
+	},
+	{
+		"name": "@repo/eslint-config",
+		"version": "0.0.0",
+		"path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-eslint",
+		"private": true,
+		"devDependencies": {
+			"@eslint/js": {
+				"from": "@eslint/js",
+				"version": "9.39.0",
+				"resolved": "https://registry.npmjs.org/@eslint/js/-/js-9.39.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@eslint+js@9.39.0\\node_modules\\@eslint\\js"
+			},
+			"@next/eslint-plugin-next": {
+				"from": "@next/eslint-plugin-next",
+				"version": "15.4.2",
+				"resolved": "https://registry.npmjs.org/@next/eslint-plugin-next/-/eslint-plugin-next-15.4.2.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@next+eslint-plugin-next@15.4.2\\node_modules\\@next\\eslint-plugin-next"
+			},
+			"eslint": {
+				"from": "eslint",
+				"version": "9.39.0",
+				"resolved": "https://registry.npmjs.org/eslint/-/eslint-9.39.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint@9.39.0\\node_modules\\eslint"
+			},
+			"eslint-config-prettier": {
+				"from": "eslint-config-prettier",
+				"version": "10.1.1",
+				"resolved": "https://registry.npmjs.org/eslint-config-prettier/-/eslint-config-prettier-10.1.1.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint-config-prettier@10.1.1_eslint@9.39.0\\node_modules\\eslint-config-prettier"
+			},
+			"eslint-plugin-only-warn": {
+				"from": "eslint-plugin-only-warn",
+				"version": "1.1.0",
+				"resolved": "https://registry.npmjs.org/eslint-plugin-only-warn/-/eslint-plugin-only-warn-1.1.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint-plugin-only-warn@1.1.0\\node_modules\\eslint-plugin-only-warn"
+			},
+			"eslint-plugin-react": {
+				"from": "eslint-plugin-react",
+				"version": "7.37.5",
+				"resolved": "https://registry.npmjs.org/eslint-plugin-react/-/eslint-plugin-react-7.37.5.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint-plugin-react@7.37.5_eslint@9.39.0\\node_modules\\eslint-plugin-react"
+			},
+			"eslint-plugin-react-hooks": {
+				"from": "eslint-plugin-react-hooks",
+				"version": "7.0.1",
+				"resolved": "https://registry.npmjs.org/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-7.0.1.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint-plugin-react-hooks@7.0.1_eslint@9.39.0\\node_modules\\eslint-plugin-react-hooks"
+			},
+			"eslint-plugin-turbo": {
+				"from": "eslint-plugin-turbo",
+				"version": "2.6.0",
+				"resolved": "https://registry.npmjs.org/eslint-plugin-turbo/-/eslint-plugin-turbo-2.6.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint-plugin-turbo@2.6.0_eslint@9.39.0_turbo@2.8.6\\node_modules\\eslint-plugin-turbo"
+			},
+			"globals": {
+				"from": "globals",
+				"version": "16.5.0",
+				"resolved": "https://registry.npmjs.org/globals/-/globals-16.5.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\globals@16.5.0\\node_modules\\globals"
+			},
+			"typescript": {
+				"from": "typescript",
+				"version": "5.9.3",
+				"resolved": "https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript@5.9.3\\node_modules\\typescript"
+			},
+			"typescript-eslint": {
+				"from": "typescript-eslint",
+				"version": "8.46.2",
+				"resolved": "https://registry.npmjs.org/typescript-eslint/-/typescript-eslint-8.46.2.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript-eslint@8.46.2_eslint@9.39.0_typescript@5.9.3\\node_modules\\typescript-eslint"
+			}
+		}
+	},
+	{
+		"name": "@repo/typescript-config",
+		"version": "0.0.0",
+		"path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-typescript",
+		"private": true
+	},
+	{
+		"name": "@repo/database",
+		"version": "1.0.0",
+		"path": "D:\\dev\\antigravity\\vision-iq\\packages\\database",
+		"private": false,
+		"dependencies": {
+			"@prisma/client": {
+				"from": "@prisma/client",
+				"version": "7.3.0",
+				"resolved": "https://registry.npmjs.org/@prisma/client/-/client-7.3.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@prisma+client@7.3.0_prisma@7.3.0_typescript@5.5.4\\node_modules\\@prisma\\client"
+			},
+			"@prisma/client-runtime-utils": {
+				"from": "@prisma/client-runtime-utils",
+				"version": "7.2.0",
+				"resolved": "https://registry.npmjs.org/@prisma/client-runtime-utils/-/client-runtime-utils-7.2.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@prisma+client-runtime-utils@7.2.0\\node_modules\\@prisma\\client-runtime-utils"
+			},
+			"dotenv": {
+				"from": "dotenv",
+				"version": "17.2.4",
+				"resolved": "https://registry.npmjs.org/dotenv/-/dotenv-17.2.4.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\dotenv@17.2.4\\node_modules\\dotenv"
+			},
+			"pg": {
+				"from": "pg",
+				"version": "8.18.0",
+				"resolved": "https://registry.npmjs.org/pg/-/pg-8.18.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\pg@8.18.0\\node_modules\\pg"
+			}
+		},
+		"devDependencies": {
+			"@repo/eslint-config": {
+				"from": "@repo/eslint-config",
+				"version": "link:../config-eslint",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-eslint"
+			},
+			"@repo/typescript-config": {
+				"from": "@repo/typescript-config",
+				"version": "link:../config-typescript",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-typescript"
+			},
+			"@types/pg": {
+				"from": "@types/pg",
+				"version": "8.16.0",
+				"resolved": "https://registry.npmjs.org/@types/pg/-/pg-8.16.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+pg@8.16.0\\node_modules\\@types\\pg"
+			},
+			"eslint": {
+				"from": "eslint",
+				"version": "8.57.1",
+				"resolved": "https://registry.npmjs.org/eslint/-/eslint-8.57.1.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint@8.57.1\\node_modules\\eslint"
+			},
+			"prisma": {
+				"from": "prisma",
+				"version": "7.3.0",
+				"resolved": "https://registry.npmjs.org/prisma/-/prisma-7.3.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\prisma@7.3.0_@types+react@18.3.18_react-dom@19.2.4_react@19.2.4_typescript@5.5.4\\node_modules\\prisma"
+			},
+			"rimraf": {
+				"from": "rimraf",
+				"version": "5.0.10",
+				"resolved": "https://registry.npmjs.org/rimraf/-/rimraf-5.0.10.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\rimraf@5.0.10\\node_modules\\rimraf"
+			},
+			"tsup": {
+				"from": "tsup",
+				"version": "8.5.1",
+				"resolved": "https://registry.npmjs.org/tsup/-/tsup-8.5.1.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\tsup@8.5.1_tsx@4.19.1_typescript@5.5.4\\node_modules\\tsup"
+			},
+			"tsx": {
+				"from": "tsx",
+				"version": "4.19.1",
+				"resolved": "https://registry.npmjs.org/tsx/-/tsx-4.19.1.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\tsx@4.19.1\\node_modules\\tsx"
+			},
+			"typescript": {
+				"from": "typescript",
+				"version": "5.5.4",
+				"resolved": "https://registry.npmjs.org/typescript/-/typescript-5.5.4.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript@5.5.4\\node_modules\\typescript"
+			}
+		}
+	},
+	{
+		"name": "@repo/jest-config",
+		"version": "0.0.0",
+		"path": "D:\\dev\\antigravity\\vision-iq\\packages\\jest-config",
+		"private": true,
+		"devDependencies": {
+			"@jest/types": {
+				"from": "@jest/types",
+				"version": "29.6.3",
+				"resolved": "https://registry.npmjs.org/@jest/types/-/types-29.6.3.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@jest+types@29.6.3\\node_modules\\@jest\\types"
+			},
+			"jest": {
+				"from": "jest",
+				"version": "29.7.0",
+				"resolved": "https://registry.npmjs.org/jest/-/jest-29.7.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\jest@29.7.0_@types+node@22.19.11_ts-node@10.9.2\\node_modules\\jest"
+			},
+			"next": {
+				"from": "next",
+				"version": "16.0.10",
+				"resolved": "https://registry.npmjs.org/next/-/next-16.0.10.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\next@16.0.10_@babel+core@7.28.5_react-dom@19.2.4_react@19.2.4\\node_modules\\next"
+			},
+			"typescript": {
+				"from": "typescript",
+				"version": "5.9.3",
+				"resolved": "https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript@5.9.3\\node_modules\\typescript"
+			}
+		}
+	},
+	{
+		"name": "@repo/jest-presets",
+		"version": "0.0.0",
+		"path": "D:\\dev\\antigravity\\vision-iq\\packages\\jest-presets",
+		"private": true,
+		"dependencies": {
+			"jest": {
+				"from": "jest",
+				"version": "30.2.0",
+				"resolved": "https://registry.npmjs.org/jest/-/jest-30.2.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\jest@30.2.0_@types+node@22.15.3\\node_modules\\jest"
+			},
+			"ts-jest": {
+				"from": "ts-jest",
+				"version": "29.4.6",
+				"resolved": "https://registry.npmjs.org/ts-jest/-/ts-jest-29.4.6.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\ts-jest@29.4.6_@babel+core@7.28.5_jest@30.2.0_typescript@5.9.3\\node_modules\\ts-jest"
+			}
+		},
+		"devDependencies": {
+			"jest-environment-jsdom": {
+				"from": "jest-environment-jsdom",
+				"version": "30.2.0",
+				"resolved": "https://registry.npmjs.org/jest-environment-jsdom/-/jest-environment-jsdom-30.2.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\jest-environment-jsdom@30.2.0\\node_modules\\jest-environment-jsdom"
+			}
+		}
+	},
+	{
+		"name": "@repo/logger",
+		"version": "0.0.0",
+		"path": "D:\\dev\\antigravity\\vision-iq\\packages\\logger",
+		"private": true,
+		"devDependencies": {
+			"@jest/globals": {
+				"from": "@jest/globals",
+				"version": "30.2.0",
+				"resolved": "https://registry.npmjs.org/@jest/globals/-/globals-30.2.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@jest+globals@30.2.0\\node_modules\\@jest\\globals"
+			},
+			"@repo/eslint-config": {
+				"from": "@repo/eslint-config",
+				"version": "link:../config-eslint",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-eslint"
+			},
+			"@repo/jest-presets": {
+				"from": "@repo/jest-presets",
+				"version": "link:../jest-presets",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\jest-presets"
+			},
+			"@repo/typescript-config": {
+				"from": "@repo/typescript-config",
+				"version": "link:../config-typescript",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-typescript"
+			},
+			"@types/node": {
+				"from": "@types/node",
+				"version": "22.15.3",
+				"resolved": "https://registry.npmjs.org/@types/node/-/node-22.15.3.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+node@22.15.3\\node_modules\\@types\\node"
+			},
+			"bunchee": {
+				"from": "bunchee",
+				"version": "6.4.0",
+				"resolved": "https://registry.npmjs.org/bunchee/-/bunchee-6.4.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\bunchee@6.4.0_typescript@5.9.3\\node_modules\\bunchee"
+			},
+			"eslint": {
+				"from": "eslint",
+				"version": "9.39.0",
+				"resolved": "https://registry.npmjs.org/eslint/-/eslint-9.39.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint@9.39.0\\node_modules\\eslint"
+			},
+			"jest": {
+				"from": "jest",
+				"version": "30.2.0",
+				"resolved": "https://registry.npmjs.org/jest/-/jest-30.2.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\jest@30.2.0_@types+node@22.15.3\\node_modules\\jest"
+			},
+			"typescript": {
+				"from": "typescript",
+				"version": "5.9.3",
+				"resolved": "https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript@5.9.3\\node_modules\\typescript"
+			}
+		}
+	},
+	{
+		"name": "@repo/ui",
+		"version": "0.0.0",
+		"path": "D:\\dev\\antigravity\\vision-iq\\packages\\ui",
+		"private": true,
+		"dependencies": {
+			"@swc/helpers": {
+				"from": "@swc/helpers",
+				"version": "0.5.18",
+				"resolved": "https://registry.npmjs.org/@swc/helpers/-/helpers-0.5.18.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@swc+helpers@0.5.18\\node_modules\\@swc\\helpers"
+			},
+			"@types/react": {
+				"from": "@types/react",
+				"version": "18.3.18",
+				"resolved": "https://registry.npmjs.org/@types/react/-/react-18.3.18.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+react@18.3.18\\node_modules\\@types\\react"
+			},
+			"@types/react-dom": {
+				"from": "@types/react-dom",
+				"version": "18.3.5",
+				"resolved": "https://registry.npmjs.org/@types/react-dom/-/react-dom-18.3.5.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+react-dom@18.3.5_@types+react@18.3.18\\node_modules\\@types\\react-dom"
+			},
+			"react": {
+				"from": "react",
+				"version": "18.3.1",
+				"resolved": "https://registry.npmjs.org/react/-/react-18.3.1.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\react@18.3.1\\node_modules\\react"
+			},
+			"react-dom": {
+				"from": "react-dom",
+				"version": "18.3.1",
+				"resolved": "https://registry.npmjs.org/react-dom/-/react-dom-18.3.1.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\react-dom@18.3.1_react@18.3.1\\node_modules\\react-dom"
+			}
+		},
+		"devDependencies": {
+			"@jest/globals": {
+				"from": "@jest/globals",
+				"version": "30.2.0",
+				"resolved": "https://registry.npmjs.org/@jest/globals/-/globals-30.2.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@jest+globals@30.2.0\\node_modules\\@jest\\globals"
+			},
+			"@repo/eslint-config": {
+				"from": "@repo/eslint-config",
+				"version": "link:../config-eslint",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-eslint"
+			},
+			"@repo/jest-presets": {
+				"from": "@repo/jest-presets",
+				"version": "link:../jest-presets",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\jest-presets"
+			},
+			"@repo/typescript-config": {
+				"from": "@repo/typescript-config",
+				"version": "link:../config-typescript",
+				"path": "D:\\dev\\antigravity\\vision-iq\\packages\\config-typescript"
+			},
+			"@types/node": {
+				"from": "@types/node",
+				"version": "22.15.3",
+				"resolved": "https://registry.npmjs.org/@types/node/-/node-22.15.3.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\@types+node@22.15.3\\node_modules\\@types\\node"
+			},
+			"bunchee": {
+				"from": "bunchee",
+				"version": "6.4.0",
+				"resolved": "https://registry.npmjs.org/bunchee/-/bunchee-6.4.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\bunchee@6.4.0_typescript@5.9.3\\node_modules\\bunchee"
+			},
+			"eslint": {
+				"from": "eslint",
+				"version": "9.39.0",
+				"resolved": "https://registry.npmjs.org/eslint/-/eslint-9.39.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\eslint@9.39.0\\node_modules\\eslint"
+			},
+			"jest": {
+				"from": "jest",
+				"version": "30.2.0",
+				"resolved": "https://registry.npmjs.org/jest/-/jest-30.2.0.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\jest@30.2.0_@types+node@22.15.3\\node_modules\\jest"
+			},
+			"typescript": {
+				"from": "typescript",
+				"version": "5.9.3",
+				"resolved": "https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz",
+				"path": "D:\\dev\\antigravity\\vision-iq\\node_modules\\.pnpm\\typescript@5.9.3\\node_modules\\typescript"
+			}
+		}
+	}
 ]

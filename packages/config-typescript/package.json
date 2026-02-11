@@ -1,16 +1,16 @@
 {
-  "name": "@repo/typescript-config",
-  "version": "0.0.0",
-  "private": true,
-  "license": "MIT",
-  "publishConfig": {
-    "access": "public"
-  },
-  "scripts": {
-    "lint": "biome check .",
-    "format": "biome format . --write"
-  },
-  "devDependencies": {
-    "@repo/biome-config": "workspace:*"
-  }
+	"name": "@repo/typescript-config",
+	"version": "0.0.0",
+	"private": true,
+	"license": "MIT",
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"lint": "biome check .",
+		"format": "biome format . --write"
+	},
+	"devDependencies": {
+		"@repo/biome-config": "workspace:*"
+	}
 }
