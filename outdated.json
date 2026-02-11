@@ -1,0 +1,718 @@
+apps/nextjs-dashboard                    |  WARN  The field "pnpm" was found in D:\dev\antigravity\vision-iq\apps\nextjs-dashboard/package.json. This will not take effect. You should configure "pnpm" at the root of the workspace instead.
+{
+  "@types/body-parser": {
+    "current": "1.19.5",
+    "latest": "1.19.6",
+    "wanted": "1.19.5",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "api",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\api"
+      }
+    ]
+  },
+  "@types/cors": {
+    "current": "2.8.17",
+    "latest": "2.8.19",
+    "wanted": "2.8.17",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "api",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\api"
+      }
+    ]
+  },
+  "@types/morgan": {
+    "current": "1.9.9",
+    "latest": "1.9.10",
+    "wanted": "1.9.9",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "api",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\api"
+      }
+    ]
+  },
+  "@types/supertest": {
+    "current": "6.0.2",
+    "latest": "6.0.3",
+    "wanted": "6.0.2",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "api",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\api"
+      }
+    ]
+  },
+  "@vercel/remix": {
+    "current": "2.16.6",
+    "latest": "2.16.7",
+    "wanted": "2.16.6",
+    "isDeprecated": false,
+    "dependencyType": "dependencies",
+    "dependentPackages": [
+      {
+        "name": "blog",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\blog"
+      }
+    ]
+  },
+  "autoprefixer": {
+    "current": "10.4.20",
+    "latest": "10.4.24",
+    "wanted": "10.4.20",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "blog",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\blog"
+      }
+    ]
+  },
+  "cors": {
+    "current": "2.8.5",
+    "latest": "2.8.6",
+    "wanted": "2.8.5",
+    "isDeprecated": false,
+    "dependencyType": "dependencies",
+    "dependentPackages": [
+      {
+        "name": "api",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\api"
+      }
+    ]
+  },
+  "eslint-config-prettier": {
+    "current": "10.1.1",
+    "latest": "10.1.8",
+    "wanted": "10.1.1",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "@repo/eslint-config",
+        "location": "D:\\dev\\antigravity\\vision-iq\\packages\\config-eslint"
+      }
+    ]
+  },
+  "isbot": {
+    "current": "5.1.23",
+    "latest": "5.1.35",
+    "wanted": "5.1.23",
+    "isDeprecated": false,
+    "dependencyType": "dependencies",
+    "dependentPackages": [
+      {
+        "name": "blog",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\blog"
+      }
+    ]
+  },
+  "morgan": {
+    "current": "1.10.0",
+    "latest": "1.10.1",
+    "wanted": "1.10.0",
+    "isDeprecated": false,
+    "dependencyType": "dependencies",
+    "dependentPackages": [
+      {
+        "name": "api",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\api"
+      }
+    ]
+  },
+  "next": {
+    "current": "14.2.35",
+    "latest": "16.1.6",
+    "wanted": "14.2.35",
+    "isDeprecated": false,
+    "dependencyType": "dependencies",
+    "dependentPackages": [
+      {
+        "name": "prisma-web",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\prisma-web"
+      }
+    ]
+  },
+  "postcss": {
+    "current": "8.5.1",
+    "latest": "8.5.6",
+    "wanted": "8.5.1",
+    "isDeprecated": false,
+    "dependencyType": "dependencies",
+    "dependentPackages": [
+      {
+        "name": "nextjs-dashboard",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\nextjs-dashboard"
+      }
+    ]
+  },
+  "react": {
+    "current": "18.3.1",
+    "latest": "19.2.4",
+    "wanted": "18.3.1",
+    "isDeprecated": false,
+    "dependencyType": "dependencies",
+    "dependentPackages": [
+      {
+        "name": "admin",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\admin"
+      },
+      {
+        "name": "blog",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\blog"
+      },
+      {
+        "name": "prisma-web",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\prisma-web"
+      }
+    ]
+  },
+  "react-dom": {
+    "current": "18.3.1",
+    "latest": "19.2.4",
+    "wanted": "18.3.1",
+    "isDeprecated": false,
+    "dependencyType": "dependencies",
+    "dependentPackages": [
+      {
+        "name": "admin",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\admin"
+      },
+      {
+        "name": "blog",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\blog"
+      },
+      {
+        "name": "prisma-web",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\prisma-web"
+      }
+    ]
+  },
+  "@prisma/client-runtime-utils": {
+    "current": "7.2.0",
+    "latest": "7.3.0",
+    "wanted": "7.2.0",
+    "isDeprecated": false,
+    "dependencyType": "dependencies",
+    "dependentPackages": [
+      {
+        "name": "@repo/database",
+        "location": "D:\\dev\\antigravity\\vision-iq\\packages\\database"
+      }
+    ]
+  },
+  "@remix-run/dev": {
+    "current": "2.16.0",
+    "latest": "2.17.4",
+    "wanted": "2.16.0",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "blog",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\blog"
+      }
+    ]
+  },
+  "@remix-run/node": {
+    "current": "2.16.0",
+    "latest": "2.17.4",
+    "wanted": "2.16.0",
+    "isDeprecated": false,
+    "dependencyType": "dependencies",
+    "dependentPackages": [
+      {
+        "name": "blog",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\blog"
+      }
+    ]
+  },
+  "@remix-run/react": {
+    "current": "2.16.0",
+    "latest": "2.17.4",
+    "wanted": "2.16.0",
+    "isDeprecated": false,
+    "dependencyType": "dependencies",
+    "dependentPackages": [
+      {
+        "name": "blog",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\blog"
+      }
+    ]
+  },
+  "@remix-run/server-runtime": {
+    "current": "2.16.0",
+    "latest": "2.17.4",
+    "wanted": "2.16.0",
+    "isDeprecated": false,
+    "dependencyType": "dependencies",
+    "dependentPackages": [
+      {
+        "name": "blog",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\blog"
+      }
+    ]
+  },
+  "@types/react": {
+    "current": "18.3.18",
+    "latest": "19.2.14",
+    "wanted": "18.3.18",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "admin",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\admin"
+      },
+      {
+        "name": "blog",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\blog"
+      },
+      {
+        "name": "prisma-web",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\prisma-web"
+      }
+    ]
+  },
+  "@types/react-dom": {
+    "current": "18.3.5",
+    "latest": "19.2.3",
+    "wanted": "18.3.5",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "admin",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\admin"
+      },
+      {
+        "name": "blog",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\blog"
+      },
+      {
+        "name": "prisma-web",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\prisma-web"
+      }
+    ]
+  },
+  "@typescript-eslint/eslint-plugin": {
+    "current": "8.46.2",
+    "latest": "8.55.0",
+    "wanted": "8.46.2",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "blog",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\blog"
+      }
+    ]
+  },
+  "@typescript-eslint/parser": {
+    "current": "8.46.2",
+    "latest": "8.55.0",
+    "wanted": "8.46.2",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "blog",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\blog"
+      }
+    ]
+  },
+  "@vercel/analytics": {
+    "current": "1.5.0",
+    "latest": "1.6.1",
+    "wanted": "1.5.0",
+    "isDeprecated": false,
+    "dependencyType": "dependencies",
+    "dependentPackages": [
+      {
+        "name": "blog",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\blog"
+      }
+    ]
+  },
+  "bunchee": {
+    "current": "6.4.0",
+    "latest": "6.9.4",
+    "wanted": "6.4.0",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "@repo/logger",
+        "location": "D:\\dev\\antigravity\\vision-iq\\packages\\logger"
+      },
+      {
+        "name": "@repo/ui",
+        "location": "D:\\dev\\antigravity\\vision-iq\\packages\\ui"
+      }
+    ]
+  },
+  "eslint-plugin-turbo": {
+    "current": "2.6.0",
+    "latest": "2.8.6",
+    "wanted": "2.6.0",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "@repo/eslint-config",
+        "location": "D:\\dev\\antigravity\\vision-iq\\packages\\config-eslint"
+      }
+    ]
+  },
+  "prettier": {
+    "current": "3.6.0",
+    "latest": "3.8.1",
+    "wanted": "3.6.0",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "kitchen-sink",
+        "location": "D:\\dev\\antigravity\\vision-iq"
+      }
+    ]
+  },
+  "supertest": {
+    "current": "7.1.0",
+    "latest": "7.2.2",
+    "wanted": "7.1.0",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "api",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\api"
+      }
+    ]
+  },
+  "tsx": {
+    "current": "4.19.1",
+    "latest": "4.21.0",
+    "wanted": "4.19.1",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "@repo/database",
+        "location": "D:\\dev\\antigravity\\vision-iq\\packages\\database"
+      }
+    ]
+  },
+  "typescript": {
+    "current": "5.7.3",
+    "latest": "5.9.3",
+    "wanted": "5.7.3",
+    "isDeprecated": false,
+    "dependencyType": "dependencies",
+    "dependentPackages": [
+      {
+        "name": "nextjs-dashboard",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\nextjs-dashboard"
+      }
+    ]
+  },
+  "typescript-eslint": {
+    "current": "8.46.2",
+    "latest": "8.55.0",
+    "wanted": "8.46.2",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "@repo/eslint-config",
+        "location": "D:\\dev\\antigravity\\vision-iq\\packages\\config-eslint"
+      }
+    ]
+  },
+  "@eslint/js": {
+    "current": "9.39.0",
+    "latest": "10.0.1",
+    "wanted": "9.39.0",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "@repo/eslint-config",
+        "location": "D:\\dev\\antigravity\\vision-iq\\packages\\config-eslint"
+      }
+    ]
+  },
+  "@jest/globals": {
+    "current": "29.7.0",
+    "latest": "30.2.0",
+    "wanted": "29.7.0",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "api",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\nestjs-api"
+      }
+    ]
+  },
+  "@jest/types": {
+    "current": "29.6.3",
+    "latest": "30.2.0",
+    "wanted": "29.6.3",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "@repo/jest-config",
+        "location": "D:\\dev\\antigravity\\vision-iq\\packages\\jest-config"
+      }
+    ]
+  },
+  "@next/eslint-plugin-next": {
+    "current": "15.4.2",
+    "latest": "16.1.6",
+    "wanted": "15.4.2",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "storefront",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\storefront"
+      },
+      {
+        "name": "@repo/eslint-config",
+        "location": "D:\\dev\\antigravity\\vision-iq\\packages\\config-eslint"
+      }
+    ]
+  },
+  "@types/bcrypt": {
+    "current": "5.0.2",
+    "latest": "6.0.0",
+    "wanted": "5.0.2",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "nextjs-dashboard",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\nextjs-dashboard"
+      }
+    ]
+  },
+  "@types/express": {
+    "current": "4.17.25",
+    "latest": "5.0.6",
+    "wanted": "4.17.25",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "api",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\nestjs-api"
+      }
+    ]
+  },
+  "@types/node": {
+    "current": "22.19.11",
+    "latest": "25.2.3",
+    "wanted": "22.19.11",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "api",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\nestjs-api"
+      },
+      {
+        "name": "@repo/api",
+        "location": "D:\\dev\\antigravity\\vision-iq\\packages\\api"
+      }
+    ]
+  },
+  "@vitejs/plugin-react": {
+    "current": "4.7.0",
+    "latest": "5.1.4",
+    "wanted": "4.7.0",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "admin",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\admin"
+      }
+    ]
+  },
+  "bcrypt": {
+    "current": "5.1.1",
+    "latest": "6.0.0",
+    "wanted": "5.1.1",
+    "isDeprecated": false,
+    "dependencyType": "dependencies",
+    "dependentPackages": [
+      {
+        "name": "nextjs-dashboard",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\nextjs-dashboard"
+      }
+    ]
+  },
+  "body-parser": {
+    "current": "1.20.3",
+    "latest": "2.2.2",
+    "wanted": "1.20.3",
+    "isDeprecated": false,
+    "dependencyType": "dependencies",
+    "dependentPackages": [
+      {
+        "name": "api",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\api"
+      }
+    ]
+  },
+  "eslint": {
+    "current": "9.39.2",
+    "latest": "10.0.0",
+    "wanted": "9.39.2",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "api",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\nestjs-api"
+      }
+    ]
+  },
+  "express": {
+    "current": "4.21.2",
+    "latest": "5.2.1",
+    "wanted": "4.21.2",
+    "isDeprecated": false,
+    "dependencyType": "dependencies",
+    "dependentPackages": [
+      {
+        "name": "api",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\api"
+      }
+    ]
+  },
+  "globals": {
+    "current": "16.5.0",
+    "latest": "17.3.0",
+    "wanted": "16.5.0",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "@repo/eslint-config",
+        "location": "D:\\dev\\antigravity\\vision-iq\\packages\\config-eslint"
+      }
+    ]
+  },
+  "jest": {
+    "current": "29.7.0",
+    "latest": "30.2.0",
+    "wanted": "29.7.0",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "api",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\nestjs-api"
+      },
+      {
+        "name": "@repo/jest-config",
+        "location": "D:\\dev\\antigravity\\vision-iq\\packages\\jest-config"
+      }
+    ]
+  },
+  "rimraf": {
+    "current": "5.0.10",
+    "latest": "6.1.2",
+    "wanted": "5.0.10",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "@repo/database",
+        "location": "D:\\dev\\antigravity\\vision-iq\\packages\\database"
+      }
+    ]
+  },
+  "tailwindcss": {
+    "current": "3.4.17",
+    "latest": "4.1.18",
+    "wanted": "3.4.17",
+    "isDeprecated": false,
+    "dependencyType": "dependencies",
+    "dependentPackages": [
+      {
+        "name": "nextjs-dashboard",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\nextjs-dashboard"
+      }
+    ]
+  },
+  "vite": {
+    "current": "5.4.14",
+    "latest": "7.3.1",
+    "wanted": "5.4.14",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "admin",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\admin"
+      },
+      {
+        "name": "blog",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\blog"
+      }
+    ]
+  },
+  "vite-tsconfig-paths": {
+    "current": "4.2.1",
+    "latest": "6.1.0",
+    "wanted": "4.2.1",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "blog",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\blog"
+      }
+    ]
+  },
+  "zod": {
+    "current": "3.25.76",
+    "latest": "4.3.6",
+    "wanted": "3.25.76",
+    "isDeprecated": false,
+    "dependencyType": "dependencies",
+    "dependentPackages": [
+      {
+        "name": "nextjs-dashboard",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\nextjs-dashboard"
+      }
+    ]
+  },
+  "tsdown": {
+    "current": "0.9.3",
+    "latest": "0.20.3",
+    "wanted": "0.9.3",
+    "isDeprecated": false,
+    "dependencyType": "devDependencies",
+    "dependentPackages": [
+      {
+        "name": "api",
+        "location": "D:\\dev\\antigravity\\vision-iq\\apps\\api"
+      }
+    ]
+  }
+}
