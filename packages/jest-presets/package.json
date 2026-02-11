@@ -12,6 +12,11 @@
     "ts-jest": "^29.2.5"
   },
   "devDependencies": {
-    "jest-environment-jsdom": "^29.7.0"
+    "jest-environment-jsdom": "^29.7.0",
+    "@repo/biome-config": "workspace:*"
+  },
+  "scripts": {
+    "lint": "biome check .",
+    "format": "biome format . --write"
   }
 }
