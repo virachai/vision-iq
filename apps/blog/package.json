@@ -1,12 +1,12 @@
 {
   "name": "blog",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "sideEffects": false,
   "type": "module",
   "scripts": {
     "build": "remix vite:build",
-    "dev": "remix vite:dev",
+    "dev": "remix vite:dev --port 3004",
     "check-types": "tsc --noEmit",
     "lint": "eslint app/ --max-warnings 0"
   },

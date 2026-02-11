@@ -1,3 +1,3 @@
-import { nestConfig } from '@repo/jest-config';
+import nestConfig from '@repo/jest-presets/node/jest-preset.mjs';
 
 export default nestConfig;
