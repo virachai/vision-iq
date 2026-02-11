@@ -1,12 +1,6 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.8/schema.json",
-  "root": false,
-  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
-  "files": {
-    "ignoreUnknown": true,
-    "includes": ["**", "!node_modules", "!.next", "!dist", "!build"]
-  },
-  "formatter": { "enabled": true, "indentStyle": "tab" },
+  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "extends": ["./base.json"],
   "linter": {
     "enabled": true,
     "rules": {
@@ -17,51 +11,13 @@
         "useHookAtTopLevel": "error",
         "useJsxKeyInIterable": "error"
       },
-      "security": { "noDangerouslySetInnerHtmlWithChildren": "error" },
-      "style": { "useBlockStatements": "off" },
+      "security": {
+        "noDangerouslySetInnerHtmlWithChildren": "error"
+      },
       "suspicious": {
         "noCommentText": "error",
-        "noDuplicateJsxProps": "error",
-        "noUnknownAtRules": "off"
+        "noDuplicateJsxProps": "error"
       }
-    },
-
-    "domains": {
-      "next": "recommended",
-      "react": "recommended"
-    },
-    "includes": ["**", "!.next/**", "!out/**", "!build/**", "!next-env.d.ts"]
-  },
-  "javascript": {
-    "formatter": { "quoteStyle": "double" },
-    "globals": [
-      "onnotificationclose",
-      "onbackgroundfetchfail",
-      "onactivate",
-      "onerror",
-      "onpaymentrequest",
-      "onpushsubscriptionchange",
-      "onbackgroundfetchabort",
-      "onabortpayment",
-      "onsync",
-      "onpush",
-      "onfetch",
-      "oninstall",
-      "onbackgroundfetchsuccess",
-      "onmessage",
-      "onperiodicsync",
-      "oncanmakepayment",
-      "oncookiechange",
-      "onrejectionhandled",
-      "onbackgroundfetchclick",
-      "onmessageerror",
-      "onunhandledrejection",
-      "onnotificationclick",
-      "onlanguagechange"
-    ]
-  },
-  "assist": {
-    "enabled": true,
-    "actions": { "source": { "organizeImports": "on" } }
+    }
   }
 }

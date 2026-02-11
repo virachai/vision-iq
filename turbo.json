@@ -18,7 +18,10 @@
       "dependsOn": []
     },
     "lint": {
-      "dependsOn": ["^build", "^lint"]
+      "dependsOn": ["^lint"]
+    },
+    "format": {
+      "dependsOn": ["^format"]
     },
     "check-types": {
       "dependsOn": ["^build", "^check-types"]
