@@ -1,26 +1,20 @@
 import { existsSync } from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { config } from "dotenv";
 import { expand } from "dotenv-expand";
 import { z } from "zod";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-// Load .env from the root of the monorepo if not already provided by environment
-// This is useful for local development outside of Turbo or standard scripts
 if (!process.env.POSTGRES_URL || !process.env.AUTH_SECRET) {
   const possiblePaths = [
-    path.resolve(__dirname, "../../../.env"),
     path.resolve(process.cwd(), ".env"),
-    path.resolve(process.cwd(), "../../.env"),
+    path.resolve(process.cwd(), "..", ".env"),
+    path.resolve(process.cwd(), "..", "..", ".env"),
+    path.resolve(process.cwd(), "..", "..", "..", ".env"),
   ];
 
   let envPath: string | undefined;
   for (const p of possiblePaths) {
-    console.log(`🔍 Checking for .env at: ${p}`);
     if (existsSync(p)) {
-      console.log(`✅ Found .env at: ${p}`);
       envPath = p;
       break;
     }

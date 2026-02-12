@@ -1,0 +1,124 @@
+
+> api-nest@1.0.0 test D:\dev\antigravity\vision-iq\apps\nestjs-api
+> jest
+
+FAIL src/deepseek-integration/deepseek.service.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module 'axios' from 'src/deepseek-integration/deepseek.service.spec.ts'
+
+    [0m [90m 4 |[39m [36mimport[39m axios [36mfrom[39m [32m"axios"[39m[33m;[39m
+     [90m 5 |[39m
+    [31m[1m>[22m[39m[90m 6 |[39m jest[33m.[39mmock([32m"axios"[39m)[33m;[39m
+     [90m   |[39m      [31m[1m^[22m[39m
+     [90m 7 |[39m
+     [90m 8 |[39m describe([32m"DeepSeekService"[39m[33m,[39m () [33m=>[39m {
+     [90m 9 |[39m 	[36mlet[39m service[33m:[39m [33mDeepSeekService[39m[33m;[39m[0m
+
+      at Resolver._throwModNotFoundError (../../node_modules/.pnpm/jest-resolve@29.7.0/node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/deepseek-integration/deepseek.service.spec.ts:6:6)
+
+FAIL src/pexels-sync/pexels-integration.service.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module 'axios' from 'src/pexels-sync/pexels-integration.service.spec.ts'
+
+    [0m [90m 3 |[39m [36mimport[39m axios [36mfrom[39m [32m"axios"[39m[33m;[39m
+     [90m 4 |[39m
+    [31m[1m>[22m[39m[90m 5 |[39m jest[33m.[39mmock([32m"axios"[39m)[33m;[39m
+     [90m   |[39m      [31m[1m^[22m[39m
+     [90m 6 |[39m [36mconst[39m mockedAxios [33m=[39m axios [36mas[39m jest[33m.[39m[33mMocked[39m[33m<[39m[36mtypeof[39m axios[33m>[39m[33m;[39m
+     [90m 7 |[39m
+     [90m 8 |[39m describe([32m"PexelsIntegrationService"[39m[33m,[39m () [33m=>[39m {[0m
+
+      at Resolver._throwModNotFoundError (../../node_modules/.pnpm/jest-resolve@29.7.0/node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/pexels-sync/pexels-integration.service.spec.ts:5:6)
+
+FAIL src/image-analysis/gemini-analysis.service.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module 'axios' from 'src/image-analysis/gemini-analysis.service.spec.ts'
+
+    [0m [90m 3 |[39m [36mimport[39m axios[33m,[39m { [33mAxiosError[39m } [36mfrom[39m [32m"axios"[39m[33m;[39m
+     [90m 4 |[39m
+    [31m[1m>[22m[39m[90m 5 |[39m jest[33m.[39mmock([32m"axios"[39m)[33m;[39m
+     [90m   |[39m      [31m[1m^[22m[39m
+     [90m 6 |[39m [36mconst[39m mockedAxios [33m=[39m axios [36mas[39m jest[33m.[39m[33mMocked[39m[33m<[39m[36mtypeof[39m axios[33m>[39m[33m;[39m
+     [90m 7 |[39m
+     [90m 8 |[39m describe([32m"GeminiAnalysisService"[39m[33m,[39m () [33m=>[39m {[0m
+
+      at Resolver._throwModNotFoundError (../../node_modules/.pnpm/jest-resolve@29.7.0/node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/image-analysis/gemini-analysis.service.spec.ts:5:6)
+
+FAIL src/queue/queue.service.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module 'bullmq' from 'src/queue/queue.service.spec.ts'
+
+    [0m [90m  6 |[39m
+     [90m  7 |[39m [90m// Mock BullMQ[39m
+    [31m[1m>[22m[39m[90m  8 |[39m jest[33m.[39mmock([32m"bullmq"[39m[33m,[39m () [33m=>[39m {
+     [90m    |[39m      [31m[1m^[22m[39m
+     [90m  9 |[39m 	[36mreturn[39m {
+     [90m 10 |[39m 		[33mQueue[39m[33m:[39m jest[33m.[39mfn()[33m.[39mmockImplementation(() [33m=>[39m ({
+     [90m 11 |[39m 			add[33m:[39m jest[33m.[39mfn()[33m,[39m[0m
+
+      at Resolver._throwModNotFoundError (../../node_modules/.pnpm/jest-resolve@29.7.0/node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/queue/queue.service.spec.ts:8:6)
+
+FAIL src/alignment/alignment.service.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module 'axios' from 'src/deepseek-integration/deepseek.service.ts'
+
+    Require stack:
+      src/deepseek-integration/deepseek.service.ts
+      src/alignment/alignment.service.ts
+      src/alignment/alignment.service.spec.ts
+
+    [0m [90m 1 |[39m [36mimport[39m { [33mInjectable[39m[33m,[39m [33mLogger[39m } [36mfrom[39m [32m"@nestjs/common"[39m[33m;[39m
+    [31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m axios[33m,[39m { [33mAxiosError[39m } [36mfrom[39m [32m"axios"[39m[33m;[39m
+     [90m   |[39m [31m[1m^[22m[39m
+     [90m 3 |[39m [36mimport[39m { [33mSceneIntentDto[39m[33m,[39m [33mComposition[39m } [36mfrom[39m [32m"../alignment/dto/scene-intent.dto"[39m[33m;[39m
+     [90m 4 |[39m
+     [90m 5 |[39m [36minterface[39m [33mDeepSeekResponse[39m {[0m
+
+      at Resolver._throwModNotFoundError (../../node_modules/.pnpm/jest-resolve@29.7.0/node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/deepseek-integration/deepseek.service.ts:2:1)
+      at Object.<anonymous> (src/alignment/alignment.service.ts:3:1)
+      at Object.<anonymous> (src/alignment/alignment.service.spec.ts:3:1)
+
+PASS src/semantic-matching/semantic-matching.service.spec.ts
+PASS src/app.controller.spec.ts
+PASS src/links/links.controller.spec.ts
+PASS src/links/links.service.spec.ts
+FAIL src/alignment/alignment.controller.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module 'axios' from 'src/deepseek-integration/deepseek.service.ts'
+
+    Require stack:
+      src/deepseek-integration/deepseek.service.ts
+      src/alignment/alignment.service.ts
+      src/alignment/alignment.controller.ts
+      src/alignment/alignment.controller.spec.ts
+
+    [0m [90m 1 |[39m [36mimport[39m { [33mInjectable[39m[33m,[39m [33mLogger[39m } [36mfrom[39m [32m"@nestjs/common"[39m[33m;[39m
+    [31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m axios[33m,[39m { [33mAxiosError[39m } [36mfrom[39m [32m"axios"[39m[33m;[39m
+     [90m   |[39m [31m[1m^[22m[39m
+     [90m 3 |[39m [36mimport[39m { [33mSceneIntentDto[39m[33m,[39m [33mComposition[39m } [36mfrom[39m [32m"../alignment/dto/scene-intent.dto"[39m[33m;[39m
+     [90m 4 |[39m
+     [90m 5 |[39m [36minterface[39m [33mDeepSeekResponse[39m {[0m
+
+      at Resolver._throwModNotFoundError (../../node_modules/.pnpm/jest-resolve@29.7.0/node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/deepseek-integration/deepseek.service.ts:2:1)
+      at Object.<anonymous> (src/alignment/alignment.service.ts:3:1)
+      at Object.<anonymous> (src/alignment/alignment.controller.ts:2:1)
+      at Object.<anonymous> (src/alignment/alignment.controller.spec.ts:2:1)
+
+Test Suites: 6 failed, 4 passed, 10 total
+Tests:       9 passed, 9 total
+Snapshots:   0 total
+Time:        4.47 s
+Ran all test suites.
+ ELIFECYCLE  Test failed. See above for more details.

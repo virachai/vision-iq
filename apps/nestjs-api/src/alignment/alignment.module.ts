@@ -7,13 +7,13 @@ import { PexelsIntegrationModule } from "../pexels-sync/pexels-integration.modul
 import { QueueModule } from "../queue/queue.module";
 
 @Module({
-  imports: [
-    DeepSeekModule,
-    SemanticMatchingModule,
-    PexelsIntegrationModule,
-    QueueModule,
-  ],
-  controllers: [AlignmentController],
-  providers: [AlignmentService],
+	imports: [
+		DeepSeekModule,
+		SemanticMatchingModule,
+		PexelsIntegrationModule,
+		QueueModule,
+	],
+	controllers: [AlignmentController],
+	providers: [AlignmentService],
 })
 export class AlignmentModule {}

@@ -4,6 +4,11 @@
 		"baseUrl": "./",
 		"outDir": "./dist",
 		"noEmit": false,
-		"allowImportingTsExtensions": false
+		"allowImportingTsExtensions": false,
+		"moduleResolution": "node",
+		"paths": {
+			"@repo/database": ["../../packages/database/src/client.ts"],
+			"@repo/env": ["../../packages/config-env/src/index.ts"]
+		}
 	}
 }
