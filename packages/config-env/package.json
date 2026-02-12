@@ -1,0 +1,30 @@
+{
+	"name": "@repo/env",
+	"type": "module",
+	"version": "0.0.0",
+	"private": true,
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsdown",
+		"dev": "tsdown --watch",
+		"clean": "rimraf .turbo dist",
+		"lint": "biome check .",
+		"format": "biome format . --write"
+	},
+	"dependencies": {
+		"dotenv": "^16.4.5",
+		"dotenv-expand": "^11.0.6",
+		"zod": "^3.23.8"
+	},
+	"devDependencies": {
+		"@repo/biome-config": "workspace:*",
+		"@repo/typescript-config": "workspace:*",
+		"tsdown": "^0.9.3",
+		"typescript": "^5.7.3"
+	}
+}

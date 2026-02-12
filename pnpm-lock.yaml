@@ -180,6 +180,9 @@ importers:
       '@repo/database':
         specifier: workspace:*
         version: link:../../packages/database
+      '@repo/env':
+        specifier: workspace:*
+        version: link:../../packages/config-env
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
@@ -247,6 +250,9 @@ importers:
       '@heroicons/react':
         specifier: ^2.2.0
         version: 2.2.0(react@19.2.4)
+      '@repo/env':
+        specifier: workspace:*
+        version: link:../../packages/config-env
       '@tailwindcss/forms':
         specifier: ^0.5.10
         version: 0.5.11(tailwindcss@3.4.17)
@@ -397,6 +403,31 @@ importers:
         version: 5.5.4
 
   packages/biome-config: {}
+
+  packages/config-env:
+    dependencies:
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.6.1
+      dotenv-expand:
+        specifier: ^11.0.6
+        version: 11.0.7
+      zod:
+        specifier: ^3.23.8
+        version: 3.25.76
+    devDependencies:
+      '@repo/biome-config':
+        specifier: workspace:*
+        version: link:../biome-config
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../config-typescript
+      tsdown:
+        specifier: ^0.9.3
+        version: 0.9.3(typescript@5.7.3)
+      typescript:
+        specifier: ^5.7.3
+        version: 5.7.3
 
   packages/config-typescript:
     devDependencies:
@@ -5854,6 +5885,13 @@ packages:
       webidl-conversions: 7.0.0
     dev: true
 
+  /dotenv-expand@11.0.7:
+    resolution: {integrity: sha512-zIHwmZPRshsCdpMDyVsqGmgyP0yT8GAgXUnkdAoJisxvf33k7yO6OuoKmcTGuXPWSsm8Oh88nZicRLA9Y0rUeA==}
+    engines: {node: '>=12'}
+    dependencies:
+      dotenv: 16.6.1
+    dev: false
+
   /dotenv@16.6.1:
     resolution: {integrity: sha512-uBq4egWHTcTt33a72vpSG0z3HnPuIl6NqYcTrKEg2azoEyl2hpW0zqlxysq2pK9HlDIHyHyakeYaYnSAwd8bow==}
     engines: {node: '>=12'}
@@ -9854,6 +9892,28 @@ packages:
       glob: 10.4.5
     dev: true
 
+  /rolldown-plugin-dts@0.8.6(rolldown@1.0.0-beta.8-commit.d984417)(typescript@5.7.3):
+    resolution: {integrity: sha512-uWhYtTLR0vze2gUmWFcMkjhM4/9aN2LnnmRl/iKa3p8iFcuM4W6peR032xuGauLczL+9zytO+A4VX13oDQ/trg==}
+    engines: {node: '>=20.18.0'}
+    peerDependencies:
+      rolldown: ^1.0.0-beta.7
+      typescript: ^5.0.0
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      debug: 4.4.3
+      dts-resolver: 1.2.0
+      get-tsconfig: 4.10.0
+      magic-string-ast: 0.9.1
+      oxc-parser: 0.66.0
+      oxc-transform: 0.66.0
+      rolldown: 1.0.0-beta.8-commit.d984417(typescript@5.7.3)
+      typescript: 5.7.3
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /rolldown-plugin-dts@0.8.6(rolldown@1.0.0-beta.8-commit.d984417)(typescript@5.9.3):
     resolution: {integrity: sha512-uWhYtTLR0vze2gUmWFcMkjhM4/9aN2LnnmRl/iKa3p8iFcuM4W6peR032xuGauLczL+9zytO+A4VX13oDQ/trg==}
     engines: {node: '>=20.18.0'}
@@ -9874,6 +9934,36 @@ packages:
       typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /rolldown@1.0.0-beta.8-commit.d984417(typescript@5.7.3):
+    resolution: {integrity: sha512-bQb5n/r4k5f3pXIc/dVSCpzsSG/s8GIL/01K2ZNriaLpHX/1omU98ttc8dMhe1qvEXTtZKSJXBr+bksn6+BKcA==}
+    hasBin: true
+    peerDependencies:
+      '@oxc-project/runtime': 0.65.0
+    peerDependenciesMeta:
+      '@oxc-project/runtime':
+        optional: true
+    dependencies:
+      '@oxc-project/types': 0.65.0
+      '@valibot/to-json-schema': 1.0.0(valibot@1.0.0)
+      ansis: 3.17.0
+      valibot: 1.0.0(typescript@5.7.3)
+    optionalDependencies:
+      '@rolldown/binding-darwin-arm64': 1.0.0-beta.8-commit.d984417
+      '@rolldown/binding-darwin-x64': 1.0.0-beta.8-commit.d984417
+      '@rolldown/binding-freebsd-x64': 1.0.0-beta.8-commit.d984417
+      '@rolldown/binding-linux-arm-gnueabihf': 1.0.0-beta.8-commit.d984417
+      '@rolldown/binding-linux-arm64-gnu': 1.0.0-beta.8-commit.d984417
+      '@rolldown/binding-linux-arm64-musl': 1.0.0-beta.8-commit.d984417
+      '@rolldown/binding-linux-x64-gnu': 1.0.0-beta.8-commit.d984417
+      '@rolldown/binding-linux-x64-musl': 1.0.0-beta.8-commit.d984417
+      '@rolldown/binding-wasm32-wasi': 1.0.0-beta.8-commit.d984417
+      '@rolldown/binding-win32-arm64-msvc': 1.0.0-beta.8-commit.d984417
+      '@rolldown/binding-win32-ia32-msvc': 1.0.0-beta.8-commit.d984417
+      '@rolldown/binding-win32-x64-msvc': 1.0.0-beta.8-commit.d984417
+    transitivePeerDependencies:
+      - typescript
     dev: true
 
   /rolldown@1.0.0-beta.8-commit.d984417(typescript@5.9.3):
@@ -10975,6 +11065,37 @@ packages:
       minimist: 1.2.8
       strip-bom: 3.0.0
 
+  /tsdown@0.9.3(typescript@5.7.3):
+    resolution: {integrity: sha512-NHO5h39lNh5vFsfjeSBoXIqdq/MdI3Pu1KfgyULpkqiQkjGWXXYK7zuBY2SK7I/39Fqhw9776eHF4e+snxGEMw==}
+    engines: {node: '>=18.0.0'}
+    hasBin: true
+    peerDependencies:
+      publint: ^0.3.0
+      unplugin-unused: ^0.4.0
+    peerDependenciesMeta:
+      publint:
+        optional: true
+      unplugin-unused:
+        optional: true
+    dependencies:
+      ansis: 3.17.0
+      cac: 6.7.14
+      chokidar: 4.0.3
+      consola: 3.4.2
+      debug: 4.4.3
+      diff: 7.0.0
+      find-up-simple: 1.0.1
+      rolldown: 1.0.0-beta.8-commit.d984417(typescript@5.7.3)
+      rolldown-plugin-dts: 0.8.6(rolldown@1.0.0-beta.8-commit.d984417)(typescript@5.7.3)
+      tinyexec: 1.0.2
+      tinyglobby: 0.2.13
+      unconfig: 7.4.2
+    transitivePeerDependencies:
+      - '@oxc-project/runtime'
+      - supports-color
+      - typescript
+    dev: true
+
   /tsdown@0.9.3(typescript@5.9.3):
     resolution: {integrity: sha512-NHO5h39lNh5vFsfjeSBoXIqdq/MdI3Pu1KfgyULpkqiQkjGWXXYK7zuBY2SK7I/39Fqhw9776eHF4e+snxGEMw==}
     engines: {node: '>=18.0.0'}
@@ -11374,6 +11495,17 @@ packages:
         optional: true
     dependencies:
       typescript: 5.9.3
+
+  /valibot@1.0.0(typescript@5.7.3):
+    resolution: {integrity: sha512-1Hc0ihzWxBar6NGeZv7fPLY0QuxFMyxwYR2sF1Blu7Wq7EnremwY2W02tit2ij2VJT8HcSkHAQqmFfl77f73Yw==}
+    peerDependencies:
+      typescript: '>=5'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      typescript: 5.7.3
+    dev: true
 
   /valibot@1.0.0(typescript@5.9.3):
     resolution: {integrity: sha512-1Hc0ihzWxBar6NGeZv7fPLY0QuxFMyxwYR2sF1Blu7Wq7EnremwY2W02tit2ij2VJT8HcSkHAQqmFfl77f73Yw==}
