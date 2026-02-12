@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
-import { QueueService } from "./queue.service";
 import { ImageAnalysisModule } from "../image-analysis/image-analysis.module";
+import { QueueService } from "./queue.service";
 
 @Module({
 	imports: [ImageAnalysisModule],

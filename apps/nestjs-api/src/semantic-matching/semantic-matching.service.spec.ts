@@ -1,8 +1,8 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { describe, it, expect, beforeEach, jest } from "@jest/globals";
-import { SemanticMatchingService } from "./semantic-matching.service";
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import { Test, type TestingModule } from "@nestjs/testing";
 import { PrismaClient } from "@repo/database";
-import { SceneIntentDto } from "../alignment/dto/scene-intent.dto";
+import type { SceneIntentDto } from "../alignment/dto/scene-intent.dto";
+import { SemanticMatchingService } from "./semantic-matching.service";
 
 describe("SemanticMatchingService", () => {
 	let service: SemanticMatchingService;

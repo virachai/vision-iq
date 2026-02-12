@@ -1,12 +1,12 @@
 import {
 	Injectable,
 	Logger,
-	OnModuleInit,
-	OnModuleDestroy,
+	type OnModuleDestroy,
+	type OnModuleInit,
 } from "@nestjs/common";
+import type { PrismaClient } from "@repo/database";
 import { Queue, Worker } from "bullmq";
-import { PrismaClient } from "@repo/database";
-import { GeminiAnalysisService } from "../image-analysis/gemini-analysis.service";
+import type { GeminiAnalysisService } from "../image-analysis/gemini-analysis.service";
 
 interface ImageAnalysisJob {
 	imageId: string;
@@ -16,6 +16,7 @@ interface ImageAnalysisJob {
 
 interface EmbeddingGenerationJob {
 	imageId: string;
+	// biome-ignore lint/suspicious/noExplicitAny: Dynamic metadata structure
 	metadata: any;
 }
 
@@ -135,6 +136,7 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
 	/**
 	 * Queue embedding generation for analyzed image
 	 */
+	// biome-ignore lint/suspicious/noExplicitAny: Dynamic metadata structure
 	async queueEmbeddingGeneration(imageId: string, metadata: any) {
 		try {
 			const job = await this.embeddingGenerationQueue.add(
@@ -193,6 +195,7 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
 				where: { imageId: data.imageId },
 				data: {
 					status: "COMPLETED",
+					// biome-ignore lint/suspicious/noExplicitAny: Prisma JSON type mapping
 					result: analysis as any,
 				},
 			});
@@ -263,6 +266,7 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
 	 * Generate embedding from image metadata
 	 * TODO: Replace with actual embedding API call
 	 */
+	// biome-ignore lint/suspicious/noExplicitAny: Embeddings are number arrays but return type is flexible here
 	private async generateEmbedding(metadata: any): Promise<any> {
 		// Placeholder: return random 1536-dim vector
 		// In production, combine metadata fields and call OpenAI embeddings API
@@ -311,9 +315,9 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
 		const redisUrl = new URL(url);
 		return {
 			host: redisUrl.hostname,
-			port: parseInt(redisUrl.port) || 6379,
+			port: Number.parseInt(redisUrl.port) || 6379,
 			password: redisUrl.password || undefined,
-			db: redisUrl.pathname ? parseInt(redisUrl.pathname.slice(1)) : 0,
+			db: redisUrl.pathname ? Number.parseInt(redisUrl.pathname.slice(1)) : 0,
 		};
 	}
 }

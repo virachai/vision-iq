@@ -35,6 +35,7 @@ export interface ImageMatch {
 	impact_relevance: number;
 	composition_match: number;
 	mood_consistency_score: number;
+	// biome-ignore lint/suspicious/noExplicitAny: Metadata structure varies
 	metadata: any; // ImageMetadata+composition+moodDna
 }
 

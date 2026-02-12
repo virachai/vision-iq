@@ -1,10 +1,10 @@
-import { Controller, Post, Get, Body } from "@nestjs/common";
-import { AlignmentService } from "./alignment.service";
-import {
+import { Body, Controller, Get, Post } from "@nestjs/common";
+import type { AlignmentService } from "./alignment.service";
+import type {
 	ExtractVisualIntentDto,
 	FindAlignedImagesDto,
-	SceneIntentDto,
 	ImageMatch,
+	SceneIntentDto,
 } from "./dto/scene-intent.dto";
 
 @Controller("alignment")

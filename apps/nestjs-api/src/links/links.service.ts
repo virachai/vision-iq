@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { Link, CreateLinkDto, UpdateLinkDto } from "@repo/api";
+import type { CreateLinkDto, Link, UpdateLinkDto } from "@repo/api";
 
 @Injectable()
 export class LinksService {

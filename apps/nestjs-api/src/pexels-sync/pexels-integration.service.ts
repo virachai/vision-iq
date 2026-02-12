@@ -1,5 +1,5 @@
 import { Injectable, Logger } from "@nestjs/common";
-import axios, { AxiosError } from "axios";
+import axios, { type AxiosError } from "axios";
 
 interface PexelsPhoto {
 	id: number;
@@ -71,7 +71,7 @@ export class PexelsIntegrationService {
 	 */
 	async *syncPexelsLibrary(
 		search_query: string,
-		batchSize: number = 50,
+		batchSize = 50,
 	): AsyncGenerator<SyncBatch> {
 		let page = 1;
 		let totalResults = 0;
@@ -179,7 +179,7 @@ export class PexelsIntegrationService {
 					process.env.PEXELS_RETRY_DELAY_MS || "1000",
 					10,
 				);
-				const delay = Math.pow(2, retryCount) * baseDelay;
+				const delay = 2 ** retryCount * baseDelay;
 				this.logger.warn(`Pexels API rate limited, retrying in ${delay}ms`);
 				await new Promise((resolve) => setTimeout(resolve, delay));
 				return this.getPexelsPage(query, page, perPage, retryCount + 1);

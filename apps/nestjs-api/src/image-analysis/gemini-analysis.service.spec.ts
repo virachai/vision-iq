@@ -1,6 +1,6 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { GeminiAnalysisService } from "./gemini-analysis.service";
+import { Test, type TestingModule } from "@nestjs/testing";
 import axios, { AxiosError } from "axios";
+import { GeminiAnalysisService } from "./gemini-analysis.service";
 
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -79,10 +79,7 @@ describe("GeminiAnalysisService", () => {
 							content: {
 								parts: [
 									{
-										text:
-											"```json\n" +
-											JSON.stringify(mockAnalysisResult) +
-											"\n```",
+										text: `\`\`\`json\n${JSON.stringify(mockAnalysisResult)}\n\`\`\``,
 									},
 								],
 							},

@@ -1,5 +1,5 @@
 import { Injectable, Logger } from "@nestjs/common";
-import axios, { AxiosError } from "axios";
+import axios, { type AxiosError } from "axios";
 
 interface GeminiAnalysisResult {
 	impact_score: number;
@@ -124,6 +124,7 @@ Return ONLY valid JSON, no markdown, no explanation.`;
 	/**
 	 * Call Gemini API with retry logic
 	 */
+	// biome-ignore lint/suspicious/noExplicitAny: Wrapper for dynamic payload
 	private async callGeminiAPI(payload: any, retryCount = 0): Promise<string> {
 		const maxRetries = 3;
 
@@ -150,7 +151,7 @@ Return ONLY valid JSON, no markdown, no explanation.`;
 				[429, 503].includes(axiosError.response?.status || 0) &&
 				retryCount < maxRetries
 			) {
-				const delay = Math.pow(2, retryCount) * 1000;
+				const delay = 2 ** retryCount * 1000;
 				this.logger.warn(`Gemini API rate limited, retrying in ${delay}ms`);
 				await new Promise((resolve) => setTimeout(resolve, delay));
 				return this.callGeminiAPI(payload, retryCount + 1);

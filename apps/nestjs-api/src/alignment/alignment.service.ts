@@ -1,14 +1,14 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { PrismaClient } from "@repo/database";
-import { DeepSeekService } from "../deepseek-integration/deepseek.service";
-import { SemanticMatchingService } from "../semantic-matching/semantic-matching.service";
-import { PexelsIntegrationService } from "../pexels-sync/pexels-integration.service";
-import { QueueService } from "../queue/queue.service";
-import {
-	SceneIntentDto,
+import type { PrismaClient } from "@repo/database";
+import type { DeepSeekService } from "../deepseek-integration/deepseek.service";
+import type { PexelsIntegrationService } from "../pexels-sync/pexels-integration.service";
+import type { QueueService } from "../queue/queue.service";
+import type { SemanticMatchingService } from "../semantic-matching/semantic-matching.service";
+import type {
 	ExtractVisualIntentDto,
 	FindAlignedImagesDto,
 	ImageMatch,
+	SceneIntentDto,
 } from "./dto/scene-intent.dto";
 
 export interface SyncResult {
@@ -106,9 +106,9 @@ export class AlignmentService {
 	 * - Ensures data consistency and prevents partial ingestion
 	 */
 	async syncPexelsLibrary(
-		search_query: string = "nature",
-		batchSize: number = 50,
-		failureThreshold: number = 0.1, // 10% failure triggers batch fail
+		search_query = "nature",
+		batchSize = 50,
+		failureThreshold = 0.1, // 10% failure triggers batch fail
 	): Promise<SyncResult> {
 		const result: SyncResult = {
 			total_images: 0,
@@ -183,6 +183,7 @@ export class AlignmentService {
 	 * Ingest a batch of images into the database
 	 * Creates PexelsImage records and queues ImageAnalysisJobs
 	 */
+	// biome-ignore lint/suspicious/noExplicitAny: Batch ingestion handles dynamic image objects
 	private async ingestionBatch(images: Array<any>): Promise<string[]> {
 		const jobIds: string[] = [];
 
@@ -204,7 +205,7 @@ export class AlignmentService {
 					});
 
 					// Create analysis job for this image
-					const job = await this.prisma.imageAnalysisJob.create({
+					const _job = await this.prisma.imageAnalysisJob.create({
 						data: {
 							imageId: pexelsImage.id,
 							status: "PENDING",

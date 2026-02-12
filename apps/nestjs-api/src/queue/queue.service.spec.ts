@@ -1,8 +1,9 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { QueueService } from "./queue.service";
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import { Test, type TestingModule } from "@nestjs/testing";
 import { PrismaClient } from "@repo/database";
-import { GeminiAnalysisService } from "../image-analysis/gemini-analysis.service";
 import { Queue, Worker } from "bullmq";
+import { GeminiAnalysisService } from "../image-analysis/gemini-analysis.service";
+import { QueueService } from "./queue.service";
 
 // Mock BullMQ
 jest.mock("bullmq", () => {
@@ -65,6 +66,7 @@ describe("QueueService", () => {
 		it("should add job to image-analysis queue", async () => {
 			await service.onModuleInit(); // Initialize queues first
 
+			// biome-ignore lint/suspicious/noExplicitAny: Accessing private property for testing
 			const mockQueue = (service as any).imageAnalysisQueue;
 			mockQueue.add.mockResolvedValue({ id: "job-123" });
 
@@ -92,6 +94,7 @@ describe("QueueService", () => {
 
 		it("should process analysis and update prisma", async () => {
 			// Access private method
+			// biome-ignore lint/suspicious/noExplicitAny: Accessing private method for testing
 			const processImageAnalysis = (service as any).processImageAnalysis.bind(
 				service,
 			);
@@ -117,6 +120,7 @@ describe("QueueService", () => {
 		});
 
 		it("should handle failure and update prisma", async () => {
+			// biome-ignore lint/suspicious/noExplicitAny: Accessing private method for testing
 			const processImageAnalysis = (service as any).processImageAnalysis.bind(
 				service,
 			);

@@ -1,6 +1,7 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { PexelsIntegrationService } from "./pexels-integration.service";
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import { Test, type TestingModule } from "@nestjs/testing";
 import axios from "axios";
+import { PexelsIntegrationService } from "./pexels-integration.service";
 
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -147,8 +148,8 @@ describe("PexelsIntegrationService", () => {
 			try {
 				await generator.next();
 				throw new Error("Should have thrown");
-			} catch (e: any) {
-				expect(e.message).toBe("Rate limit exceeded");
+			} catch (e: unknown) {
+				expect((e as Error).message).toBe("Rate limit exceeded");
 			}
 
 			// Initial + 3 retries = 4 calls

@@ -1,7 +1,7 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { describe, it, expect, beforeEach, jest } from "@jest/globals";
-import { DeepSeekService } from "./deepseek.service";
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import { Test, type TestingModule } from "@nestjs/testing";
 import axios from "axios";
+import { DeepSeekService } from "./deepseek.service";
 
 jest.mock("axios");
 
@@ -148,6 +148,7 @@ describe("DeepSeekService", () => {
 
 		it("should retry on rate limiting (429)", async () => {
 			const error = new Error("Rate limited");
+			// biome-ignore lint/suspicious/noExplicitAny: Mocking error response
 			(error as any).response = { status: 429 };
 
 			(axios.post as jest.Mock)

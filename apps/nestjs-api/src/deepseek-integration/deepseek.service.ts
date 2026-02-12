@@ -1,6 +1,9 @@
 import { Injectable, Logger } from "@nestjs/common";
-import axios, { AxiosError } from "axios";
-import { SceneIntentDto, Composition } from "../alignment/dto/scene-intent.dto";
+import axios, { type AxiosError } from "axios";
+import type {
+	Composition,
+	SceneIntentDto,
+} from "../alignment/dto/scene-intent.dto";
 
 interface DeepSeekResponse {
 	choices: Array<{
@@ -134,7 +137,7 @@ Example:
 
 			// Handle rate limiting with exponential backoff
 			if (axiosError.response?.status === 429 && retryCount < maxRetries) {
-				const delay = Math.pow(2, retryCount) * 1000; // 1s, 2s, 4s
+				const delay = 2 ** retryCount * 1000; // 1s, 2s, 4s
 				this.logger.warn(`DeepSeek API rate limited, retrying in ${delay}ms`);
 				await new Promise((resolve) => setTimeout(resolve, delay));
 				return this.callDeepSeekAPI(systemPrompt, userPrompt, retryCount + 1);
@@ -171,6 +174,7 @@ Example:
 	/**
 	 * Validate and normalize composition object
 	 */
+	// biome-ignore lint/suspicious/noExplicitAny: Validating unstructured JSON input
 	private validateComposition(comp: any): Composition {
 		const validNegativeSpaces = ["left", "right", "center"];
 		const validShotTypes = ["CU", "MS", "WS"];

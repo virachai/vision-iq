@@ -1,9 +1,11 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { PrismaClient } from "@repo/database";
-import {
-	SceneIntentDto,
+import type { PrismaClient } from "@repo/database";
+import type {
+	Composition,
 	ImageMatch,
+	MoodDna,
 	RankingBreakdown,
+	SceneIntentDto,
 } from "../alignment/dto/scene-intent.dto";
 
 interface VectorSearchResult {
@@ -14,8 +16,8 @@ interface VectorSearchResult {
 	metadata: {
 		impactScore: number;
 		visualWeight: number;
-		composition: any;
-		moodDna: any;
+		composition: Composition;
+		moodDna: MoodDna;
 		metaphoricalTags: string[];
 	};
 	similarity: number;
@@ -39,11 +41,11 @@ export class SemanticMatchingService {
 	 */
 	async findAlignedImages(
 		scenes: SceneIntentDto[],
-		topK: number = 5,
-		moodConsistencyMultiplier: number = 1.0,
+		topK = 5,
+		moodConsistencyMultiplier = 1.0,
 	): Promise<ImageMatch[][]> {
 		const results: ImageMatch[][] = [];
-		let visualAnchorMood: any = null;
+		let visualAnchorMood: MoodDna | null = null;
 
 		for (let sceneIndex = 0; sceneIndex < scenes.length; sceneIndex++) {
 			const scene = scenes[sceneIndex];
@@ -100,8 +102,8 @@ export class SemanticMatchingService {
 		embedding: number[],
 		scene: SceneIntentDto,
 		topK: number,
-		visualAnchorMood: any,
-		moodConsistencyMultiplier: number,
+		_visualAnchorMood: MoodDna | null,
+		_moodConsistencyMultiplier: number,
 	): Promise<VectorSearchResult[]> {
 		try {
 			// Build raw SQL for vector similarity search with pgvector
@@ -159,7 +161,7 @@ export class SemanticMatchingService {
 		candidates: VectorSearchResult[],
 		scene: SceneIntentDto,
 		isFirstScene: boolean,
-		visualAnchorMood: any,
+		visualAnchorMood: MoodDna | null,
 		moodConsistencyMultiplier: number,
 	): ImageMatch[] {
 		const matches: ImageMatch[] = candidates
@@ -218,7 +220,10 @@ export class SemanticMatchingService {
 	 * Compare composition preferences
 	 * Awards 1.0 for exact match, 0.5 for partial match, 0 for no match
 	 */
-	private getCompositionMatch(preferred: any, imageComp: any): number {
+	private getCompositionMatch(
+		preferred: Composition,
+		imageComp: Composition,
+	): number {
 		let score = 0;
 
 		// Check shot type match
@@ -249,7 +254,10 @@ export class SemanticMatchingService {
 	 * Calculate mood consistency score with soft penalty
 	 * Compares color temperature and primary color of anchor vs candidate
 	 */
-	private getMoodConsistencyScore(anchorMood: any, candidateMood: any): number {
+	private getMoodConsistencyScore(
+		anchorMood: MoodDna | null,
+		candidateMood: MoodDna | null,
+	): number {
 		if (!anchorMood || !candidateMood) {
 			return 0.5; // Default neutral score if mood missing
 		}
@@ -298,9 +306,9 @@ export class SemanticMatchingService {
 		const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
 		return result
 			? {
-					r: parseInt(result[1], 16),
-					g: parseInt(result[2], 16),
-					b: parseInt(result[3], 16),
+					r: Number.parseInt(result[1], 16),
+					g: Number.parseInt(result[2], 16),
+					b: Number.parseInt(result[3], 16),
 				}
 			: null;
 	}
@@ -310,7 +318,7 @@ export class SemanticMatchingService {
 	 * TODO: integrate with OpenAI embeddings or local model
 	 */
 	private async generateEmbeddingForScene(
-		scene: SceneIntentDto,
+		_scene: SceneIntentDto,
 	): Promise<number[]> {
 		// Placeholder: return random 1536-dim vector
 		// In production, call OpenAI text-embedding-3-small or similar

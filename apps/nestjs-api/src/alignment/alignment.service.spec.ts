@@ -1,19 +1,19 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { describe, it, expect, beforeEach, jest } from "@jest/globals";
-import { AlignmentService } from "./alignment.service";
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import { Test, type TestingModule } from "@nestjs/testing";
+import { PrismaClient } from "@repo/database";
 import { DeepSeekService } from "../deepseek-integration/deepseek.service";
-import { SemanticMatchingService } from "../semantic-matching/semantic-matching.service";
 import { PexelsIntegrationService } from "../pexels-sync/pexels-integration.service";
 import { QueueService } from "../queue/queue.service";
-import { PrismaClient } from "@repo/database";
-import { SceneIntentDto } from "./dto/scene-intent.dto";
+import { SemanticMatchingService } from "../semantic-matching/semantic-matching.service";
+import { AlignmentService } from "./alignment.service";
+import type { ImageMatch, SceneIntentDto } from "./dto/scene-intent.dto";
 
 describe("AlignmentService", () => {
 	let service: AlignmentService;
 	let deepSeekService: DeepSeekService;
 	let semanticMatchingService: SemanticMatchingService;
-	let pexelsIntegrationService: PexelsIntegrationService;
-	let queueService: QueueService;
+	let _pexelsIntegrationService: PexelsIntegrationService;
+	let _queueService: QueueService;
 	let prismaClient: PrismaClient;
 
 	beforeEach(async () => {
@@ -68,10 +68,10 @@ describe("AlignmentService", () => {
 		semanticMatchingService = module.get<SemanticMatchingService>(
 			SemanticMatchingService,
 		);
-		pexelsIntegrationService = module.get<PexelsIntegrationService>(
+		_pexelsIntegrationService = module.get<PexelsIntegrationService>(
 			PexelsIntegrationService,
 		);
-		queueService = module.get<QueueService>(QueueService);
+		_queueService = module.get<QueueService>(QueueService);
 		prismaClient = module.get<PrismaClient>(PrismaClient);
 	});
 
@@ -142,7 +142,7 @@ describe("AlignmentService", () => {
 
 			jest
 				.spyOn(semanticMatchingService, "findAlignedImages")
-				.mockResolvedValue(mockMatches as any);
+				.mockResolvedValue(mockMatches as unknown as ImageMatch[][]);
 
 			const result = await service.findAlignedImages({
 				scenes: mockScenes,

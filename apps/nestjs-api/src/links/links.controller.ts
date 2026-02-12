@@ -1,16 +1,16 @@
 import {
-	Controller,
-	Get,
-	Post,
 	Body,
-	Patch,
-	Param,
+	Controller,
 	Delete,
+	Get,
+	Param,
+	Patch,
+	Post,
 } from "@nestjs/common";
 
 import type { CreateLinkDto, UpdateLinkDto } from "@repo/api";
 
-import { LinksService } from "./links.service";
+import type { LinksService } from "./links.service";
 
 @Controller("links")
 export class LinksController {
