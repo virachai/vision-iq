@@ -40,7 +40,7 @@ const envSchema = z.object({
 		.default("development"),
 	POSTGRES_URL: z.string().url(),
 	AUTH_SECRET: z.string().min(1),
-	AUTH_URL: z.string().url(),
+	NEXTJS_DASHBOARD_AUTH_URL: z.string().url(),
 	API_NEST_PORT: z.string().optional().default("4000"),
 	API_EXPRESS_PORT: z.string().optional().default("5001"),
 	ADMIN_PORT: z.string().optional().default("3001"),
