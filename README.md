@@ -1,44 +1,154 @@
-# Turborepo kitchen sink starter
+# Vision IQ
 
-This Turborepo starter is maintained by the Turborepo core team.
+A full-stack monorepo powered by **Turborepo**, containing multiple frontend applications and backend APIs with shared packages.
 
-This example also shows how to use [Workspace Configurations](https://turborepo.dev/docs/core-concepts/monorepos/configuring-workspaces).
+## Tech Stack
 
-## Using this example
+| Layer        | Technology                                                     |
+| ------------ | -------------------------------------------------------------- |
+| Monorepo     | [Turborepo](https://turborepo.dev/) + [pnpm](https://pnpm.io) |
+| Language     | [TypeScript](https://www.typescriptlang.org/)                  |
+| Database     | [PostgreSQL](https://www.postgresql.org/) + [Prisma](https://www.prisma.io/) |
+| Auth         | [NextAuth.js](https://next-auth.js.org/) v5                    |
+| Linting      | [Biome](https://biomejs.dev/)                                  |
+| Testing      | [Jest](https://jestjs.io/)                                     |
 
-Run the following command:
+## Project Structure
 
-```sh
-npx create-turbo@latest -e kitchen-sink
-
-npm run build -- --log-order stream
+```
+vision-iq/
+├── apps/
+│   ├── admin/             # Admin panel — Vite + React
+│   ├── api/               # REST API — Express
+│   ├── blog/              # Blog — Remix
+│   ├── nestjs-api/        # REST API — NestJS
+│   ├── nextjs-dashboard/  # Dashboard — Next.js (Auth, Postgres)
+│   ├── prisma-web/        # Web app — Next.js + Prisma
+│   └── storefront/        # Storefront — Next.js
+├── packages/
+│   ├── api/               # Shared API DTOs & types (NestJS mapped-types)
+│   ├── biome-config/      # Shared Biome config (@repo/biome-config)
+│   ├── config-env/        # Env validation with Zod (@repo/env)
+│   ├── config-typescript/ # Shared tsconfig presets (@repo/typescript-config)
+│   ├── database/          # Prisma client & migrations (@repo/database)
+│   ├── jest-config/       # Jest configuration
+│   ├── jest-presets/      # Jest presets for node & browser (@repo/jest-presets)
+│   ├── logger/            # Isomorphic logger (@repo/logger)
+│   ├── shared/            # Shared utilities (@repo/shared)
+│   └── ui/                # React component library (@repo/ui)
+└── scripts/
+    └── kill-ports.sh      # Kill processes on all project ports
 ```
 
-## What's inside?
+## Getting Started
 
-This Turborepo includes the following packages and apps:
+### Prerequisites
 
-### Apps and Packages
+- **Node.js** ≥ 18
+- **pnpm** 8.15.6
+- **PostgreSQL** database
 
-- `api`: an [Express](https://expressjs.com/) server
-- `storefront`: a [Next.js](https://nextjs.org/) app
-- `admin`: a [Vite](https://vitejs.dev/) single page app
-- `blog`: a [Remix](https://remix.run/) blog
-- `@repo/eslint-config`: ESLint configurations used throughout the monorepo
-- `@repo/jest-presets`: Jest configurations
-- `@repo/logger`: isomorphic logger (a small wrapper around console.log)
-- `@repo/ui`: a dummy React UI library (which contains `<CounterButton>` and `<Link>` components)
-- `@repo/typescript-config`: tsconfig.json's used throughout the monorepo
+### Setup
 
-Each package and app is 100% [TypeScript](https://www.typescriptlang.org/).
+1. **Clone the repository**
 
-### Utilities
+   ```sh
+   git clone <repo-url>
+   cd vision-iq
+   ```
 
-This Turborepo has some additional tools already setup for you:
+2. **Install dependencies**
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Jest](https://jestjs.io) test runner for all things JavaScript
-- [Prettier](https://prettier.io) for code formatting
+   ```sh
+   pnpm install
+   ```
 
-# vision-iq
+3. **Configure environment variables**
+
+   ```sh
+   cp .env.example .env
+   ```
+
+   Edit `.env` with your values:
+
+   ```env
+   # Database
+   POSTGRES_URL="postgresql://user:password@localhost:5432/dbname?sslmode=require"
+
+   # Auth
+   AUTH_SECRET="your-auth-secret-here"
+   AUTH_URL="http://localhost:3000/api/auth"
+
+   # App Ports
+   API_NEST_PORT=4000
+   API_EXPRESS_PORT=5001
+   ADMIN_PORT=3001
+   BLOG_PORT=3004
+   NEXTJS_DASHBOARD_PORT=3003
+   PRISMA_WEB_PORT=3005
+   STOREFRONT_PORT=3002
+   ```
+
+4. **Set up the database**
+
+   ```sh
+   pnpm --filter @repo/database generate
+   pnpm --filter @repo/database db:push
+   ```
+
+5. **Seed the database** _(optional)_
+
+   ```sh
+   pnpm --filter @repo/database db:seed
+   ```
+
+## Development
+
+Start all apps and packages in development mode:
+
+```sh
+pnpm dev
+```
+
+### Default Ports
+
+| App                | Port  |
+| ------------------ | ----- |
+| Admin              | 3001  |
+| Storefront         | 3002  |
+| Next.js Dashboard  | 3003  |
+| Blog               | 3004  |
+| Prisma Web         | 3005  |
+| NestJS API         | 4000  |
+| Express API        | 5001  |
+
+### Useful Commands
+
+| Command              | Description                       |
+| -------------------- | --------------------------------- |
+| `pnpm dev`           | Start all apps in dev mode        |
+| `pnpm build`         | Build all apps and packages       |
+| `pnpm start`         | Start all apps in production mode |
+| `pnpm lint`          | Lint all packages with Biome      |
+| `pnpm format`        | Format code with Biome            |
+| `pnpm test`          | Run all tests                     |
+| `pnpm check-types`   | Type-check all packages           |
+| `pnpm clean`         | Clean build artifacts             |
+
+### Database Commands
+
+Run from the `@repo/database` package:
+
+```sh
+pnpm --filter @repo/database db:migrate:dev   # Create a new migration
+pnpm --filter @repo/database db:migrate:deploy # Apply pending migrations
+pnpm --filter @repo/database db:push           # Push schema to database
+pnpm --filter @repo/database db:seed           # Seed the database
+pnpm --filter @repo/database studio            # Open Prisma Studio
+```
+
+### Kill Occupied Ports
+
+```sh
+bash scripts/kill-ports.sh
+```
