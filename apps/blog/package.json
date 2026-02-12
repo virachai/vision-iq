@@ -6,10 +6,10 @@
 	"type": "module",
 	"scripts": {
 		"build": "remix vite:build",
-		"dev": "remix vite:dev --port 3004",
+		"dev": "sh -c 'set -a; . ../../.env; set +a; remix vite:dev --port $BLOG_PORT'",
 		"check-types": "tsc --noEmit",
 		"lint": "biome check .",
-		"start": "remix vite:dev --port 3004"
+		"start": "sh -c 'set -a; . ../../.env; set +a; remix vite:dev --port $BLOG_PORT'"
 	},
 	"dependencies": {
 		"@remix-run/node": "^2.16.0",

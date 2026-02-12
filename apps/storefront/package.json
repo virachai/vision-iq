@@ -5,10 +5,10 @@
 	"private": true,
 	"scripts": {
 		"build": "next build",
-		"dev": "next dev -p 3002",
+		"dev": "sh -c 'set -a; . ../../.env; set +a; next dev -p $STOREFRONT_PORT'",
 		"lint": "biome check .",
 		"check-types": "next typegen && tsc --noEmit",
-		"start": "next start -p 3002"
+		"start": "sh -c 'set -a; . ../../.env; set +a; next start -p $STOREFRONT_PORT'"
 	},
 	"dependencies": {
 		"@repo/logger": "workspace:*",

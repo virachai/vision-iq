@@ -13,7 +13,18 @@
         ".next/**",
         "!.next/cache/**"
       ],
-      "env": ["POSTGRES_URL", "AUTH_SECRET", "AUTH_URL", "PORT"]
+      "env": [
+        "POSTGRES_URL",
+        "AUTH_SECRET",
+        "AUTH_URL",
+        "API_NEST_PORT",
+        "API_EXPRESS_PORT",
+        "ADMIN_PORT",
+        "BLOG_PORT",
+        "NEXTJS_DASHBOARD_PORT",
+        "PRISMA_WEB_PORT",
+        "STOREFRONT_PORT"
+      ]
     },
     "test": {
       "outputs": ["coverage/**"],
@@ -37,7 +48,18 @@
       "dependsOn": ["^build"],
       "cache": false,
       "persistent": true,
-      "env": ["POSTGRES_URL", "AUTH_SECRET", "AUTH_URL", "PORT"]
+      "env": [
+        "POSTGRES_URL",
+        "AUTH_SECRET",
+        "AUTH_URL",
+        "API_NEST_PORT",
+        "API_EXPRESS_PORT",
+        "ADMIN_PORT",
+        "BLOG_PORT",
+        "NEXTJS_DASHBOARD_PORT",
+        "PRISMA_WEB_PORT",
+        "STOREFRONT_PORT"
+      ]
     }
   }
 }

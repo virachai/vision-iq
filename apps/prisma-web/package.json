@@ -3,9 +3,9 @@
 	"name": "prisma-web",
 	"version": "1.0.0",
 	"scripts": {
-		"dev": "next dev -p 3005",
+		"dev": "sh -c 'set -a; . ../../.env; set +a; next dev -p $PRISMA_WEB_PORT'",
 		"build": "next build",
-		"start": "next start -p 3005",
+		"start": "sh -c 'set -a; . ../../.env; set +a; next start -p $PRISMA_WEB_PORT'",
 		"lint": "biome check ."
 	},
 	"dependencies": {

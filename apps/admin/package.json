@@ -5,10 +5,10 @@
 	"private": true,
 	"scripts": {
 		"build": "vite build",
-		"dev": "vite --host 0.0.0.0 --port 3001 --clearScreen false",
+		"dev": "sh -c 'set -a; . ../../.env; set +a; vite --host 0.0.0.0 --port $ADMIN_PORT --clearScreen false'",
 		"check-types": "tsc --noEmit",
 		"lint": "biome check .",
-		"start": "vite preview --host 0.0.0.0 --port 3001 --clearScreen false"
+		"start": "sh -c 'set -a; . ../../.env; set +a; vite preview --host 0.0.0.0 --port $ADMIN_PORT --clearScreen false'"
 	},
 	"dependencies": {
 		"@repo/ui": "workspace:*",

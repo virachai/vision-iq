@@ -41,7 +41,13 @@ const envSchema = z.object({
 	POSTGRES_URL: z.string().url(),
 	AUTH_SECRET: z.string().min(1),
 	AUTH_URL: z.string().url(),
-	PORT: z.string().optional().default("4000"),
+	API_NEST_PORT: z.string().optional().default("4000"),
+	API_EXPRESS_PORT: z.string().optional().default("5001"),
+	ADMIN_PORT: z.string().optional().default("3001"),
+	BLOG_PORT: z.string().optional().default("3004"),
+	NEXTJS_DASHBOARD_PORT: z.string().optional().default("3003"),
+	PRISMA_WEB_PORT: z.string().optional().default("3005"),
+	STOREFRONT_PORT: z.string().optional().default("3002"),
 });
 
 const _env = envSchema.safeParse(process.env);
