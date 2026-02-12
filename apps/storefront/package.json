@@ -1,25 +1,25 @@
 {
-	"name": "storefront",
-	"version": "1.0.0",
-	"type": "module",
-	"private": true,
-	"scripts": {
-		"build": "next build",
-		"dev": "sh -c 'set -a; . ../../.env; set +a; next dev -p $STOREFRONT_PORT'",
-		"lint": "biome check .",
-		"check-types": "next typegen && tsc --noEmit",
-		"start": "sh -c 'set -a; . ../../.env; set +a; next start -p $STOREFRONT_PORT'"
-	},
-	"dependencies": {
-		"@repo/logger": "workspace:*",
-		"@repo/ui": "workspace:*",
-		"next": "^15.1.3",
-		"react": "^19.0.0",
-		"react-dom": "^19.0.0"
-	},
-	"devDependencies": {
-		"@repo/biome-config": "workspace:*",
-		"@repo/typescript-config": "workspace:*",
-		"typescript": "^5.7.3"
-	}
+  "name": "storefront",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "sh -c 'set -a; . ../../.env; set +a; next dev -p $STOREFRONT_PORT'",
+    "lint": "biome check .",
+    "check-types": "next typegen && tsc --noEmit",
+    "start": "sh -c 'set -a; . ../../.env; set +a; next start -p $STOREFRONT_PORT'"
+  },
+  "dependencies": {
+    "@repo/logger": "workspace:*",
+    "@repo/ui": "workspace:*",
+    "next": "^15.1.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@repo/biome-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "typescript": "^5.7.3"
+  }
 }
