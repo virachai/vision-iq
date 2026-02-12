@@ -16,3 +16,115 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
 }
+
+// Pexels Image Library
+model PexelsImage {
+  id              String   @id @default(cuid())
+  pexelsId        String   @unique
+  url             String
+  photographer    String?
+  width           Int?
+  height          Int?
+  avgColor        String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  metadata        ImageMetadata?
+  embedding       ImageEmbedding?
+  analysisJob     ImageAnalysisJob?
+
+  @@index([pexelsId])
+}
+
+// Vector embeddings for semantic search
+model ImageEmbedding {
+  id        String   @id @default(cuid())
+  imageId   String   @unique
+  image     PexelsImage @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  
+  // 1536-dimensional embedding for semantic search
+  embedding Unsupported("vector(1536)")
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([imageId])
+  // Note: HNSW index on embedding created in migration: CREATE INDEX ON "ImageEmbedding" USING hnsw ("embedding" vector_cosine_ops);
+}
+
+// Image Analysis Metadata
+model ImageMetadata {
+  id                  String   @id @default(cuid())
+  imageId             String   @unique
+  image               PexelsImage @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  
+  // Impact and visual properties
+  impactScore         Float    @default(5.0) // 1.0 - 10.0: subject prominence and visual strength
+  visualWeight        Float    @default(5.0) // contrast, saturation, focal clarity
+  
+  // Composition metadata
+  composition         Json     // { "negative_space": "left" | "right" | "center", "shot_type": "CU" | "MS" | "WS", "angle": "low" | "eye" | "high" }
+  
+  // Mood/aesthetic metadata
+  moodDna             Json     // { "temp": "warm" | "cold", "primary_color": "hex", "vibe": "minimalist" | "cinematic" | ... }
+  
+  // Metaphorical/semantic tags
+  metaphoricalTags    String[] @default([]) // e.g., ["solitude", "breakthrough", "journey"]
+  
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([imageId])
+  @@index([impactScore])
+}
+
+// Image Analysis Job Status
+enum AnalysisStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+}
+
+model ImageAnalysisJob {
+  id              String   @id @default(cuid())
+  imageId         String   @unique
+  image           PexelsImage @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  
+  status          AnalysisStatus @default(PENDING)
+  retryCount      Int      @default(0)
+  maxRetries      Int      @default(3)
+  
+  errorMessage    String?
+  result          Json?    // Stores analysis result from Gemini/DeepSeek
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([status])
+  @@index([imageId])
+}
+
+// Scene Intent from narrative parsing
+model SceneIntent {
+  id                  String   @id @default(cuid())
+  projectId           String   // FK to narrative/project (future relation)
+  
+  sceneIndex          Int      // Order in narrative
+  
+  intent              String   // "show a lonely figure in vast landscape"
+  requiredImpact      Float    // 1.0 - 10.0: how prominent should subject be
+  
+  // Preferred composition constraints
+  composition         Json     // { "negative_space": "left" | "right" | "center", "shot_type": "CU" | "MS" | "WS" }
+  
+  // Visual anchor (set after first image selection for consistency)
+  moodAnchor          Json?    // { "temp": "warm" | "cold", "primary_color": "hex" }
+  
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([projectId])
+  @@index([sceneIndex])
+}
