@@ -14,10 +14,11 @@ const DEFAULT_USERS = [
 (async () => {
 	try {
 		await Promise.all(
-			DEFAULT_USERS.map((user) =>
-				prisma.user.upsert({
+			DEFAULT_USERS.map((user) => {
+				if (!user.email) return Promise.resolve();
+				return prisma.user.upsert({
 					where: {
-						email: user.email!,
+						email: user.email,
 					},
 					update: {
 						...user,
@@ -25,8 +26,8 @@ const DEFAULT_USERS = [
 					create: {
 						...user,
 					},
-				}),
-			),
+				});
+			}),
 		);
 	} catch (error) {
 		console.error(error);

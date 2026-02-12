@@ -8,8 +8,8 @@ export function CounterButton() {
 	return (
 		<div
 			style={{
-				background: `rgba(0,0,0,0.05)`,
-				borderRadius: `8px`,
+				background: "rgba(0,0,0,0.05)",
+				borderRadius: "8px",
 				padding: "1.5rem",
 				fontWeight: 500,
 			}}
@@ -19,7 +19,7 @@ export function CounterButton() {
 				<code
 					style={{
 						padding: "0.2rem 0.3rem",
-						background: `rgba(0,0,0,0.1)`,
+						background: "rgba(0,0,0,0.1)",
 						borderRadius: "0.25rem",
 					}}
 				>

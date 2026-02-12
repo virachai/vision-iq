@@ -23,9 +23,6 @@
 		"node": ">=18"
 	},
 	"pnpm": {
-		"onlyBuiltDependencies": [
-			"bcrypt",
-			"sharp"
-		]
+		"onlyBuiltDependencies": ["bcrypt", "sharp"]
 	}
 }
