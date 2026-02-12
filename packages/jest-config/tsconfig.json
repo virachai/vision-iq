@@ -15,13 +15,6 @@
 		"baseUrl": "src",
 		"rootDir": "src"
 	},
-	"include": [
-		"src"
-	],
-	"exclude": [
-		"node_modules",
-		"test",
-		"dist",
-		"**/*spec.ts"
-	]
+	"include": ["src"],
+	"exclude": ["node_modules", "test", "dist", "**/*spec.ts"]
 }
