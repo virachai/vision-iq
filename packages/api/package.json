@@ -16,10 +16,12 @@
 	},
 	"exports": {
 		".": {
+			"types": "./dist/entry.d.ts",
 			"import": "./dist/entry.js",
 			"require": "./dist/entry.js"
 		},
 		"./*": {
+			"types": "./dist/*.d.ts",
 			"import": "./dist/*.js",
 			"require": "./dist/*.js"
 		}

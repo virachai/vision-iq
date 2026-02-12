@@ -10,6 +10,8 @@ Run the following command:
 
 ```sh
 npx create-turbo@latest -e kitchen-sink
+
+npm run build -- --log-order stream
 ```
 
 ## What's inside?
@@ -38,4 +40,5 @@ This Turborepo has some additional tools already setup for you:
 - [ESLint](https://eslint.org/) for code linting
 - [Jest](https://jestjs.io) test runner for all things JavaScript
 - [Prettier](https://prettier.io) for code formatting
+
 # vision-iq

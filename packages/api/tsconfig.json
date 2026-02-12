@@ -3,11 +3,24 @@
 	"compilerOptions": {
 		"allowJs": true,
 		"baseUrl": "src",
+		"rootDir": "src",
 		"esModuleInterop": true,
-		"incremental": false,
+		"incremental": true,
+		"noEmit": false,
+		"composite": true,
+		"allowImportingTsExtensions": false,
 		"outDir": "dist",
-		"types": ["node"]
+		"types": [
+			"node"
+		]
 	},
-	"include": ["src"],
-	"exclude": ["node_modules", "test", "dist", "**/*spec.ts"]
+	"include": [
+		"src"
+	],
+	"exclude": [
+		"node_modules",
+		"test",
+		"dist",
+		"**/*spec.ts"
+	]
 }
