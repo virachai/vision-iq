@@ -255,14 +255,26 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
       // Store embedding in database
       // Prisma doesn't support upsert/create with Unsupported types easily
       const embeddingArray = `[${embedding.join(",")}]`;
-      await this.prisma.$executeRawUnsafe(
-        `INSERT INTO "vision_iq_image_embeddings" ("id", "imageId", "embedding", "updatedAt") 
-				 VALUES ($1, $2, $3::vector, NOW())
-				 ON CONFLICT ("imageId") DO UPDATE SET "embedding" = $3::vector, "updatedAt" = NOW()`,
-        `emb-${data.imageId}`,
-        data.imageId,
-        embeddingArray,
-      );
+
+      try {
+        await this.prisma.$executeRawUnsafe(
+          `INSERT INTO "vision_iq_image_embeddings" ("id", "imageId", "embedding", "updatedAt") 
+           VALUES ($1, $2, $3::vector, NOW())
+           ON CONFLICT ("imageId") DO UPDATE SET "embedding" = $3::vector, "updatedAt" = NOW()`,
+          `emb-${data.imageId}`,
+          data.imageId,
+          embeddingArray,
+        );
+      } catch (error) {
+        // Handle Foreign Key Violation (23503) - Image might have been deleted
+        if ((error as any).code === "23503") {
+          this.logger.warn(
+            `Skipping embedding storage for ${data.imageId}: Image not found (FK violation)`,
+          );
+          return;
+        }
+        throw error;
+      }
 
       this.logger.debug(`Embedding generated and stored: ${data.imageId}`);
     } catch (error) {

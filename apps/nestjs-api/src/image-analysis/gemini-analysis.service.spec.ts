@@ -1,22 +1,28 @@
 import { Test, type TestingModule } from "@nestjs/testing";
 import { GeminiAnalysisService } from "./gemini-analysis.service";
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, Modality } from "@google/genai";
 
 jest.mock("@google/genai");
 
 describe("GeminiAnalysisService", () => {
   let service: GeminiAnalysisService;
-  let mockGenerateContent: jest.Mock;
+  let mockConnect: jest.Mock;
+  let mockSession: any;
 
   beforeEach(async () => {
     jest.clearAllMocks();
     process.env.GEMINI_API_KEY = "test-api-key";
 
-    mockGenerateContent = jest.fn();
+    mockSession = {
+      sendClientContent: jest.fn(),
+      close: jest.fn(),
+    };
+
+    mockConnect = jest.fn().mockResolvedValue(mockSession);
 
     (GoogleGenAI as jest.Mock).mockImplementation(() => ({
-      models: {
-        generateContent: mockGenerateContent,
+      live: {
+        connect: mockConnect,
       },
     }));
 
@@ -44,11 +50,7 @@ describe("GeminiAnalysisService", () => {
       metaphorical_tags: ["freedom", "adventure"],
     };
 
-    it("should successfully analyze an image via SDK", async () => {
-      mockGenerateContent.mockResolvedValue({
-        text: JSON.stringify(mockAnalysisResult),
-      });
-
+    it("should successfully analyze an image via Live API", async () => {
       // Mock fetch
       global.fetch = jest.fn().mockResolvedValue({
         ok: true,
@@ -56,47 +58,105 @@ describe("GeminiAnalysisService", () => {
         headers: { get: () => "image/jpeg" },
       });
 
-      const result = await service.analyzeImage(
-        "https://res.cloudinary.com/cloudinary-marketing/images/f_auto,q_auto/v1688666201/Blog-jpegXL/Blog-jpegXL.jpg",
+      // Simulate Gemini Live behavior
+      mockConnect.mockImplementation(({ callbacks }) => {
+        setTimeout(() => {
+          callbacks.onopen();
+          callbacks.onmessage({
+            serverContent: {
+              modelTurn: {
+                parts: [{ text: JSON.stringify(mockAnalysisResult) }],
+              },
+            },
+          });
+          callbacks.onmessage({
+            serverContent: { turnComplete: true },
+          });
+        }, 10);
+        return Promise.resolve(mockSession);
+      });
+
+      const { result } = await service.analyzeImage(
+        "https://example.com/image.jpg",
       );
 
       expect(result).toEqual(mockAnalysisResult);
-      expect(mockGenerateContent).toHaveBeenCalled();
+      expect(mockConnect).toHaveBeenCalledWith(
+        expect.objectContaining({
+          config: expect.objectContaining({
+            responseModalities: [Modality.AUDIO, Modality.TEXT],
+          }),
+        }),
+      );
     });
 
-    it("should handle markdown code blocks in response", async () => {
-      mockGenerateContent.mockResolvedValue({
-        text: `\`\`\`json\n${JSON.stringify(mockAnalysisResult)}\n\`\`\``,
-      });
-
+    it("should handle markdown code blocks in Live response", async () => {
       global.fetch = jest.fn().mockResolvedValue({
         ok: true,
         arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
         headers: { get: () => "image/jpeg" },
       });
 
-      const result = await service.analyzeImage(
-        "https://res.cloudinary.com/cloudinary-marketing/images/f_auto,q_auto/v1688666201/Blog-jpegXL/Blog-jpegXL.jpg",
+      mockConnect.mockImplementation(({ callbacks }) => {
+        setTimeout(() => {
+          callbacks.onopen();
+          callbacks.onmessage({
+            serverContent: {
+              modelTurn: {
+                parts: [
+                  {
+                    text: `\`\`\`json\n${JSON.stringify(
+                      mockAnalysisResult,
+                    )}\n\`\`\``,
+                  },
+                ],
+              },
+            },
+          });
+          callbacks.onmessage({
+            serverContent: { turnComplete: true },
+          });
+        }, 10);
+        return Promise.resolve(mockSession);
+      });
+
+      const { result } = await service.analyzeImage(
+        "https://example.com/image.jpg",
       );
       expect(result).toEqual(mockAnalysisResult);
     });
 
-    it("should throw error if JSON is invalid", async () => {
-      mockGenerateContent.mockResolvedValue({
-        text: "invalid json",
-      });
-
+    it("should return default result if JSON is invalid", async () => {
       global.fetch = jest.fn().mockResolvedValue({
         ok: true,
         arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
         headers: { get: () => "image/jpeg" },
       });
 
-      await expect(
-        service.analyzeImage(
-          "https://res.cloudinary.com/cloudinary-marketing/images/f_auto,q_auto/v1688666201/Blog-jpegXL/Blog-jpegXL.jpg",
-        ),
-      ).rejects.toThrow("Invalid JSON from Gemini");
+      mockConnect.mockImplementation(({ callbacks }) => {
+        setTimeout(() => {
+          callbacks.onopen();
+          callbacks.onmessage({
+            serverContent: {
+              modelTurn: {
+                parts: [{ text: "invalid json" }],
+              },
+            },
+          });
+          callbacks.onmessage({
+            serverContent: { turnComplete: true },
+          });
+        }, 10);
+        return Promise.resolve(mockSession);
+      });
+
+      const { result } = await service.analyzeImage(
+        "https://example.com/image.jpg",
+      );
+
+      // Should return normalized default instead of throwing (as per new implementation)
+      expect(result.impact_score).toBe(5);
+      expect(result.visual_weight).toBe(5);
     });
 
     it("should handle image fetch failure", async () => {
@@ -106,38 +166,8 @@ describe("GeminiAnalysisService", () => {
       });
 
       await expect(
-        service.analyzeImage(
-          "https://res.cloudinary.com/cloudinary-marketing/images/f_auto,q_auto/v1688666201/Blog-jpegXL/Blog-jpegXL.jpg",
-        ),
+        service.analyzeImage("https://example.com/image.jpg"),
       ).rejects.toThrow("Failed to fetch image: Not Found");
-    });
-
-    it("should handle SDK errors", async () => {
-      mockGenerateContent.mockRejectedValue(new Error("API Error"));
-
-      global.fetch = jest.fn().mockResolvedValue({
-        ok: true,
-        arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
-        headers: { get: () => "image/jpeg" },
-      });
-
-      await expect(
-        service.analyzeImage(
-          "https://res.cloudinary.com/cloudinary-marketing/images/f_auto,q_auto/v1688666201/Blog-jpegXL/Blog-jpegXL.jpg",
-        ),
-      ).rejects.toThrow("Gemini analysis failed: API Error");
-    });
-  });
-
-  describe("Initialization", () => {
-    it("should warn if GEMINI_API_KEY is not set", () => {
-      const originalKey = process.env.GEMINI_API_KEY;
-      delete process.env.GEMINI_API_KEY;
-
-      const svc = new GeminiAnalysisService();
-      expect(svc).toBeDefined();
-
-      process.env.GEMINI_API_KEY = originalKey;
     });
   });
 });

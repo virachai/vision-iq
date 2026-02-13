@@ -258,7 +258,11 @@ export class GeminiAnalysisService {
             systemInstruction: {
               parts: [{ text: systemPrompt }],
             },
+            temperature: 0.2,
+            topP: 0.85,
+            maxOutputTokens: 1200,
           },
+
           callbacks: {
             onopen: () => {
               this.logger.debug("Gemini Live session opened");
@@ -335,45 +339,100 @@ export class GeminiAnalysisService {
   // ---------------------------------------------------------------------------
 
   private getSingleAnalysisPrompt(): string {
-    return `You are a professional film cinematographer analyzing visual composition and mood.
+    return `
+You are a professional cinematographer performing structured visual analysis.
 
-Analyze this image and extract the following in JSON format:
+Respond in structured RAW TEXT format.
+Do NOT use JSON.
+Do NOT use markdown.
+Do NOT explain the format.
+Do NOT add commentary outside the structure.
 
-1. impact_score (1-10)
-2. visual_weight (1-10)
-3. composition:
-   - negative_space: "left" | "right" | "center"
-   - shot_type: "CU" | "MS" | "WS"
-   - angle: "low" | "eye" | "high"
-4. mood_dna:
-   - temp: "warm" | "cold"
-   - primary_color: "#RRGGBB"
-   - vibe: string
-5. metaphorical_tags: array of 5-10 abstract concepts
+Use the exact section headers below.
 
-Return ONLY valid JSON. No markdown. No explanation.`;
+FORMAT:
+
+IMPACT: <integer 1-10>
+VISUAL_WEIGHT: <integer 1-10>
+
+COMPOSITION:
+- negative_space: left | right | center
+- shot_type: CU | MS | WS
+- angle: low | eye | high
+- balance: symmetrical | asymmetrical
+- subject_dominance: weak | moderate | strong
+
+COLOR_PROFILE:
+- temperature: warm | cold
+- primary_color: dominant color word
+- secondary_colors: comma-separated color words
+- contrast_level: low | medium | high
+
+MOOD_DNA:
+- vibe: 1-3 word phrase, lowercase
+- emotional_intensity: low | restrained | medium | strong
+- rhythm: calm | dynamic | tense | still
+
+METAPHORICAL_FIELD:
+5-8 abstract concepts (one per line, lowercase, no sentences)
+
+CINEMATIC_NOTES:
+3-5 concise sentences describing the overall cinematic character.
+
+Rules:
+- Keep language precise.
+- No extra sections.
+- No emojis.
+- No repetition.
+`;
   }
 
   private getBatchAnalysisPrompt(): string {
-    return `You are a professional film cinematographer analyzing visual composition and mood.
+    return `
+You are a professional cinematographer analyzing multiple images.
 
-For EACH image, extract the following fields:
-- id: the image id provided in the prompt (string)
-- impact_score: (1-10)
-- visual_weight: (1-10)
-- composition:
-   - negative_space: "left" | "right" | "center"
-   - shot_type: "CU" | "MS" | "WS"
-   - angle: "low" | "eye" | "high"
-- mood_dna:
-   - temp: "warm" | "cold"
-   - primary_color: "#RRGGBB"
-   - vibe: string
-- metaphorical_tags: array of 5-10 abstract concepts
+Respond in structured RAW TEXT.
+Do NOT use JSON.
+Do NOT use markdown.
+Do NOT include explanations.
 
-Return a JSON ARRAY of objects, one per image, in the same order as the images.
-Each object MUST include the "id" field.
-Return ONLY valid JSON. No markdown. No explanation.`;
+For EACH image, use this format:
+
+IMAGE_ID: <id>
+
+IMPACT: <integer 1-10>
+VISUAL_WEIGHT: <integer 1-10>
+
+COMPOSITION:
+- negative_space: left | right | center
+- shot_type: CU | MS | WS
+- angle: low | eye | high
+- balance: symmetrical | asymmetrical
+- subject_dominance: weak | moderate | strong
+
+COLOR_PROFILE:
+- temperature: warm | cold
+- primary_color: dominant color word
+- secondary_colors: comma-separated color words
+- contrast_level: low | medium | high
+
+MOOD_DNA:
+- vibe: 1-3 word phrase, lowercase
+- emotional_intensity: low | restrained | medium | strong
+- rhythm: calm | dynamic | tense | still
+
+METAPHORICAL_FIELD:
+5-8 abstract concepts (one per line)
+
+CINEMATIC_NOTES:
+3-5 concise sentences.
+
+Rules:
+- Repeat this full structure for every image.
+- Do not skip any image.
+- Do not merge analyses.
+- Keep sections clearly separated.
+`;
   }
 
   // ---------------------------------------------------------------------------
@@ -466,11 +525,14 @@ Return ONLY valid JSON. No markdown. No explanation.`;
     if (objectMatch) return objectMatch[0];
     if (arrayMatch) return arrayMatch[0];
 
-    // If no JSON structure found, return the original string (will likely fail JSON.parse)
-    return s
+    // 3. Fallback: clean typical markdown markers if present and try parsing whatever's left
+    const clean = s
       .replace(/^```json\n?/, "")
       .replace(/^```\n?/, "")
-      .replace(/\n?```$/, "");
+      .replace(/\n?```$/, "")
+      .trim();
+
+    return clean;
   }
 
   // biome-ignore lint/suspicious/noExplicitAny: Normalizing untyped Gemini response fields
