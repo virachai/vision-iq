@@ -284,7 +284,19 @@ export class AlignmentService {
         console.error(e);
       }
 
-      const totalImages = await this.prisma.pexelsImage.count();
+      let totalImages = 0;
+      try {
+        totalImages = await this.prisma.pexelsImage.count();
+      } catch (countError) {
+        this.logger.error(
+          "Error counting pexelsImage",
+          (countError as Error).message,
+          (countError as Error).stack,
+        );
+        console.error("pexelsImage.count() error:", countError);
+        throw countError;
+      }
+
       const totalEmbeddings = await this.prisma.imageEmbedding.count();
       const pendingJobs = await this.prisma.imageAnalysisJob.count({
         where: { status: "PENDING" },
@@ -301,7 +313,11 @@ export class AlignmentService {
         ready_for_search: totalEmbeddings, // Images with embeddings are searchable
       };
     } catch (error) {
-      this.logger.error("Failed to get stats", (error as Error).message);
+      this.logger.error(
+        "Failed to get stats",
+        (error as Error).message,
+        (error as Error).stack,
+      );
       throw error;
     }
   }
