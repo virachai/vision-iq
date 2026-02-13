@@ -1,4 +1,5 @@
 # Vision-IQ: Narrative-to-Video Image Alignment Service
+
 ## Implementation Summary
 
 **Status**: ✅ Production-Grade Service Complete
@@ -8,9 +9,11 @@
 ## 📦 Deliverables
 
 ### 1. **Prisma Database Schema** ✅
+
 **File**: [packages/database/prisma/schema.prisma](../../../packages/database/prisma/schema.prisma)
 
 **Models Created**:
+
 - `PexelsImage`: Core image records with metadata
 - `ImageEmbedding`: 1536-dim vector embeddings with pgvector
 - `ImageMetadata`: Composite analysis with impact_score, composition, mood_dna, metaphorical_tags
@@ -18,6 +21,7 @@
 - `SceneIntent`: Parsed narrative scenes from Gemini Live text
 
 **Features**:
+
 - Unique constraint on `pexelsId` to prevent duplicates
 - HNSW vector index for O(log n) similarity search on 1M+ images
 - Composite index on (mood_dna, impact_score) for metadata filtering
@@ -26,11 +30,13 @@
 ---
 
 ### 2. **NestJS Module Architecture** ✅
+
 **Root File**: [apps/nestjs-api/src/alignment/alignment.module.ts](alignment/alignment.module.ts)
 
 **Modules Implemented**:
 
 #### A. **Alignment Module** (Orchestrator)
+
 - **Service**: `AlignmentService` - Main business logic orchestration
 - **Controller**: `AlignmentController` - HTTP endpoints
 - **Methods**:
@@ -40,7 +46,8 @@
   - `getStats()` - Database statistics
 
 #### B. **DeepSeek Integration Module**
-- **Service**: `DeepSeekService` 
+
+- **Service**: `DeepSeekService`
 - **Responsibility**: Convert raw conversational text to structured scene intents
 - **Features**:
   - Retry with exponential backoff on rate limiting (429)
@@ -49,6 +56,7 @@
   - Single-scene-per-call design pattern
 
 #### C. **Semantic Matching Module**
+
 - **Service**: `SemanticMatchingService`
 - **Responsibility**: Vector search + metadata filtering + ranking
 - **Key Features**:
@@ -59,6 +67,7 @@
   - Ranking formula: 0.5×vector + 0.3×impact + 0.15×composition + 0.05×mood_consistency
 
 #### D. **Pexels Integration Module**
+
 - **Service**: `PexelsIntegrationService`
 - **Responsibility**: API pagination with rate limiting
 - **Features**:
@@ -68,6 +77,7 @@
   - Configurable batch sizes (default: 50)
 
 #### E. **Image Analysis Module**
+
 - **Service**: `GeminiAnalysisService`
 - **Responsibility**: Extract metadata from raw image URLs
 - **Extracts**:
@@ -82,6 +92,7 @@
   - JSON response parsing with error recovery
 
 #### F. **Queue Module** (BullMQ)
+
 - **Service**: `QueueService`
 - **Responsibility**: Async job processing with Redis backend
 - **Queues**:
@@ -98,26 +109,32 @@
 ### 3. **Core Service Logic** ✅
 
 #### **The Sifter** (`deepseek.service.ts`)
+
 ```typescript
 async extractVisualIntent(rawGeminiText: string): Promise<SceneIntentDto[]>
 ```
+
 - Parses conversational Gemini Live output
 - Extracts array of scenes with: `intent`, `required_impact`, `preferred_composition`
 - Handles rate limiting and JSON parsing errors
 
 #### **The Matcher** (`semantic-matching.service.ts`)
+
 ```typescript
 async findAlignedImages(scenes: SceneIntentDto[]): Promise<ImageMatch[][]>
 ```
+
 - Vector similarity search + metadata filtering
 - Implements visual anchor logic (first image locks subsequent mood)
 - Returns ranked results with breakdown of scoring factors
 - Applies soft mood consistency penalties (not hard constraints)
 
 #### **The Batch Processor** (`pexels-integration.service.ts`)
+
 ```typescript
 async *syncPexelsLibrary(query: string, batchSize: number): AsyncGenerator<SyncBatch>
 ```
+
 - Pagination through Pexels API respecting rate limits
 - Yields batches as they're fetched
 - AsyncGenerator pattern for memory-efficient streaming
@@ -129,11 +146,12 @@ async *syncPexelsLibrary(query: string, batchSize: number): AsyncGenerator<SyncB
 **Location**: [apps/nestjs-api/src/alignment/README.md](alignment/README.md) (detailed explanation)
 
 **Formula**:
+
 ```
-final_score = 
-    0.5 × vector_similarity 
-  + 0.3 × impact_relevance 
-  + 0.15 × composition_match 
+final_score =
+    0.5 × vector_similarity
+  + 0.3 × impact_relevance
+  + 0.15 × composition_match
   + 0.05 × mood_consistency_score
 
 Where:
@@ -144,12 +162,14 @@ Where:
 ```
 
 **Visual Anchor Logic**:
+
 - Scene 0 (anchor): mood_consistency = 1.0 (no penalty)
 - Scenes 1+: Apply soft penalty based on color/temperature difference
 - Mismatches reduce score but don't block alternative images
 - Allows cinematic flexibility while maintaining visual coherence
 
 **Color Distance Calculation**:
+
 - Converts hex to RGB
 - Euclidean distance in RGB space
 - Normalized to [0, 1] penalty scale
@@ -162,33 +182,33 @@ Where:
 
 ```typescript
 interface Composition {
-  negative_space: "left" | "right" | "center"
-  shot_type: "CU" | "MS" | "WS"  // Close-Up, Medium, Wide
-  angle: "low" | "eye" | "high"
+  negative_space: "left" | "right" | "center";
+  shot_type: "CU" | "MS" | "WS"; // Close-Up, Medium, Wide
+  angle: "low" | "eye" | "high";
 }
 
 interface MoodDna {
-  temp: "warm" | "cold"
-  primary_color: string  // hex
-  vibe: string  // abstract mood
+  temp: "warm" | "cold";
+  primary_color: string; // hex
+  vibe: string; // abstract mood
 }
 
 class SceneIntentDto {
-  intent: string
-  required_impact: number  // 1-10
-  preferred_composition: Composition
+  intent: string;
+  required_impact: number; // 1-10
+  preferred_composition: Composition;
 }
 
 interface ImageMatch {
-  image_id: string
-  pexels_id: string
-  url: string
-  match_score: number
-  vector_similarity: number
-  impact_relevance: number
-  composition_match: number
-  mood_consistency_score: number
-  metadata: ImageMetadata
+  image_id: string;
+  pexels_id: string;
+  url: string;
+  match_score: number;
+  vector_similarity: number;
+  impact_relevance: number;
+  composition_match: number;
+  mood_consistency_score: number;
+  metadata: ImageMetadata;
 }
 ```
 
@@ -198,30 +218,33 @@ interface ImageMatch {
 
 **Controller**: [apps/nestjs-api/src/alignment/alignment.controller.ts](alignment/alignment.controller.ts)
 
-| Endpoint | Method | Purpose |
-|----------|--------|---------|
-| `/alignment/extract-visual-intent` | POST | Parse raw Gemini text → scene intents |
-| `/alignment/find-images` | POST | Find aligned images for scenes |
-| `/alignment/sync-pexels` | POST | Trigger Pexels library sync |
-| `/alignment/stats` | GET | Library and processing statistics |
+| Endpoint                           | Method | Purpose                               |
+| ---------------------------------- | ------ | ------------------------------------- |
+| `/alignment/extract-visual-intent` | POST   | Parse raw Gemini text → scene intents |
+| `/alignment/find-images`           | POST   | Find aligned images for scenes        |
+| `/alignment/sync-pexels`           | POST   | Trigger Pexels library sync           |
+| `/alignment/stats`                 | GET    | Library and processing statistics     |
 
 ---
 
 ### 7. **Non-Functional Requirements** ✅
 
 #### **Scalability to 1M Images**
+
 - pgvector HNSW index: O(log n) search on 1M vectors
 - Estimated 10-50ms query time
 - Composite metadata index reduces candidate set pre-ranking
 - Async workers handle ~240 images/hour (Gemini) and ~3,600 embeddings/hour
 
 #### **Consistency**
+
 - Visual Anchor Logic: First image's mood_dna locked for sequence
 - Soft penalties prevent hard deadlocks on mood mismatches
 - Batch-fail model: If >10% of batch fails, entire sync fails (explicit retry)
 - Prevents partial ingestion and ensures data integrity
 
 #### **Error Handling**
+
 - Retry logic: Up to 3 attempts with exponential backoff
 - Rate limiting respects API 429 responses
 - Per-image failures logged, batch progression continues (soft failure)
@@ -235,6 +258,7 @@ interface ImageMatch {
 **File**: [packages/config-env/src/index.ts](../../../packages/config-env/src/index.ts)
 
 **New Variables Added**:
+
 - `DEEPSEEK_API_KEY` - DeepSeek-V3 authentication
 - `DEEPSEEK_API_URL` - API endpoint
 - `GEMINI_API_KEY` - Google Gemini Vision authentication
@@ -253,9 +277,9 @@ interface ImageMatch {
 
 ```json
 {
-  "axios": "^1.6.2",           // HTTP requests (DeepSeek, Gemini, Pexels)
-  "bullmq": "^4.10.1",         // Async job queue
-  "redis": "^4.6.8"            // Redis client for BullMQ
+  "axios": "^1.6.2", // HTTP requests (DeepSeek, Gemini, Pexels)
+  "bullmq": "^4.10.1", // Async job queue
+  "redis": "^4.6.8" // Redis client for BullMQ
 }
 ```
 
@@ -263,8 +287,8 @@ interface ImageMatch {
 
 ```json
 {
-  "@pgvector/client": "^0.2.0",  // PostgreSQL vector extension client
-  "pgvector": "^0.1.6"           // Node.js pgvector support
+  "@pgvector/client": "^0.2.0", // PostgreSQL vector extension client
+  "pgvector": "^0.1.6" // Node.js pgvector support
 }
 ```
 
@@ -275,12 +299,14 @@ interface ImageMatch {
 **Coverage**:
 
 #### [alignment.service.spec.ts](alignment/alignment.service.spec.ts)
+
 - ✅ Extract visual intent from Gemini text
 - ✅ Handle missing/empty scenes
 - ✅ Find aligned images with correct ranking
 - ✅ Calculate database statistics
 
 #### [deepseek.service.spec.ts](../deepseek-integration/deepseek.service.spec.ts)
+
 - ✅ Extract scene intents and parse JSON
 - ✅ Handle markdown code block wrapping
 - ✅ Normalize impact scores to valid range
@@ -289,6 +315,7 @@ interface ImageMatch {
 - ✅ Throw on invalid JSON response
 
 #### [semantic-matching.service.spec.ts](../semantic-matching/semantic-matching.service.spec.ts)
+
 - ✅ Calculate ranking formula with correct weights
 - ✅ Apply soft mood consistency penalty
 - ✅ Preserve full mood score for anchor (first) scene
@@ -297,6 +324,7 @@ interface ImageMatch {
 - ✅ Calculate color distance correctly
 
 **Run Tests**:
+
 ```bash
 npm run test
 ```
@@ -443,12 +471,14 @@ SceneIntent
 ## 🚀 Quick Start
 
 ### 1. **Install Dependencies**
+
 ```bash
 cd /d/dev/antigravity/vision-iq
 pnpm install
 ```
 
 ### 2. **Configure Environment**
+
 ```bash
 cp .env.example .env
 # Edit .env with your API keys:
@@ -459,6 +489,7 @@ cp .env.example .env
 ```
 
 ### 3. **Setup Database**
+
 ```bash
 # Enable pgvector extension
 psql $POSTGRES_URL -c "CREATE EXTENSION IF NOT EXISTS vector;"
@@ -468,28 +499,31 @@ pnpm --filter @repo/database run db:push
 ```
 
 ### 4. **Start Redis** (for BullMQ)
+
 ```bash
 docker run -d -p 6379:6379 redis:latest
 ```
 
 ### 5. **Start NestJS API**
+
 ```bash
 cd apps/nestjs-api
 pnpm run dev
-# API will start on http://localhost:4000
+# API will start on http://localhost:3006
 ```
 
 ### 6. **Test the Service**
+
 ```bash
 # Extract visual intent
-curl -X POST http://localhost:4000/alignment/extract-visual-intent \
+curl -X POST http://localhost:3006/alignment/extract-visual-intent \
   -H "Content-Type: application/json" \
   -d '{
     "raw_gemini_text": "A lone figure stands in an endless desert at sunset..."
   }'
 
 # Sync Pexels library
-curl -X POST http://localhost:4000/alignment/sync-pexels \
+curl -X POST http://localhost:3006/alignment/sync-pexels \
   -H "Content-Type: application/json" \
   -d '{
     "search_query": "desert landscape",
@@ -497,7 +531,7 @@ curl -X POST http://localhost:4000/alignment/sync-pexels \
   }'
 
 # Get statistics
-curl http://localhost:4000/alignment/stats
+curl http://localhost:3006/alignment/stats
 ```
 
 ---

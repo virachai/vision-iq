@@ -116,7 +116,7 @@ The service exposes the following primary endpoints for orchestration:
 
 Key variables in `@repo/env` or `.env`:
 
-- `PORT`: (default: 4000)
+- `PORT`: (default: 3006)
 - `DATABASE_URL`: PostgreSQL connection string.
 - `REDIS_URL`: Redis connection string.
 - `GEMINI_API_KEY`: For image analysis.

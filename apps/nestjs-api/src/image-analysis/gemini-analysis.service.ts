@@ -196,7 +196,7 @@ Return ONLY valid JSON, no markdown, no explanation.`;
         },
         mood_dna: {
           temp: parsed.mood_dna?.temp === "cold" ? "cold" : "warm",
-          primary_color: parsed.mood_dna?.primary_color || "#808080",
+          primary_color: parsed.mood_dna?.primary_color || "#300880",
           vibe: parsed.mood_dna?.vibe || "neutral",
         },
         metaphorical_tags: Array.isArray(parsed.metaphorical_tags)

@@ -3,7 +3,7 @@
 # Script to kill processes running on project ports
 # Usage: ./kill-ports.sh
 
-PORTS=(3001 3002 3003 3004 3005 4000 5001 8080)
+PORTS=(3001 3002 3003 3004 3005 3006 3007 3008)
 
 echo "🔍 Checking for processes on ports: ${PORTS[*]}..."
 

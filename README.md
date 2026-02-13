@@ -80,8 +80,8 @@ vision-iq/
    AUTH_URL="http://localhost:3000/api/auth"
 
    # App Ports
-   NESTJS_API_PORT=4000
-   API_EXPRESS_PORT=5001
+   NESTJS_API_PORT=3006
+   API_EXPRESS_PORT=3007
    ADMIN_PORT=3001
    BLOG_PORT=3004
    NEXTJS_DASHBOARD_PORT=3003
@@ -119,8 +119,8 @@ pnpm dev
 | Next.js Dashboard | 3003 |
 | Blog              | 3004 |
 | Prisma Web        | 3005 |
-| NestJS API        | 4000 |
-| Express API       | 5001 |
+| NestJS API        | 3006 |
+| Express API       | 3007 |
 
 ### Useful Commands
 
