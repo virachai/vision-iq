@@ -5,9 +5,9 @@
   "scripts": {
     "dev": "nest start --watch",
     "build": "nest build",
-    "start": "nest start",
+    "start": "node dist/apps/nestjs-api/src/main.js",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "node dist/apps/nestjs-api/src/main.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
