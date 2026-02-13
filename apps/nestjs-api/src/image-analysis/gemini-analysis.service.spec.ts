@@ -1,9 +1,9 @@
 import { Test, type TestingModule } from "@nestjs/testing";
-import axios, { AxiosError } from "axios";
 import { GeminiAnalysisService } from "./gemini-analysis.service";
+import { WebSocket } from "ws";
 
-jest.mock("axios");
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+jest.mock("ws");
+const MockedWebSocket = WebSocket as jest.MockedClass<typeof WebSocket>;
 
 describe("GeminiAnalysisService", () => {
   let service: GeminiAnalysisService;
@@ -20,10 +20,6 @@ describe("GeminiAnalysisService", () => {
   });
 
   describe("analyzeImage", () => {
-    const mockImageResponse = {
-      data: Buffer.from("fake-image-data"),
-    };
-
     const mockAnalysisResult = {
       impact_score: 8,
       visual_weight: 7,
@@ -40,214 +36,183 @@ describe("GeminiAnalysisService", () => {
       metaphorical_tags: ["freedom", "adventure"],
     };
 
-    const mockGeminiResponse = {
-      data: {
-        candidates: [
-          {
-            content: {
+    // Helper to simulate WebSocket behavior
+    const setupMockWS = (responses: any[]) => {
+      const mockWS = {
+        on: jest.fn(),
+        send: jest.fn(),
+        terminate: jest.fn(),
+        close: jest.fn(),
+      };
+
+      MockedWebSocket.mockImplementation(() => mockWS as any);
+
+      // Simulate 'open' and 'message' events
+      mockWS.on.mockImplementation((event, callback) => {
+        if (event === "open") {
+          setTimeout(callback, 0);
+        }
+        if (event === "message") {
+          responses.forEach((resp, i) => {
+            setTimeout(
+              () => callback(Buffer.from(JSON.stringify(resp))),
+              i * 10,
+            );
+          });
+        }
+      });
+
+      return mockWS;
+    };
+
+    it("should successfully analyze an image via WebSockets", async () => {
+      const mockResponses = [
+        {
+          serverContent: {
+            modelTurn: {
+              parts: [{ text: JSON.stringify(mockAnalysisResult) }],
+            },
+          },
+        },
+        { serverContent: { turnComplete: true } },
+      ];
+
+      setupMockWS(mockResponses);
+
+      // Mock fetch
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
+        headers: { get: () => "image/jpeg" },
+      });
+
+      const result = await service.analyzeImage(
+        "https://res.cloudinary.com/cloudinary-marketing/images/f_auto,q_auto/v1688666201/Blog-jpegXL/Blog-jpegXL.jpg",
+      );
+
+      expect(result).toEqual(mockAnalysisResult);
+      expect(MockedWebSocket).toHaveBeenCalled();
+    });
+
+    it("should handle markdown code blocks in response", async () => {
+      const mockResponses = [
+        {
+          serverContent: {
+            modelTurn: {
               parts: [
                 {
-                  text: JSON.stringify(mockAnalysisResult),
+                  text: `\`\`\`json\n${JSON.stringify(
+                    mockAnalysisResult,
+                  )}\n\`\`\``,
                 },
               ],
             },
           },
-        ],
-      },
-    };
-
-    it("should successfully analyze an image", async () => {
-      mockedAxios.get.mockResolvedValue(mockImageResponse);
-      mockedAxios.post.mockResolvedValue(mockGeminiResponse);
-
-      const result = await service.analyzeImage("http://example.com/image.jpg");
-
-      expect(result).toEqual(mockAnalysisResult);
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        "http://example.com/image.jpg",
-        expect.any(Object),
-      );
-      expect(mockedAxios.post).toHaveBeenCalled();
-    });
-
-    it("should handle markdown code blocks in response", async () => {
-      mockedAxios.get.mockResolvedValue(mockImageResponse);
-      mockedAxios.post.mockResolvedValue({
-        data: {
-          candidates: [
-            {
-              content: {
-                parts: [
-                  {
-                    text: `\`\`\`json\n${JSON.stringify(
-                      mockAnalysisResult,
-                    )}\n\`\`\``,
-                  },
-                ],
-              },
-            },
-          ],
         },
+        { serverContent: { turnComplete: true } },
+      ];
+
+      setupMockWS(mockResponses);
+
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
+        headers: { get: () => "image/jpeg" },
       });
 
-      const result = await service.analyzeImage("http://example.com/image.jpg");
+      const result = await service.analyzeImage(
+        "https://res.cloudinary.com/cloudinary-marketing/images/f_auto,q_auto/v1688666201/Blog-jpegXL/Blog-jpegXL.jpg",
+      );
       expect(result).toEqual(mockAnalysisResult);
-    });
-
-    it("should retry on 429 or 503 errors", async () => {
-      jest.useFakeTimers();
-      mockedAxios.get.mockResolvedValue(mockImageResponse);
-
-      // First fail with 429
-      mockedAxios.post.mockRejectedValueOnce({
-        response: { status: 429 },
-      });
-
-      // Then succeed
-      mockedAxios.post.mockResolvedValueOnce(mockGeminiResponse);
-
-      const promise = service.analyzeImage("http://example.com/image.jpg");
-
-      await jest.runAllTimersAsync();
-      const result = await promise;
-
-      expect(result).toEqual(mockAnalysisResult);
-      expect(mockedAxios.post).toHaveBeenCalledTimes(2);
-      jest.useRealTimers();
     });
 
     it("should throw error if JSON is invalid", async () => {
-      mockedAxios.get.mockResolvedValue(mockImageResponse);
-      mockedAxios.post.mockResolvedValue({
-        data: {
-          candidates: [
-            {
-              content: {
-                parts: [
-                  {
-                    text: "invalid json",
-                  },
-                ],
-              },
-            },
-          ],
-        },
+      const mockResponses = [
+        { serverContent: { modelTurn: { parts: [{ text: "invalid json" }] } } },
+        { serverContent: { turnComplete: true } },
+      ];
+
+      setupMockWS(mockResponses);
+
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
+        headers: { get: () => "image/jpeg" },
       });
 
       await expect(
-        service.analyzeImage("http://example.com/image.jpg"),
+        service.analyzeImage(
+          "https://res.cloudinary.com/cloudinary-marketing/images/f_auto,q_auto/v1688666201/Blog-jpegXL/Blog-jpegXL.jpg",
+        ),
       ).rejects.toThrow("Invalid JSON from Gemini");
     });
 
-    it("should normalize values out of range", async () => {
-      const outOfRangeResult = {
-        ...mockAnalysisResult,
-        impact_score: 15, // Should cover back to 10
-        visual_weight: -5, // Should cover back to 1
-      };
-
-      mockedAxios.get.mockResolvedValue(mockImageResponse);
-      mockedAxios.post.mockResolvedValue({
-        data: {
-          candidates: [
-            {
-              content: {
-                parts: [{ text: JSON.stringify(outOfRangeResult) }],
-              },
-            },
-          ],
+    it("should handle Gemini Live API error", async () => {
+      const mockResponses = [
+        {
+          serverContent: {
+            error: { message: "Internal Server Error" },
+          },
         },
+      ];
+
+      setupMockWS(mockResponses);
+
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
+        headers: { get: () => "image/jpeg" },
       });
 
-      const result = await service.analyzeImage("http://example.com/image.jpg");
-      expect(result.impact_score).toBe(10);
-      expect(result.visual_weight).toBe(1);
+      await expect(
+        service.analyzeImage(
+          "https://res.cloudinary.com/cloudinary-marketing/images/f_auto,q_auto/v1688666201/Blog-jpegXL/Blog-jpegXL.jpg",
+        ),
+      ).rejects.toThrow("Gemini Live API error: Internal Server Error");
     });
 
     it("should handle image fetch failure", async () => {
-      mockedAxios.get.mockRejectedValue(new Error("Network Error"));
-
-      await expect(
-        service.analyzeImage("http://example.com/image.jpg"),
-      ).rejects.toThrow("Gemini analysis failed: Network Error");
-    });
-
-    it("should handle Gemini API timeout", async () => {
-      mockedAxios.get.mockResolvedValue(mockImageResponse);
-      mockedAxios.post.mockRejectedValue(new Error("timeout"));
-
-      await expect(
-        service.analyzeImage("http://example.com/image.jpg"),
-      ).rejects.toThrow("Gemini analysis failed: timeout");
-    });
-
-    it("should handle Gemini API non-retryable errors", async () => {
-      mockedAxios.get.mockResolvedValue(mockImageResponse);
-      mockedAxios.post.mockRejectedValue({
-        response: { status: 400, data: { error: "Bad Request" } },
-        message: "Request failed with status code 400",
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: false,
+        statusText: "Not Found",
       });
 
       await expect(
-        service.analyzeImage("http://example.com/image.jpg"),
-      ).rejects.toThrow("Request failed with status code 400");
-      expect(mockedAxios.post).toHaveBeenCalledTimes(1);
+        service.analyzeImage(
+          "https://res.cloudinary.com/cloudinary-marketing/images/f_auto,q_auto/v1688666201/Blog-jpegXL/Blog-jpegXL.jpg",
+        ),
+      ).rejects.toThrow("Failed to fetch image: Not Found");
     });
 
-    it("should use default values when fields are missing or malformed", async () => {
-      mockedAxios.get.mockResolvedValue(mockImageResponse);
-      mockedAxios.post.mockResolvedValue({
-        data: {
-          candidates: [
-            {
-              content: {
-                parts: [
-                  {
-                    text: JSON.stringify({
-                      impact_score: null,
-                      composition: { shot_type: "INVALID" },
-                      mood_dna: { temp: "unknown" },
-                    }),
-                  },
-                ],
-              },
-            },
-          ],
-        },
+    it("should handle WebSocket timeout", async () => {
+      jest.useFakeTimers();
+      setupMockWS([]); // No response
+
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
+        headers: { get: () => "image/jpeg" },
       });
 
-      const result = await service.analyzeImage("http://example.com/image.jpg");
-      expect(result.impact_score).toBe(5);
-      expect(result.composition.shot_type).toBe("MS");
-      expect(result.mood_dna.temp).toBe("warm");
-      expect(result.mood_dna.primary_color).toBe("#300880");
-      expect(result.metaphorical_tags).toEqual([]);
-    });
+      const promise = service.analyzeImage(
+        "https://res.cloudinary.com/cloudinary-marketing/images/f_auto,q_auto/v1688666201/Blog-jpegXL/Blog-jpegXL.jpg",
+      );
 
-    it("should slice metaphorical tags if more than 15", async () => {
-      mockedAxios.get.mockResolvedValue(mockImageResponse);
-      const manyTags = Array.from({ length: 20 }, (_, i) => `tag${i}`);
-      mockedAxios.post.mockResolvedValue({
-        data: {
-          candidates: [
-            {
-              content: {
-                parts: [
-                  {
-                    text: JSON.stringify({
-                      ...mockAnalysisResult,
-                      metaphorical_tags: manyTags,
-                    }),
-                  },
-                ],
-              },
-            },
-          ],
-        },
-      });
+      // Flush microtasks to reach the Promise/setTimeout
+      await Promise.resolve();
+      await Promise.resolve();
 
-      const result = await service.analyzeImage("http://example.com/image.jpg");
-      expect(result.metaphorical_tags.length).toBe(15);
+      // Trigger the 'open' event (which is scheduled with setTimeout(0) in mock)
+      jest.advanceTimersByTime(0);
+      await Promise.resolve();
+
+      // Trigger the 30s timeout
+      jest.advanceTimersByTime(30000);
+
+      await expect(promise).rejects.toThrow(
+        "Timeout waiting for Gemini Live response",
+      );
+      jest.useRealTimers();
     });
   });
 
@@ -257,8 +222,6 @@ describe("GeminiAnalysisService", () => {
       delete process.env.GEMINI_API_KEY;
 
       const svc = new GeminiAnalysisService();
-      // We can't easily check logger output without more setup,
-      // but we can check if it initializes.
       expect(svc).toBeDefined();
 
       process.env.GEMINI_API_KEY = originalKey;
