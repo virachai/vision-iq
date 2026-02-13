@@ -182,6 +182,9 @@ model VisualDescription {
   // Provenance tracking: images found for this specific description
   images          PexelsImageDescription[]
   
+  // Keywords tracking
+  keywords        VisualDescriptionKeyword[]
+  
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 
@@ -226,4 +229,20 @@ model PexelsSyncHistory {
   @@index([status])
   @@index([createdAt])
   @@map("vision_iq_pexels_sync_history")
+}
+
+model VisualDescriptionKeyword {
+  id              String            @id @default(cuid())
+  descriptionId   String
+  description     VisualDescription @relation(fields: [descriptionId], references: [id], onDelete: Cascade)
+  
+  keyword         String
+  isUsed          Boolean           @default(false)
+  
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@index([descriptionId])
+  @@index([isUsed])
+  @@map("vision_iq_visual_description_keywords")
 }

@@ -125,10 +125,20 @@ Example:
       const response = await this.callDeepSeekAPI(systemPrompt, userPrompt);
       const parsed = this.parseJsonResponse(response.content) as any[];
 
-      return parsed.map((item) => ({
-        description: item.description || "",
-        analysis: item.analysis || {},
-      }));
+      return parsed.map((item) => {
+        const analysis = item.analysis || {};
+        // Ensure keywords is always an array
+        if (analysis.keywords && !Array.isArray(analysis.keywords)) {
+          analysis.keywords =
+            typeof analysis.keywords === "string"
+              ? analysis.keywords.split(",").map((k: string) => k.trim())
+              : [analysis.keywords];
+        }
+        return {
+          description: item.description || "",
+          analysis: analysis,
+        };
+      });
     } catch (error) {
       this.logger.error("Intent expansion failed", (error as Error).message);
       // Fallback to the original intent

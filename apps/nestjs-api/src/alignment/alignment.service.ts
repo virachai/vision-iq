@@ -105,12 +105,19 @@ export class AlignmentService {
           );
 
           for (const exp of expanded) {
+            const analysisData = exp.analysis as any;
             const description = await this.prisma.visualDescription.create({
               data: {
                 sceneIntentId: scene.id,
                 description: exp.description,
-                analysis: exp.analysis as any,
+                analysis: analysisData as any,
                 status: "IN_PROGRESS",
+                keywords: {
+                  create:
+                    analysisData?.keywords?.map((k: string) => ({
+                      keyword: k,
+                    })) || [],
+                },
               },
             });
 
@@ -133,13 +140,20 @@ export class AlignmentService {
               this.logger.log(`Using search query: "${searchQuery}"`);
 
               // Trigger Pexels Sync with descriptionId for tracking
+              // Batch size 100 for auto-sync
               this.pexelsSyncService
-                .syncPexelsLibrary(searchQuery, 5, 0.1, description.id)
+                .syncPexelsLibrary(searchQuery, 100, 0.1, description.id)
                 .then(async () => {
-                  await this.prisma.visualDescription.update({
-                    where: { id: description.id },
-                    data: { status: "COMPLETED" },
-                  });
+                  await this.prisma.$transaction([
+                    this.prisma.visualDescription.update({
+                      where: { id: description.id },
+                      data: { status: "COMPLETED" },
+                    }),
+                    this.prisma.visualDescriptionKeyword.updateMany({
+                      where: { descriptionId: description.id },
+                      data: { isUsed: true },
+                    }),
+                  ]);
                 })
                 .catch(async (err) => {
                   this.logger.error(
@@ -314,12 +328,21 @@ export class AlignmentService {
       `Triggering manual sync with keywords: "${keywords}" for description ${descriptionId}`,
     );
 
-    return this.pexelsSyncService.syncPexelsLibrary(
-      keywords,
-      5, // Default small batch for manual precision sync
-      0.1,
-      descriptionId,
-    );
+    return this.pexelsSyncService
+      .syncPexelsLibrary(
+        keywords,
+        1000, // Batch size 1000 for manual sync
+        0.1,
+        descriptionId,
+      )
+      .then(async (result) => {
+        // Mark keywords as used
+        await this.prisma.visualDescriptionKeyword.updateMany({
+          where: { descriptionId },
+          data: { isUsed: true },
+        });
+        return result;
+      });
   }
 
   /**
