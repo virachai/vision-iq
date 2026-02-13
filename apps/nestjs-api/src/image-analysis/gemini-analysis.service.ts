@@ -14,13 +14,30 @@ interface GeminiAnalysisResult {
     negative_space: "left" | "right" | "center";
     shot_type: "CU" | "MS" | "WS";
     angle: "low" | "eye" | "high";
+    balance: "symmetrical" | "asymmetrical";
+    subject_dominance: "weak" | "moderate" | "strong";
+  };
+  color_profile: {
+    temperature: "warm" | "cold";
+    primary_color: string;
+    secondary_colors: string[];
+    contrast_level: "low" | "medium" | "high";
   };
   mood_dna: {
-    temp: "warm" | "cold";
-    primary_color: string;
     vibe: string;
+    emotional_intensity: string;
+    rhythm: string;
   };
   metaphorical_tags: string[];
+  cinematic_notes: string;
+}
+
+type GradeLevel = "none" | "easy" | "medium" | "hard";
+
+interface GradeValidationResult {
+  passed: boolean;
+  score: number;
+  failures: string[];
 }
 
 interface BatchAnalysisItem {
@@ -40,7 +57,7 @@ export class GeminiAnalysisService {
   private readonly ai: GoogleGenAI;
   private readonly modelName =
     "models/gemini-2.5-flash-native-audio-preview-12-2025";
-  private readonly maxRetries = 3;
+  private readonly maxRetries = 7;
 
   constructor() {
     const apiKey = process.env.GEMINI_API_KEY || "";
@@ -56,16 +73,18 @@ export class GeminiAnalysisService {
    */
   async analyzeImage(
     imageUrl: string,
+    level: GradeLevel = "easy",
   ): Promise<{ result: GeminiAnalysisResult; rawResponse: string }> {
     const { imageBase64, imageMime } = await this.fetchImageData(imageUrl);
 
     const fullText = await this.runLiveSessionWithRetry(
       this.getSingleAnalysisPrompt(),
       [
-        { text: "Analyze this image and return only the JSON." },
+        { text: "Analyze this image in structured raw text format." },
         { inlineData: { mimeType: imageMime, data: imageBase64 } },
       ],
       60_000,
+      level,
     );
 
     return this.parseGeminiResponse(fullText);
@@ -182,12 +201,36 @@ export class GeminiAnalysisService {
     systemPrompt: string,
     userParts: Part[],
     timeoutMs: number,
+    level: GradeLevel = "easy",
   ): Promise<string> {
     let lastError: Error | undefined;
 
     for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
       try {
-        return await this.runLiveSession(systemPrompt, userParts, timeoutMs);
+        const fullText = await this.runLiveSession(
+          systemPrompt,
+          userParts,
+          timeoutMs,
+        );
+
+        // Skip grading for batch prompt (which is JSON-based still) or if level is 'none'
+        if (systemPrompt.includes("IMAGE_ID:") || level === "none") {
+          return fullText;
+        }
+
+        // On the final attempt, we fallback to Grade 'none' to ensure a result is returned
+        const effectiveLevel = attempt === this.maxRetries ? "none" : level;
+        const grade = this.gradeRawText(fullText, effectiveLevel);
+
+        if (!grade.passed) {
+          throw new Error(
+            `Grade validation failed (score=${
+              grade.score
+            }): ${grade.failures.join("; ")}`,
+          );
+        }
+
+        return fullText;
       } catch (error) {
         lastError = error as Error;
         this.logger.warn(
@@ -436,6 +479,214 @@ Rules:
   }
 
   // ---------------------------------------------------------------------------
+  // Validation & Parsing
+  // ---------------------------------------------------------------------------
+
+  private gradeRawText(
+    content: string,
+    level: GradeLevel = "easy",
+  ): GradeValidationResult {
+    if (level === "none") {
+      return { passed: true, score: 100, failures: [] };
+    }
+
+    const failures: string[] = [];
+    let score = 0;
+
+    const thresholds: Record<GradeLevel, number> = {
+      none: 0,
+      easy: 30, // Relaxed from 50
+      medium: 75,
+      hard: 85,
+    };
+
+    // 1. Required sections (30%)
+    const requiredSections = [
+      "IMPACT:",
+      "VISUAL_WEIGHT:",
+      "COMPOSITION:",
+      "COLOR_PROFILE:",
+      "MOOD_DNA:",
+      "METAPHORICAL_FIELD:",
+      "CINEMATIC_NOTES:",
+    ];
+    let sectionsFound = 0;
+    const lowerContent = content.toLowerCase();
+    for (const section of requiredSections) {
+      if (lowerContent.includes(section.toLowerCase())) sectionsFound++;
+      else failures.push(`Missing section: ${section}`);
+    }
+    score += (sectionsFound / requiredSections.length) * 30;
+
+    // 2. Numeric Validation (10%)
+    const impactMatch = content.match(/IMPACT:\s*(\d+)/);
+    const impactScale = impactMatch ? Number.parseInt(impactMatch[1], 10) : 0;
+    const weightMatch = content.match(/VISUAL_WEIGHT:\s*(\d+)/);
+    const weightScale = weightMatch ? Number.parseInt(weightMatch[1], 10) : 0;
+
+    if (
+      impactScale >= 1 &&
+      impactScale <= 10 &&
+      weightScale >= 1 &&
+      weightScale <= 10
+    ) {
+      score += 10;
+    } else {
+      failures.push("IMPACT or VISUAL_WEIGHT out of range (1-10)");
+    }
+
+    // 3. Enum Validation (20%)
+    // Simplified regex check for presence of expected enum values
+    const compositionOk =
+      /negative_space:\s*(left|right|center)/i.test(content) &&
+      /shot_type:\s*(CU|MS|WS)/i.test(content) &&
+      /angle:\s*(low|eye|high)/i.test(content) &&
+      /balance:\s*(symmetrical|asymmetrical)/i.test(content) &&
+      /subject_dominance:\s*(weak|moderate|strong)/i.test(content);
+
+    const colorOk =
+      /temperature:\s*(warm|cold)/i.test(content) &&
+      /contrast_level:\s*(low|medium|high)/i.test(content);
+
+    if (compositionOk && colorOk) {
+      score += 20;
+    } else {
+      failures.push("Composition or Color Profile enum validation failed");
+    }
+
+    // 4. Metaphor Density (20%)
+    const metaphorSection =
+      content.split("METAPHORICAL_FIELD:")[1]?.split("CINEMATIC_NOTES:")[0] ||
+      "";
+    const metaphors = metaphorSection
+      .split("\n")
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0 && !s.includes(":"));
+
+    const metaphorThreshold = level === "easy" ? 2 : 5;
+    if (metaphors.length >= metaphorThreshold) {
+      score += 20;
+    } else {
+      failures.push(
+        `Insufficient metaphors: found ${metaphors.length}, need at least ${metaphorThreshold}`,
+      );
+    }
+
+    // 5. Cinematic Notes (20%)
+    const notesSection = content.split("CINEMATIC_NOTES:")[1]?.trim() || "";
+    const sentenceCount = (notesSection.match(/[.!?]/g) || []).length;
+    const charCount = notesSection.length;
+
+    const charThreshold = level === "easy" ? 50 : 150;
+    const sentenceThreshold = level === "easy" ? 1 : 2;
+
+    if (
+      sentenceCount >= sentenceThreshold &&
+      sentenceCount <= 8 &&
+      charCount >= charThreshold
+    ) {
+      score += 20;
+    } else {
+      failures.push(
+        `Cinematic notes quality failed: ${sentenceCount} sentences, ${charCount} chars (needed ${sentenceThreshold} sentences, ${charThreshold} chars)`,
+      );
+    }
+
+    return {
+      passed: score >= thresholds[level],
+      score: Math.round(score),
+      failures,
+    };
+  }
+
+  private parseRawTextResponse(content: string): GeminiAnalysisResult {
+    const getValue = (regex: RegExp, defaultValue = ""): string => {
+      const match = content.match(regex);
+      return match ? match[1].trim() : defaultValue;
+    };
+
+    const getList = (regex: RegExp): string[] => {
+      const match = content.match(regex);
+      return match
+        ? match[1]
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean)
+        : [];
+    };
+
+    const impact = Number.parseInt(getValue(/IMPACT:\s*(\d+)/), 10) || 5;
+    const weight = Number.parseInt(getValue(/VISUAL_WEIGHT:\s*(\d+)/), 10) || 5;
+
+    // Composition enums
+    const negSpace = getValue(
+      /negative_space:\s*(left|right|center)/i,
+      "center",
+    ) as any;
+    const shotType = getValue(/shot_type:\s*(CU|MS|WS)/i, "MS") as any;
+    const angle = getValue(/angle:\s*(low|eye|high)/i, "eye") as any;
+    const balance = getValue(
+      /balance:\s*(symmetrical|asymmetrical)/i,
+      "asymmetrical",
+    ) as any;
+    const dominance = getValue(
+      /subject_dominance:\s*(weak|moderate|strong)/i,
+      "moderate",
+    ) as any;
+
+    // Color profile
+    const temp = getValue(/temperature:\s*(warm|cold)/i, "warm") as any;
+    const primaryColor = getValue(/primary_color:\s*(.*)/i, "neutral");
+    const secondaryColors = getList(/secondary_colors:\s*(.*)/i);
+    const contrast = getValue(
+      /contrast_level:\s*(low|medium|high)/i,
+      "medium",
+    ) as any;
+
+    // Mood DNA
+    const vibe = getValue(/vibe:\s*(.*)/i, "cinematic");
+    const intensity = getValue(/emotional_intensity:\s*(.*)/i, "medium");
+    const rhythm = getValue(/rhythm:\s*(.*)/i, "calm");
+
+    // Metaphors
+    const metaphorSection =
+      content.split("METAPHORICAL_FIELD:")[1]?.split("CINEMATIC_NOTES:")[0] ||
+      "";
+    const metaphors = metaphorSection
+      .split("\n")
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0 && !s.includes(":"));
+
+    // Cinematic notes
+    const notes = content.split("CINEMATIC_NOTES:")[1]?.trim() || "";
+
+    return {
+      impact_score: impact,
+      visual_weight: weight,
+      composition: {
+        negative_space: negSpace,
+        shot_type: shotType,
+        angle: angle,
+        balance: balance,
+        subject_dominance: dominance,
+      },
+      color_profile: {
+        temperature: temp,
+        primary_color: primaryColor,
+        secondary_colors: secondaryColors,
+        contrast_level: contrast,
+      },
+      mood_dna: {
+        vibe,
+        emotional_intensity: intensity,
+        rhythm,
+      },
+      metaphorical_tags: metaphors,
+      cinematic_notes: notes,
+    };
+  }
+
+  // ---------------------------------------------------------------------------
   // Data fetching & parsing
   // ---------------------------------------------------------------------------
 
@@ -463,6 +714,13 @@ Rules:
     rawResponse: string;
   } {
     try {
+      // First try parsing as raw text (our new primary format)
+      if (content.includes("IMPACT:") && content.includes("COMPOSITION:")) {
+        const parsed = this.parseRawTextResponse(content);
+        return { result: parsed, rawResponse: content };
+      }
+
+      // Legacy/Fallback: try JSON extraction if it doesn't look like raw text
       const jsonStr = this.extractJson(content);
       const parsed = JSON.parse(jsonStr);
       return { result: this.normalizeResult(parsed), rawResponse: content };
@@ -552,15 +810,41 @@ Rules:
         angle: ["low", "eye", "high"].includes(parsed.composition?.angle)
           ? parsed.composition.angle
           : "eye",
+        balance: ["symmetrical", "asymmetrical"].includes(
+          parsed.composition?.balance,
+        )
+          ? parsed.composition.balance
+          : "asymmetrical",
+        subject_dominance: ["weak", "moderate", "strong"].includes(
+          parsed.composition?.subject_dominance,
+        )
+          ? parsed.composition.subject_dominance
+          : "moderate",
+      },
+      color_profile: {
+        temperature:
+          parsed.color_profile?.temperature === "cold" ? "cold" : "warm",
+        primary_color: parsed.color_profile?.primary_color || "neutral",
+        secondary_colors: Array.isArray(parsed.color_profile?.secondary_colors)
+          ? parsed.color_profile.secondary_colors
+          : [],
+        contrast_level: ["low", "medium", "high"].includes(
+          parsed.color_profile?.contrast_level,
+        )
+          ? parsed.color_profile.contrast_level
+          : "medium",
       },
       mood_dna: {
-        temp: parsed.mood_dna?.temp === "cold" ? "cold" : "warm",
-        primary_color: parsed.mood_dna?.primary_color || "#300880",
         vibe: parsed.mood_dna?.vibe || "neutral",
+        emotional_intensity: parsed.mood_dna?.emotional_intensity || "medium",
+        rhythm: parsed.mood_dna?.rhythm || "calm",
       },
       metaphorical_tags: Array.isArray(parsed.metaphorical_tags)
         ? parsed.metaphorical_tags.slice(0, 15)
+        : Array.isArray(parsed.metaphorical_field)
+        ? parsed.metaphorical_field.slice(0, 15)
         : [],
+      cinematic_notes: parsed.cinematic_notes || "",
     };
   }
 
