@@ -57,7 +57,7 @@ export class GeminiAnalysisService {
   private readonly ai: GoogleGenAI;
   private readonly modelName =
     "models/gemini-2.5-flash-native-audio-preview-12-2025";
-  private readonly maxRetries = 7;
+  private readonly maxRetries = 3;
 
   constructor() {
     const apiKey = process.env.GEMINI_API_KEY || "";
@@ -301,7 +301,7 @@ export class GeminiAnalysisService {
             systemInstruction: {
               parts: [{ text: systemPrompt }],
             },
-            temperature: 0.2,
+            temperature: 0.4,
             topP: 0.85,
             maxOutputTokens: 1200,
           },
@@ -725,10 +725,11 @@ Rules:
       const parsed = JSON.parse(jsonStr);
       return { result: this.normalizeResult(parsed), rawResponse: content };
     } catch (error) {
-      this.logger.error(
-        "Failed to parse Gemini response",
-        (error as Error).message,
-      );
+      void error;
+      // this.logger.error(
+      //   "Failed to parse Gemini response",
+      //   (error as Error).message,
+      // );
       // Fallback: return a safe default object to avoid crashing
       this.logger.warn(`Raw content was: ${content}`);
       return { result: this.normalizeResult({}), rawResponse: content };
