@@ -17,5 +17,6 @@ import { AlignmentService } from "./alignment.service";
   ],
   controllers: [AlignmentController],
   providers: [AlignmentService],
+  exports: [AlignmentService],
 })
 export class AlignmentModule {}

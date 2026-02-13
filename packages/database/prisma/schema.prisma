@@ -37,6 +37,8 @@ model PexelsImage {
   embedding       ImageEmbedding?
   analysisJob     ImageAnalysisJob?
   descriptions    PexelsImageDescription[] // Track which descriptions this image satisfies
+  
+  source          String?  @default("SYNC_PEXELS") // "TRIGGER", "SYNC_PEXELS"
 
   @@index([pexelsId])
   @@map("vision_iq_pexels_images")
@@ -107,11 +109,14 @@ model ImageAnalysisJob {
   result          Json?    // Stores analysis result from Gemini/DeepSeek
   rawResponse     String?  // Raw text response from AI for debugging
   
+  isUsed          Boolean  @default(false) // Used in next step (DeepSeek analysis)
+  
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
   @@index([status])
   @@index([imageId])
+  @@index([isUsed])
   @@map("vision_iq_image_analysis_jobs")
 }
 
