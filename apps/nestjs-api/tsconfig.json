@@ -7,8 +7,16 @@
 		"allowImportingTsExtensions": false,
 		"moduleResolution": "node",
 		"paths": {
-			"@repo/database": ["../../packages/database/src/client.ts"],
-			"@repo/env": ["../../packages/config-env/src/index.ts"]
+			"@repo/database": [
+				"../../packages/database/src/client.ts"
+			],
+			"@repo/env": [
+				"../../packages/config-env/src/index.ts"
+			]
 		}
-	}
+	},
+	"exclude": [
+		"node_modules",
+		"dist"
+	]
 }

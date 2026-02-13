@@ -1,5 +1,6 @@
-import { Injectable, Logger } from "@nestjs/common";
-import { PrismaClient } from "@repo/database";
+import { Inject, Injectable, Logger } from "@nestjs/common";
+import type { Pool } from "pg";
+import { PG_POOL } from "../prisma/prisma.module";
 import type {
   Composition,
   ImageMatch,
@@ -33,7 +34,12 @@ export class SemanticMatchingService {
     mood_consistency_weight: 0.05,
   };
 
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(@Inject(PG_POOL) private readonly pool: Pool) {
+    console.log(
+      "SemanticMatchingService initialized. Injected pg pool:",
+      !!this.pool,
+    );
+  }
 
   /**
    * Find semantically aligned images for a sequence of scenes
@@ -122,9 +128,9 @@ export class SemanticMatchingService {
             'moodDna', im."moodDna",
             'metaphoricalTags', im."metaphoricalTags"
           ) as metadata
-        FROM public."ImageEmbedding" ie
-        JOIN public."PexelsImage" pi ON ie."imageId" = pi.id
-        JOIN public."ImageMetadata" im ON im."imageId" = pi.id
+        FROM public."vision_iq_image_embeddings" ie
+        JOIN public."vision_iq_pexels_images" pi ON ie."imageId" = pi.id
+        JOIN public."vision_iq_image_metadata" im ON im."imageId" = pi.id
         WHERE 
           im."impactScore" >= $2 
           AND (1 - (ie.embedding <=> $1::vector)) > 0.3
@@ -136,11 +142,13 @@ export class SemanticMatchingService {
       const minImpactScore = Math.max(1, scene.required_impact - 2);
 
       // Execute raw query
-      const results = await this.prisma.$queryRawUnsafe<VectorSearchResult[]>(
+      const { rows: results } = await this.pool.query<VectorSearchResult>(
         query,
-        JSON.stringify(embedding),
-        minImpactScore,
-        topK * 2, // Get more candidates to filter by mood if needed
+        [
+          JSON.stringify(embedding),
+          minImpactScore,
+          topK * 2, // Get more candidates to filter by mood if needed
+        ],
       );
 
       this.logger.debug(

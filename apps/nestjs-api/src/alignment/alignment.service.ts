@@ -1,5 +1,8 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger, Inject } from "@nestjs/common";
+import * as fs from "fs";
+import * as path from "path";
 import { PrismaClient } from "@repo/database";
+import { PRISMA_SERVICE } from "../prisma/prisma.module";
 import { DeepSeekService } from "../deepseek-integration/deepseek.service";
 import { PexelsIntegrationService } from "../pexels-sync/pexels-integration.service";
 import { QueueService } from "../queue/queue.service";
@@ -28,8 +31,23 @@ export class AlignmentService {
     private readonly semanticMatchingService: SemanticMatchingService,
     private readonly pexelsIntegrationService: PexelsIntegrationService,
     private readonly queueService: QueueService,
-    private readonly prisma: PrismaClient,
-  ) {}
+    @Inject(PRISMA_SERVICE) private readonly prisma: PrismaClient,
+  ) {
+    this.logger.log(
+      `AlignmentService initialized. Prisma injected: ${!!this.prisma}`,
+    );
+    if (!this.prisma) {
+      this.logger.error(
+        "PrismaClient injection failed. this.prisma is undefined.",
+      );
+    } else {
+      // Check if pexelsImage exists on prisma instance
+      // @ts-ignore
+      this.logger.log(
+        `Prisma pexelsImage model available: ${!!this.prisma.pexelsImage}`,
+      );
+    }
+  }
 
   /**
    * Extract visual intents from raw Gemini Live text
@@ -243,6 +261,29 @@ export class AlignmentService {
    */
   async getStats() {
     try {
+      try {
+        const fs = require("fs");
+        const path = require("path");
+        const logPath = path.resolve(process.cwd(), "debug-getStats.log");
+        fs.appendFileSync(
+          logPath,
+          `getStats called. this.prisma: ${!!this.prisma}\n`,
+        );
+        if (this.prisma) {
+          const keys = Object.keys(this.prisma);
+          fs.appendFileSync(logPath, `Keys: ${keys.join(",")}\n`);
+          // @ts-ignore
+          fs.appendFileSync(
+            logPath,
+            `pexelsImage: ${!!this.prisma.pexelsImage}\n`,
+          );
+        } else {
+          fs.appendFileSync(logPath, `this.prisma is undefined\n`);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+
       const totalImages = await this.prisma.pexelsImage.count();
       const totalEmbeddings = await this.prisma.imageEmbedding.count();
       const pendingJobs = await this.prisma.imageAnalysisJob.count({

@@ -15,6 +15,8 @@ model User {
   name          String?
   email         String?   @unique
   emailVerified DateTime?
+
+  @@map("vision_iq_users")
 }
 
 // Pexels Image Library
@@ -35,6 +37,7 @@ model PexelsImage {
   analysisJob     ImageAnalysisJob?
 
   @@index([pexelsId])
+  @@map("vision_iq_pexels_images")
 }
 
 // Vector embeddings for semantic search
@@ -51,6 +54,7 @@ model ImageEmbedding {
 
   @@index([imageId])
   // Note: HNSW index on embedding created in migration: CREATE INDEX ON "ImageEmbedding" USING hnsw ("embedding" vector_cosine_ops);
+  @@map("vision_iq_image_embeddings")
 }
 
 // Image Analysis Metadata
@@ -77,6 +81,7 @@ model ImageMetadata {
 
   @@index([imageId])
   @@index([impactScore])
+  @@map("vision_iq_image_metadata")
 }
 
 // Image Analysis Job Status
@@ -104,6 +109,7 @@ model ImageAnalysisJob {
 
   @@index([status])
   @@index([imageId])
+  @@map("vision_iq_image_analysis_jobs")
 }
 
 // Scene Intent from narrative parsing
@@ -127,4 +133,5 @@ model SceneIntent {
 
   @@index([projectId])
   @@index([sceneIndex])
+  @@map("vision_iq_scene_intents")
 }

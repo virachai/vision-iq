@@ -7,7 +7,7 @@ const globalForPrisma = global as unknown as { prisma: PrismaClient };
 // 1. Create the Pool specifically for the adapter
 const connectionString = process.env.DATABASE_URL;
 
-const pool = new Pool({
+export const pool = new Pool({
   connectionString,
 });
 
@@ -21,6 +21,8 @@ export const prisma =
     // Optional: Log queries to see if connection works
     // log: ['query', 'info', 'warn', 'error'],
   });
+
+console.log("Database package: prisma client initialized:", !!prisma);
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
