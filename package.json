@@ -28,5 +28,8 @@
 			"bcrypt",
 			"sharp"
 		]
+	},
+	"dependencies": {
+		"@google/genai": "^1.41.0"
 	}
 }
