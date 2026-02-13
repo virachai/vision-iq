@@ -103,6 +103,7 @@ model ImageAnalysisJob {
   
   errorMessage    String?
   result          Json?    // Stores analysis result from Gemini/DeepSeek
+  rawResponse     String?  // Raw text response from AI for debugging
   
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt

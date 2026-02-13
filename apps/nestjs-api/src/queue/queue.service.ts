@@ -166,9 +166,8 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
 
     try {
       // Call Gemini to analyze image
-      const analysis = await this.geminiAnalysisService.analyzeImage(
-        data.imageUrl,
-      );
+      const { result: analysis, rawResponse } =
+        await this.geminiAnalysisService.analyzeImage(data.imageUrl);
 
       // Store metadata in database
       await this.prisma.imageMetadata.upsert({
@@ -197,17 +196,19 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
           status: "COMPLETED",
           // biome-ignore lint/suspicious/noExplicitAny: Prisma JSON type mapping
           result: analysis as any,
+          rawResponse: rawResponse,
         },
         create: {
           imageId: data.imageId,
           status: "COMPLETED",
           // biome-ignore lint/suspicious/noExplicitAny: Prisma JSON type mapping
           result: analysis as any,
+          rawResponse: rawResponse,
         },
       });
 
-      // Queue embedding generation
-      await this.queueEmbeddingGeneration(data.imageId, analysis);
+      // Queue embedding generation - DISABLED per user request
+      // await this.queueEmbeddingGeneration(data.imageId, analysis);
 
       this.logger.debug(`Image analysis completed: ${data.pexelsId}`);
     } catch (error) {
@@ -255,7 +256,7 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
       // Prisma doesn't support upsert/create with Unsupported types easily
       const embeddingArray = `[${embedding.join(",")}]`;
       await this.prisma.$executeRawUnsafe(
-        `INSERT INTO "ImageEmbedding" ("id", "imageId", "embedding", "updatedAt") 
+        `INSERT INTO "vision_iq_image_embeddings" ("id", "imageId", "embedding", "updatedAt") 
 				 VALUES ($1, $2, $3::vector, NOW())
 				 ON CONFLICT ("imageId") DO UPDATE SET "embedding" = $3::vector, "updatedAt" = NOW()`,
         `emb-${data.imageId}`,
