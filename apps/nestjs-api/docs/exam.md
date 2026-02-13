@@ -86,6 +86,16 @@ curl -X POST http://localhost:3006/alignment/test-analysis \
 
 ---
 
+### Refine Image Analysis
+
+Manually trigger DeepSeek to refine an existing analysis job. This extracts structured metadata from the `rawResponse` stored in the database.
+
+```bash
+curl -X POST http://localhost:3006/alignment/refine-analysis/cm73p6p2a000108l23f3f2d3p
+```
+
+---
+
 ### Get Stats
 
 Get sync and analysis statistics.

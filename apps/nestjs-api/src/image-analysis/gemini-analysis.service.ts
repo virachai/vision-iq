@@ -5,7 +5,10 @@ import {
   type Part,
   type Session,
 } from "@google/genai";
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger, Inject } from "@nestjs/common";
+import { PrismaClient } from "@repo/database";
+import { PRISMA_SERVICE } from "../prisma/prisma.module";
+import { DeepSeekService } from "../deepseek-integration/deepseek.service";
 
 export interface GeminiAnalysisResult {
   impact_score: number;
@@ -59,7 +62,10 @@ export class GeminiAnalysisService {
     "models/gemini-2.5-flash-native-audio-preview-12-2025";
   private readonly maxRetries = 3;
 
-  constructor() {
+  constructor(
+    private readonly deepseekService: DeepSeekService,
+    @Inject(PRISMA_SERVICE) private readonly prisma: PrismaClient,
+  ) {
     const apiKey = process.env.GEMINI_API_KEY || "";
     this.ai = new GoogleGenAI({ apiKey });
 
@@ -190,6 +196,73 @@ export class GeminiAnalysisService {
         }`;
       }
       return results;
+    }
+  }
+
+  /**
+   * Refine an existing analysis job using DeepSeek
+   * Parses rawResponse text into structured metadata and updates DB
+   */
+  async refineWithDeepSeek(jobId: string): Promise<void> {
+    const job = await this.prisma.imageAnalysisJob.findUnique({
+      where: { id: jobId },
+      include: { image: true },
+    });
+
+    if (!job) throw new Error(`Analysis job ${jobId} not found`);
+    if (!job.rawResponse)
+      throw new Error(`No raw response to refine for job ${jobId}`);
+
+    this.logger.log(`Refining analysis for job ${jobId} using DeepSeek...`);
+
+    try {
+      const refinedResults = await this.deepseekService.parseGeminiRawResponse(
+        job.rawResponse,
+      );
+
+      if (refinedResults.length === 0) {
+        throw new Error("DeepSeek could not extract any valid analysis data");
+      }
+
+      // We take the first result (usually 1:1, unless it was a batch that got merged into one job)
+      const refined = refinedResults[0];
+
+      // Update Metadata
+      await this.prisma.imageMetadata.upsert({
+        where: { imageId: job.imageId },
+        update: {
+          impactScore: refined.impact_score,
+          visualWeight: refined.visual_weight,
+          composition: refined.composition,
+          moodDna: refined.mood_dna,
+          metaphoricalTags: refined.metaphorical_tags,
+        },
+        create: {
+          imageId: job.imageId,
+          impactScore: refined.impact_score,
+          visualWeight: refined.visual_weight,
+          composition: refined.composition,
+          moodDna: refined.mood_dna,
+          metaphoricalTags: refined.metaphorical_tags,
+        },
+      });
+
+      // Update Job
+      await this.prisma.imageAnalysisJob.update({
+        where: { id: jobId },
+        data: {
+          status: "COMPLETED",
+          result: refined as any,
+        },
+      });
+
+      this.logger.log(`Successfully refined job ${jobId}`);
+    } catch (error) {
+      this.logger.error(
+        `Refinement failed for job ${jobId}`,
+        (error as Error).message,
+      );
+      throw error;
     }
   }
 

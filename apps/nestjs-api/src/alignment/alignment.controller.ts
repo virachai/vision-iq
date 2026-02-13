@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post } from "@nestjs/common";
 import { AlignmentService } from "./alignment.service";
 import type {
   ExtractVisualIntentDto,
@@ -29,6 +29,15 @@ export class AlignmentController {
   @Post("test-analysis")
   async testAnalysis(@Body() body: { imageUrl: string }) {
     return this.alignmentService.testImageAnalysis(body.imageUrl);
+  }
+
+  /**
+   * POST /alignment/refine-analysis/:jobId
+   * Refine an existing analysis job using DeepSeek
+   */
+  @Post("refine-analysis/:jobId")
+  async refineAnalysis(@Param("jobId") jobId: string) {
+    return this.alignmentService.refineAnalysis(jobId);
   }
 
   /**

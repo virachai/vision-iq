@@ -7,6 +7,8 @@ import {
 import { PrismaClient } from "@repo/database";
 import { Queue, Worker } from "bullmq";
 import { GeminiAnalysisService } from "../image-analysis/gemini-analysis.service";
+import { PexelsSyncService } from "../pexels-sync/pexels-sync.service";
+import { forwardRef, Inject } from "@nestjs/common";
 
 interface ImageAnalysisJob {
   imageId: string;
@@ -20,19 +22,27 @@ interface EmbeddingGenerationJob {
   metadata: any;
 }
 
+interface AutoSyncJob {
+  keywords: string;
+}
+
 @Injectable()
 export class QueueService implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(QueueService.name);
   private imageAnalysisQueue: Queue<ImageAnalysisJob>;
   private embeddingGenerationQueue: Queue<EmbeddingGenerationJob>;
+  private autoSyncQueue: Queue<AutoSyncJob>;
   private imageAnalysisWorker: Worker<ImageAnalysisJob>;
   private embeddingGenerationWorker: Worker<EmbeddingGenerationJob>;
+  private autoSyncWorker: Worker<AutoSyncJob>;
 
   private readonly redisUrl = process.env.REDIS_URL || "redis://localhost:6379";
 
   constructor(
     private readonly prisma: PrismaClient,
     private readonly geminiAnalysisService: GeminiAnalysisService,
+    @Inject(forwardRef(() => PexelsSyncService))
+    private readonly pexelsSyncService: PexelsSyncService,
   ) {}
 
   async onModuleInit() {
@@ -68,6 +78,19 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
       },
     );
 
+    this.autoSyncQueue = new Queue<AutoSyncJob>("auto-sync", {
+      connection: this.parseRedisUrl(this.redisUrl),
+      defaultJobOptions: {
+        attempts: 2,
+        backoff: {
+          type: "exponential",
+          delay: 5000,
+        },
+        removeOnComplete: true,
+        removeOnFail: false,
+      },
+    });
+
     // Initialize workers
     this.imageAnalysisWorker = new Worker<ImageAnalysisJob>(
       "image-analysis",
@@ -91,6 +114,17 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
       },
     );
 
+    this.autoSyncWorker = new Worker<AutoSyncJob>(
+      "auto-sync",
+      async (job) => {
+        return this.processAutoSync(job.data);
+      },
+      {
+        connection: this.parseRedisUrl(this.redisUrl),
+        concurrency: 1, // Single sync at a time to avoid Pexels rate limits
+      },
+    );
+
     // Setup event listeners
     this.setupWorkerListeners();
 
@@ -101,8 +135,10 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
     this.logger.log("Closing BullMQ workers and queues");
     await this.imageAnalysisWorker?.close();
     await this.embeddingGenerationWorker?.close();
+    await this.autoSyncWorker?.close();
     await this.imageAnalysisQueue?.close();
     await this.embeddingGenerationQueue?.close();
+    await this.autoSyncQueue?.close();
   }
 
   /**
@@ -154,6 +190,27 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
         "Failed to queue embedding generation",
         (error as Error).message,
       );
+      throw error;
+    }
+  }
+
+  /**
+   * Queue an automatic Pexels sync
+   */
+  async queueAutoSync(keywords: string) {
+    try {
+      const job = await this.autoSyncQueue.add(
+        "sync",
+        { keywords },
+        {
+          jobId: `autosync-${keywords.replace(/\s+/g, "-")}-${Date.now()}`,
+          priority: 20,
+        },
+      );
+      this.logger.debug(`Queued auto-sync job: ${job.id}`);
+      return job.id;
+    } catch (error) {
+      this.logger.error("Failed to queue auto-sync", (error as Error).message);
       throw error;
     }
   }
@@ -308,6 +365,23 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
   }
 
   /**
+   * Process auto-sync job
+   */
+  private async processAutoSync(data: AutoSyncJob): Promise<void> {
+    this.logger.log(`Processing auto-sync for keywords: "${data.keywords}"`);
+    try {
+      await this.pexelsSyncService.syncPexelsLibrary(data.keywords, 5);
+      this.logger.debug(`Auto-sync completed for: "${data.keywords}"`);
+    } catch (error) {
+      this.logger.error(
+        `Auto-sync failed for "${data.keywords}"`,
+        (error as Error).message,
+      );
+      throw error;
+    }
+  }
+
+  /**
    * Setup worker event listeners
    */
   private setupWorkerListeners() {
@@ -329,6 +403,14 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
       this.logger.error(
         `Embedding generation job failed: ${job?.id} - ${error?.message}`,
       );
+    });
+
+    this.autoSyncWorker.on("completed", (job) => {
+      this.logger.debug(`Auto-sync job completed: ${job.id}`);
+    });
+
+    this.autoSyncWorker.on("failed", (job, error) => {
+      this.logger.error(`Auto-sync job failed: ${job?.id} - ${error?.message}`);
     });
   }
 
