@@ -1,4 +1,5 @@
 import { Injectable, Logger, Inject } from "@nestjs/common";
+import { Cron, CronExpression } from "@nestjs/schedule";
 import * as fs from "fs";
 import * as path from "path";
 import { PrismaClient } from "@repo/database";
@@ -8,20 +9,13 @@ import { GeminiAnalysisService } from "../image-analysis/gemini-analysis.service
 import { SemanticMatchingService } from "../semantic-matching/semantic-matching.service";
 import { PexelsSyncService } from "../pexels-sync/pexels-sync.service";
 import { QueueService } from "../queue/queue.service";
+import type { SyncResult } from "../shared/pipeline-types";
 import type {
   ExtractVisualIntentDto,
   FindAlignedImagesDto,
   ImageMatch,
   SceneIntentDto,
 } from "./dto/scene-intent.dto";
-
-export interface SyncResult {
-  total_images: number;
-  total_batches: number;
-  job_ids: string[];
-  status: "queued" | "in_progress" | "completed" | "failed";
-  errors?: string[];
-}
 
 @Injectable()
 export class AlignmentService {
@@ -123,48 +117,58 @@ export class AlignmentService {
 
             // 4. Automated Flow: Trigger image matching/syncing if requested
             if (dto.auto_match) {
-              this.logger.log(
-                `Auto-match triggered for expanded description: "${exp.description.substring(
-                  0,
-                  30,
-                )}..."`,
-              );
+              try {
+                this.logger.log(
+                  `Auto-match triggered for expanded description: "${exp.description.substring(
+                    0,
+                    30,
+                  )}..."`,
+                );
 
-              // Extraction logic for search query: Prioritize keywords from analysis
-              const analysis = exp.analysis as any;
-              const searchQuery =
-                analysis?.keywords && Array.isArray(analysis.keywords)
-                  ? analysis.keywords.join(" ")
-                  : exp.description;
-
-              this.logger.log(`Using search query: "${searchQuery}"`);
-
-              // Trigger Pexels Sync with descriptionId for tracking
-              // Batch size 100 for auto-sync
-              this.pexelsSyncService
-                .syncPexelsLibrary(searchQuery, 100, 0.1, description.id)
-                .then(async () => {
-                  await this.prisma.$transaction([
-                    this.prisma.visualDescription.update({
-                      where: { id: description.id },
-                      data: { status: "COMPLETED" },
-                    }),
-                    this.prisma.visualDescriptionKeyword.updateMany({
-                      where: { descriptionId: description.id },
-                      data: { isUsed: true },
-                    }),
-                  ]);
-                })
-                .catch(async (err) => {
-                  this.logger.error(
-                    `Automated sync/matching failed for description ${description.id}`,
-                    err.message,
-                  );
-                  await this.prisma.visualDescription.update({
-                    where: { id: description.id },
-                    data: { status: "FAILED" },
+                // Trigger Pexels Sync for each keyword with tracking
+                const keywords =
+                  await this.prisma.visualDescriptionKeyword.findMany({
+                    where: { descriptionId: description.id },
                   });
+
+                for (const kw of keywords) {
+                  this.pexelsSyncService
+                    .syncPexelsLibrary(
+                      kw.keyword,
+                      100,
+                      0.1,
+                      description.id,
+                      kw.id,
+                    )
+                    .then(async () => {
+                      await this.prisma.visualDescriptionKeyword.update({
+                        where: { id: kw.id },
+                        data: { isUsed: true },
+                      });
+                    })
+                    .catch((err) => {
+                      this.logger.error(
+                        `Automated sync failed for keyword ${kw.keyword} (${kw.id})`,
+                        err.message,
+                      );
+                    });
+                }
+
+                // Mark description specifically separately if needed, but the loop handles keywords
+                await this.prisma.visualDescription.update({
+                  where: { id: description.id },
+                  data: { status: "COMPLETED" },
                 });
+              } catch (err) {
+                this.logger.error(
+                  `Automated sync/matching failed for description ${description.id}`,
+                  (err as Error).message,
+                );
+                await this.prisma.visualDescription.update({
+                  where: { id: description.id },
+                  data: { status: "FAILED" },
+                });
+              }
             } else {
               // If no auto-match, expansion for this description is COMPLETED
               await this.prisma.visualDescription.update({
@@ -312,38 +316,48 @@ export class AlignmentService {
 
     const description = await this.prisma.visualDescription.findUnique({
       where: { id: descriptionId },
-      include: { keywords: true },
+      include: { keywords: { where: { isUsed: false } } },
     });
 
     if (!description) {
       throw new Error(`VisualDescription not found: ${descriptionId}`);
     }
 
-    const analysis = description.analysis as any;
-    const keywords =
-      analysis?.keywords && Array.isArray(analysis.keywords)
-        ? analysis.keywords.join(" ")
-        : description.description;
+    if (description.keywords.length === 0) {
+      this.logger.warn(`No unused keywords for description ${descriptionId}`);
+      return {
+        total_images: 0,
+        total_batches: 0,
+        job_ids: [],
+        status: "completed",
+      };
+    }
 
     this.logger.log(
-      `Triggering manual sync with keywords: "${keywords}" for description ${descriptionId}`,
+      `Triggering manual sync for ${description.keywords.length} keywords of description ${descriptionId}`,
     );
 
-    return this.pexelsSyncService
-      .syncPexelsLibrary(
-        keywords,
-        1000, // Batch size 1000 for manual sync
-        0.1,
-        descriptionId,
-      )
-      .then(async (result) => {
-        // Mark keywords as used
-        await this.prisma.visualDescriptionKeyword.updateMany({
-          where: { descriptionId },
-          data: { isUsed: true },
-        });
-        return result;
-      });
+    const syncResults = await Promise.all(
+      description.keywords.map((kw) =>
+        this.pexelsSyncService
+          .syncPexelsLibrary(kw.keyword, 1000, 0.1, descriptionId, kw.id)
+          .then(async (res) => {
+            await this.prisma.visualDescriptionKeyword.update({
+              where: { id: kw.id },
+              data: { isUsed: true },
+            });
+            return res;
+          }),
+      ),
+    );
+
+    // Aggregate results for the API response
+    return {
+      total_images: syncResults.reduce((acc, r) => acc + r.total_images, 0),
+      total_batches: syncResults.reduce((acc, r) => acc + r.total_batches, 0),
+      job_ids: syncResults.flatMap((r) => r.job_ids),
+      status: "completed",
+    };
   }
 
   /**
@@ -401,6 +415,59 @@ export class AlignmentService {
       processed: descriptionsWithUnusedKeywords.length,
       results,
     };
+  }
+
+  /**
+   * CRON: Process pending DeepSeek analysis jobs every 10 seconds
+   * Finds completed Gemini analysis jobs that haven't been refined yet (isUsed: false)
+   */
+  @Cron(CronExpression.EVERY_10_SECONDS)
+  async processPendingDeepSeekAnalysis(limit = 5) {
+    this.logger.debug(
+      `Checking for pending DeepSeek analysis jobs (limit=${limit})...`,
+    );
+
+    try {
+      // Find jobs that necessitate DeepSeek refinement
+      // Criteria: Status=COMPLETED, isUsed=false, has rawResponse
+      const pendingJobs = await this.prisma.imageAnalysisJob.findMany({
+        where: {
+          status: "COMPLETED",
+          isUsed: false,
+          rawResponse: { not: null },
+        },
+        select: { id: true, imageId: true },
+        orderBy: { createdAt: "asc" }, // Process oldest first
+        take: limit, // Process in small batches to avoid rate limits
+      });
+
+      if (pendingJobs.length === 0) {
+        return;
+      }
+
+      this.logger.log(
+        `Found ${pendingJobs.length} pending jobs for DeepSeek refinement. Processing...`,
+      );
+
+      for (const job of pendingJobs) {
+        try {
+          await this.geminiAnalysisService.refineWithDeepSeek(job.id);
+        } catch (error) {
+          this.logger.error(
+            `Failed to auto-refine job ${job.id}`,
+            (error as Error).message,
+          );
+          // Increment retry count or mark as failed? For now, we leave it retryable naturally
+          // but we should probably avoid infinite loops if it consistently fails.
+          // Consider checking retryCount in the query above.
+        }
+      }
+    } catch (error) {
+      this.logger.error(
+        "Error in processPendingDeepSeekAnalysis cron",
+        (error as Error).message,
+      );
+    }
   }
 
   /**

@@ -1,19 +1,10 @@
-export interface Composition {
-  negative_space: "left" | "right" | "center";
-  shot_type: "CU" | "MS" | "WS"; // Close-Up, Medium Shot, Wide Shot
-  angle: "low" | "eye" | "high";
-}
-
-export interface MoodDna {
-  temp: "warm" | "cold";
-  primary_color: string; // hex color
-  vibe: string; // e.g., "minimalist", "cinematic", "chaotic"
-}
+// Re-export shared pipeline types so existing imports from this file continue to work
+export type { Composition, MoodDna } from "../../shared/pipeline-types";
 
 export class SceneIntentDto {
   intent: string; // Raw description of what the scene should show
   required_impact: number; // 1.0 - 10.0: subject prominence
-  preferred_composition: Composition;
+  preferred_composition: import("../../shared/pipeline-types").Composition;
 }
 
 export class ExtractVisualIntentDto {

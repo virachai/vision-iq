@@ -3,14 +3,10 @@ import { PrismaClient } from "@repo/database";
 import { PRISMA_SERVICE } from "../prisma/prisma.module";
 import { PexelsIntegrationService } from "./pexels-integration.service";
 import { QueueService } from "../queue/queue.service";
+import type { SyncResult } from "../shared/pipeline-types";
 
-export interface SyncResult {
-  total_images: number;
-  total_batches: number;
-  job_ids: string[];
-  status: "queued" | "in_progress" | "completed" | "failed";
-  errors?: string[];
-}
+// Re-export for backward compatibility
+export type { SyncResult } from "../shared/pipeline-types";
 
 @Injectable()
 export class PexelsSyncService {
@@ -31,6 +27,7 @@ export class PexelsSyncService {
     batchSize = 50,
     failureThreshold = 0.1,
     descriptionId?: string,
+    keywordId?: string,
   ): Promise<SyncResult> {
     const result: SyncResult = {
       total_images: 0,
@@ -45,6 +42,8 @@ export class PexelsSyncService {
         searchQuery: search_query,
         batchSize: batchSize,
         status: "pending",
+        descriptionId: descriptionId,
+        keywordId: keywordId,
       },
     });
 
@@ -60,7 +59,11 @@ export class PexelsSyncService {
         result.total_batches = batch.total_batches;
 
         try {
-          const jobIds = await this.ingestionBatch(batch.images, descriptionId);
+          const jobIds = await this.ingestionBatch(
+            batch.images,
+            descriptionId,
+            keywordId,
+          );
           result.job_ids.push(...jobIds);
           result.total_images += batch.images.length;
 
@@ -144,6 +147,7 @@ export class PexelsSyncService {
   private async ingestionBatch(
     images: Array<any>,
     descriptionId?: string,
+    keywordId?: string,
   ): Promise<string[]> {
     const jobIds: string[] = [];
 
@@ -176,6 +180,7 @@ export class PexelsSyncService {
             create: {
               descriptionId: descriptionId,
               pexelsImageId: pexelsImage.id,
+              keywordId: keywordId,
               discoveryMethod: "SEARCH",
             },
           });

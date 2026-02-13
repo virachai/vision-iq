@@ -251,16 +251,16 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
         update: {
           impactScore: analysis.impact_score,
           visualWeight: analysis.visual_weight,
-          composition: analysis.composition,
-          moodDna: analysis.mood_dna,
+          composition: analysis.composition as any,
+          moodDna: analysis.mood_dna as any,
           metaphoricalTags: analysis.metaphorical_tags,
         },
         create: {
           imageId: data.imageId,
           impactScore: analysis.impact_score,
           visualWeight: analysis.visual_weight,
-          composition: analysis.composition,
-          moodDna: analysis.mood_dna,
+          composition: analysis.composition as any,
+          moodDna: analysis.mood_dna as any,
           metaphoricalTags: analysis.metaphorical_tags,
         },
       });

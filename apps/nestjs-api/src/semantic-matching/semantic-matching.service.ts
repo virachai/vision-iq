@@ -1,10 +1,9 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import type { Pool } from "pg";
 import { PG_POOL } from "../prisma/prisma.module";
+import type { Composition, MoodDna } from "../shared/pipeline-types";
 import type {
-  Composition,
   ImageMatch,
-  MoodDna,
   RankingBreakdown,
   SceneIntentDto,
 } from "../alignment/dto/scene-intent.dto";
@@ -122,17 +121,17 @@ export class SemanticMatchingService {
           pi.photographer,
           1 - (ie.embedding <=> $1::vector) as similarity,
           json_build_object(
-            'impactScore', im."impactScore",
-            'visualWeight', im."visualWeight",
-            'composition', im.composition,
-            'moodDna', im."moodDna",
-            'metaphoricalTags', im."metaphoricalTags"
+            'impactScore', da."impactScore",
+            'visualWeight', da."visualWeight",
+            'composition', da.composition,
+            'moodDna', da."moodDna",
+            'metaphoricalTags', da."metaphoricalTags"
           ) as metadata
         FROM public."vision_iq_image_embeddings" ie
         JOIN public."vision_iq_pexels_images" pi ON ie."imageId" = pi.id
-        JOIN public."vision_iq_image_metadata" im ON im."imageId" = pi.id
+        JOIN public."vision_iq_deepseek_analysis" da ON da."imageId" = pi.id
         WHERE 
-          im."impactScore" >= $2 
+          da."impactScore" >= $2 
           AND (1 - (ie.embedding <=> $1::vector)) > 0.3
         ORDER BY similarity DESC
         LIMIT $3

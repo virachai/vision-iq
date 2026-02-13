@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import { Test, type TestingModule } from "@nestjs/testing";
+import { Test, TestingModule } from "@nestjs/testing";
 import { PrismaClient } from "@repo/database";
 import { AlignmentService } from "./alignment.service";
 import { PexelsSyncService } from "../pexels-sync/pexels-sync.service";
@@ -22,7 +22,9 @@ describe("AlignmentService Sync", () => {
         update: jest.fn(),
       },
       visualDescriptionKeyword: {
+        update: jest.fn(),
         updateMany: jest.fn(),
+        findMany: jest.fn(),
       },
       $transaction: jest.fn((cb) =>
         typeof cb === "function" ? cb(mockPrisma) : Promise.resolve(cb),
@@ -38,7 +40,7 @@ describe("AlignmentService Sync", () => {
     mockPexelsSync = {
       syncPexelsLibrary: jest
         .fn()
-        .mockResolvedValue({ status: "completed", job_ids: [] }),
+        .mockResolvedValue({ status: "completed", job_ids: [] } as any),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -68,22 +70,29 @@ describe("AlignmentService Sync", () => {
       { id: descriptionId },
     ]);
     mockPrisma.visualDescription.findUnique.mockResolvedValue(description);
+    mockPrisma.visualDescriptionKeyword.findMany.mockResolvedValue([
+      { id: "kw-1", keyword: "nature" },
+      { id: "kw-2", keyword: "forest" },
+    ]);
 
     const result = await service.autoSyncUnusedKeywords();
 
     expect(result.processed).toBe(1);
     expect(mockPexelsSync.syncPexelsLibrary).toHaveBeenCalledWith(
-      "nature forest",
+      "nature",
       1000,
       0.1,
       descriptionId,
+      "kw-1",
     );
-    expect(mockPrisma.visualDescriptionKeyword.updateMany).toHaveBeenCalledWith(
-      {
-        where: { descriptionId },
-        data: { isUsed: true },
-      },
+    expect(mockPexelsSync.syncPexelsLibrary).toHaveBeenCalledWith(
+      "forest",
+      1000,
+      0.1,
+      descriptionId,
+      "kw-2",
     );
+    expect(mockPrisma.visualDescriptionKeyword.update).toHaveBeenCalledTimes(2);
   });
 
   it("should handle no unused keywords", async () => {

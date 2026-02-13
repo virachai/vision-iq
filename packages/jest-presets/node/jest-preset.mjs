@@ -1,16 +1,24 @@
 /** @type {import('jest').Config} */
 const config = {
-	roots: ["<rootDir>"],
-	transform: {
-		"^.+\\.tsx?$": "ts-jest",
-	},
-	moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
-	modulePathIgnorePatterns: [
-		"<rootDir>/test/__fixtures__",
-		"<rootDir>/node_modules",
-		"<rootDir>/dist",
-	],
-	preset: "ts-jest",
+  roots: ["<rootDir>"],
+  preset: "ts-jest",
+  testEnvironment: "node",
+
+  transform: {
+    "^.+\\.[tj]sx?$": "ts-jest",
+  },
+
+  transformIgnorePatterns: [
+    "node_modules/(?!.*\\.pnpm.*(p-retry|is-network-error|@google/genai))",
+  ],
+
+  moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
+
+  modulePathIgnorePatterns: [
+    "<rootDir>/test/__fixtures__",
+    "<rootDir>/node_modules",
+    "<rootDir>/dist",
+  ],
 };
 
 export default config;

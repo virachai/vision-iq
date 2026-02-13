@@ -1,10 +1,12 @@
 import { Injectable, Logger } from "@nestjs/common";
 import axios, { type AxiosError } from "axios";
-import type {
-  Composition,
-  SceneIntentDto,
-} from "../alignment/dto/scene-intent.dto";
-import type { GeminiAnalysisResult } from "../image-analysis/gemini-analysis.service";
+import type { SceneIntentDto } from "../alignment/dto/scene-intent.dto";
+import {
+  type Composition,
+  type GeminiAnalysisResult,
+  normalizeGeminiResult,
+  normalizeComposition,
+} from "../shared/pipeline-types";
 
 interface DeepSeekResponse {
   choices: Array<{
@@ -205,7 +207,7 @@ Return ONLY the valid JSON, no markdown, no explanations.`;
       ) as unknown as GeminiAnalysisResult[];
 
       // Normalize each result
-      return parsed.map((item) => this.normalizeGeminiResult(item));
+      return parsed.map((item) => normalizeGeminiResult(item));
     } catch (error) {
       this.logger.error(
         "DeepSeek raw parsing failed",
@@ -254,60 +256,7 @@ Output: "solitary person salt flat twilight"`;
   /**
    * Normalize and validate GeminiAnalysisResult from raw JSON input
    */
-  private normalizeGeminiResult(parsed: any): GeminiAnalysisResult {
-    return {
-      impact_score: Math.min(10, Math.max(1, parsed?.impact_score || 5)),
-      visual_weight: Math.min(10, Math.max(1, parsed?.visual_weight || 5)),
-      composition: {
-        negative_space: ["left", "right", "center"].includes(
-          parsed?.composition?.negative_space,
-        )
-          ? parsed.composition.negative_space
-          : "center",
-        shot_type: ["CU", "MS", "WS"].includes(parsed?.composition?.shot_type)
-          ? parsed.composition.shot_type
-          : "MS",
-        angle: ["low", "eye", "high"].includes(parsed?.composition?.angle)
-          ? parsed.composition.angle
-          : "eye",
-        balance: ["symmetrical", "asymmetrical"].includes(
-          parsed?.composition?.balance,
-        )
-          ? parsed.composition.balance
-          : "asymmetrical",
-        subject_dominance: ["weak", "moderate", "strong"].includes(
-          parsed?.composition?.subject_dominance,
-        )
-          ? parsed.composition.subject_dominance
-          : "moderate",
-      },
-      color_profile: {
-        temperature: ["warm", "cold"].includes(
-          parsed?.color_profile?.temperature,
-        )
-          ? parsed.color_profile.temperature
-          : "warm",
-        primary_color: parsed?.color_profile?.primary_color || "neutral",
-        secondary_colors: Array.isArray(parsed?.color_profile?.secondary_colors)
-          ? parsed.color_profile.secondary_colors
-          : [],
-        contrast_level: ["low", "medium", "high"].includes(
-          parsed?.color_profile?.contrast_level,
-        )
-          ? parsed.color_profile.contrast_level
-          : "medium",
-      },
-      mood_dna: {
-        vibe: parsed?.mood_dna?.vibe || "cinematic",
-        emotional_intensity: parsed?.mood_dna?.emotional_intensity || "medium",
-        rhythm: parsed?.mood_dna?.rhythm || "calm",
-      },
-      metaphorical_tags: Array.isArray(parsed?.metaphorical_tags)
-        ? parsed.metaphorical_tags
-        : [],
-      cinematic_notes: parsed?.cinematic_notes || "",
-    };
-  }
+  // normalizeGeminiResult removed — use shared normalizeGeminiResult() from pipeline-types
 
   /**
    * Call DeepSeek API with exponential backoff for rate limiting
@@ -392,18 +341,6 @@ Output: "solitary person salt flat twilight"`;
    */
   // biome-ignore lint/suspicious/noExplicitAny: Validating unstructured JSON input
   private validateComposition(comp: any): Composition {
-    const validNegativeSpaces = ["left", "right", "center"];
-    const validShotTypes = ["CU", "MS", "WS"];
-    const validAngles = ["low", "eye", "high"];
-
-    return {
-      negative_space: validNegativeSpaces.includes(comp?.negative_space)
-        ? comp.negative_space
-        : "center",
-      shot_type: validShotTypes.includes(comp?.shot_type)
-        ? comp.shot_type
-        : "MS",
-      angle: validAngles.includes(comp?.angle) ? comp.angle : "eye",
-    };
+    return normalizeComposition(comp);
   }
 }

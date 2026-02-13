@@ -37,6 +37,7 @@ model PexelsImage {
   embedding       ImageEmbedding?
   analysisJob     ImageAnalysisJob?
   descriptions    PexelsImageDescription[] // Track which descriptions this image satisfies
+  deepseekAnalysis DeepSeekAnalysis?
   
   source          String?  @default("SYNC_PEXELS") // "TRIGGER", "SYNC_PEXELS"
 
@@ -110,6 +111,8 @@ model ImageAnalysisJob {
   rawResponse     String?  // Raw text response from AI for debugging
   
   isUsed          Boolean  @default(false) // Used in next step (DeepSeek analysis)
+  
+  deepseekAnalysis DeepSeekAnalysis?
   
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -191,6 +194,9 @@ model VisualDescription {
   // Keywords tracking
   keywords        VisualDescriptionKeyword[]
   
+  // Relations
+  pexelsSyncHistory PexelsSyncHistory[]
+  
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 
@@ -207,6 +213,9 @@ model PexelsImageDescription {
   pexelsImageId       String
   pexelsImage         PexelsImage       @relation(fields: [pexelsImageId], references: [id], onDelete: Cascade)
   
+  keywordId           String?
+  keyword             VisualDescriptionKeyword? @relation(fields: [keywordId], references: [id], onDelete: SetNull)
+
   matchScore          Float?            // Score at time of matching
   discoveryMethod     String            @default("SEARCH") // "SEARCH", "RECOMMENDED", "MANUAL"
   
@@ -223,6 +232,12 @@ model PexelsSyncHistory {
   batchSize       Int
   status          String   // "pending", "completed", "failed"
   
+  descriptionId   String?
+  description     VisualDescription? @relation(fields: [descriptionId], references: [id], onDelete: SetNull)
+
+  keywordId       String?
+  keyword         VisualDescriptionKeyword? @relation(fields: [keywordId], references: [id], onDelete: SetNull)
+
   totalImages     Int      @default(0)
   totalBatches    Int      @default(0)
   
@@ -245,10 +260,39 @@ model VisualDescriptionKeyword {
   keyword         String
   isUsed          Boolean           @default(false)
   
+  // Tracking
+  pexelsSyncHistory  PexelsSyncHistory[]
+  imageDescriptions  PexelsImageDescription[]
+
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
 
   @@index([descriptionId])
   @@index([isUsed])
   @@map("vision_iq_visual_description_keywords")
+}
+
+// Structured DeepSeek Analysis Results
+model DeepSeekAnalysis {
+  id              String   @id @default(cuid())
+  imageId         String   @unique
+  image           PexelsImage @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  
+  jobId           String   @unique
+  job             ImageAnalysisJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  impactScore     Float
+  visualWeight    Float
+  composition     Json
+  colorProfile    Json
+  moodDna         Json
+  metaphoricalTags String[]
+  cinematicNotes  String   @db.Text
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([imageId])
+  @@index([jobId])
+  @@map("vision_iq_deepseek_analysis")
 }

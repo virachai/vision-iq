@@ -9,49 +9,24 @@ import { Injectable, Logger, Inject } from "@nestjs/common";
 import { PrismaClient } from "@repo/database";
 import { PRISMA_SERVICE } from "../prisma/prisma.module";
 import { DeepSeekService } from "../deepseek-integration/deepseek.service";
+import {
+  type GeminiAnalysisResult,
+  type GradeLevel,
+  type BatchAnalysisItem,
+  type BatchAnalysisResult,
+  normalizeGeminiResult,
+} from "../shared/pipeline-types";
 
-export interface GeminiAnalysisResult {
-  impact_score: number;
-  visual_weight: number;
-  composition: {
-    negative_space: "left" | "right" | "center";
-    shot_type: "CU" | "MS" | "WS";
-    angle: "low" | "eye" | "high";
-    balance: "symmetrical" | "asymmetrical";
-    subject_dominance: "weak" | "moderate" | "strong";
-  };
-  color_profile: {
-    temperature: "warm" | "cold";
-    primary_color: string;
-    secondary_colors: string[];
-    contrast_level: "low" | "medium" | "high";
-  };
-  mood_dna: {
-    vibe: string;
-    emotional_intensity: string;
-    rhythm: string;
-  };
-  metaphorical_tags: string[];
-  cinematic_notes: string;
-}
-
-export type GradeLevel = "none" | "easy" | "medium" | "hard";
+// Re-export for backward compatibility
+export type {
+  GeminiAnalysisResult,
+  GradeLevel,
+} from "../shared/pipeline-types";
 
 interface GradeValidationResult {
   passed: boolean;
   score: number;
   failures: string[];
-}
-
-interface BatchAnalysisItem {
-  imageUrl: string;
-  id: string;
-}
-
-interface BatchAnalysisResult {
-  id: string;
-  result?: GeminiAnalysisResult;
-  error?: string;
 }
 
 @Injectable()
@@ -185,7 +160,7 @@ export class GeminiAnalysisService {
       const parsedById = new Map<string, GeminiAnalysisResult>();
       for (const entry of parsed) {
         if (entry.id) {
-          parsedById.set(entry.id, this.normalizeResult(entry));
+          parsedById.set(entry.id, normalizeGeminiResult(entry));
         }
       }
 
@@ -249,17 +224,42 @@ export class GeminiAnalysisService {
         update: {
           impactScore: refined.impact_score,
           visualWeight: refined.visual_weight,
-          composition: refined.composition,
-          moodDna: refined.mood_dna,
+          composition: refined.composition as any,
+          moodDna: refined.mood_dna as any,
           metaphoricalTags: refined.metaphorical_tags,
         },
         create: {
           imageId: job.imageId,
           impactScore: refined.impact_score,
           visualWeight: refined.visual_weight,
-          composition: refined.composition,
-          moodDna: refined.mood_dna,
+          composition: refined.composition as any,
+          moodDna: refined.mood_dna as any,
           metaphoricalTags: refined.metaphorical_tags,
+        },
+      });
+
+      // Update Structured DeepSeek Analysis Results
+      await this.prisma.deepSeekAnalysis.upsert({
+        where: { jobId: jobId },
+        update: {
+          impactScore: refined.impact_score,
+          visualWeight: refined.visual_weight,
+          composition: refined.composition as any,
+          colorProfile: refined.color_profile as any,
+          moodDna: refined.mood_dna as any,
+          metaphoricalTags: refined.metaphorical_tags,
+          cinematicNotes: refined.cinematic_notes,
+        },
+        create: {
+          jobId: jobId,
+          imageId: job.imageId,
+          impactScore: refined.impact_score,
+          visualWeight: refined.visual_weight,
+          composition: refined.composition as any,
+          colorProfile: refined.color_profile as any,
+          moodDna: refined.mood_dna as any,
+          metaphoricalTags: refined.metaphorical_tags,
+          cinematicNotes: refined.cinematic_notes,
         },
       });
 
@@ -269,6 +269,7 @@ export class GeminiAnalysisService {
         data: {
           status: "COMPLETED",
           result: refined as any,
+          isUsed: true, // Mark as used/refined
         },
       });
 
@@ -765,6 +766,8 @@ CINEMATIC_NOTES:
         contrast_level: contrast,
       },
       mood_dna: {
+        temp: temp as "warm" | "cold",
+        primary_color: primaryColor,
         vibe,
         emotional_intensity: intensity,
         rhythm,
@@ -811,7 +814,7 @@ CINEMATIC_NOTES:
       // Legacy/Fallback: try JSON extraction if it doesn't look like raw text
       const jsonStr = this.extractJson(content);
       const parsed = JSON.parse(jsonStr);
-      return { result: this.normalizeResult(parsed), rawResponse: content };
+      return { result: normalizeGeminiResult(parsed), rawResponse: content };
     } catch (error) {
       void error;
       // this.logger.error(
@@ -820,7 +823,7 @@ CINEMATIC_NOTES:
       // );
       // Fallback: return a safe default object to avoid crashing
       this.logger.warn(`Raw content was: ${content}`);
-      return { result: this.normalizeResult({}), rawResponse: content };
+      return { result: normalizeGeminiResult({}), rawResponse: content };
     }
   }
 
@@ -893,60 +896,7 @@ CINEMATIC_NOTES:
     return clean;
   }
 
-  // biome-ignore lint/suspicious/noExplicitAny: Normalizing untyped Gemini response fields
-  private normalizeResult(parsed: any): GeminiAnalysisResult {
-    return {
-      impact_score: Math.min(10, Math.max(1, parsed.impact_score || 5)),
-      visual_weight: Math.min(10, Math.max(1, parsed.visual_weight || 5)),
-      composition: {
-        negative_space: ["left", "right", "center"].includes(
-          parsed.composition?.negative_space,
-        )
-          ? parsed.composition.negative_space
-          : "center",
-        shot_type: ["CU", "MS", "WS"].includes(parsed.composition?.shot_type)
-          ? parsed.composition.shot_type
-          : "MS",
-        angle: ["low", "eye", "high"].includes(parsed.composition?.angle)
-          ? parsed.composition.angle
-          : "eye",
-        balance: ["symmetrical", "asymmetrical"].includes(
-          parsed.composition?.balance,
-        )
-          ? parsed.composition.balance
-          : "asymmetrical",
-        subject_dominance: ["weak", "moderate", "strong"].includes(
-          parsed.composition?.subject_dominance,
-        )
-          ? parsed.composition.subject_dominance
-          : "moderate",
-      },
-      color_profile: {
-        temperature:
-          parsed.color_profile?.temperature === "cold" ? "cold" : "warm",
-        primary_color: parsed.color_profile?.primary_color || "neutral",
-        secondary_colors: Array.isArray(parsed.color_profile?.secondary_colors)
-          ? parsed.color_profile.secondary_colors
-          : [],
-        contrast_level: ["low", "medium", "high"].includes(
-          parsed.color_profile?.contrast_level,
-        )
-          ? parsed.color_profile.contrast_level
-          : "medium",
-      },
-      mood_dna: {
-        vibe: parsed.mood_dna?.vibe || "neutral",
-        emotional_intensity: parsed.mood_dna?.emotional_intensity || "medium",
-        rhythm: parsed.mood_dna?.rhythm || "calm",
-      },
-      metaphorical_tags: Array.isArray(parsed.metaphorical_tags)
-        ? parsed.metaphorical_tags.slice(0, 15)
-        : Array.isArray(parsed.metaphorical_field)
-        ? parsed.metaphorical_field.slice(0, 15)
-        : [],
-      cinematic_notes: parsed.cinematic_notes || "",
-    };
-  }
+  // normalizeResult removed — use shared normalizeGeminiResult() from pipeline-types
 
   private sleep(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
