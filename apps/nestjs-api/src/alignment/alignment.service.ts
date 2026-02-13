@@ -6,6 +6,7 @@ import { PRISMA_SERVICE } from "../prisma/prisma.module";
 import { DeepSeekService } from "../deepseek-integration/deepseek.service";
 import { PexelsIntegrationService } from "../pexels-sync/pexels-integration.service";
 import { QueueService } from "../queue/queue.service";
+import { GeminiAnalysisService } from "../image-analysis/gemini-analysis.service";
 import { SemanticMatchingService } from "../semantic-matching/semantic-matching.service";
 import type {
   ExtractVisualIntentDto,
@@ -31,6 +32,7 @@ export class AlignmentService {
     private readonly semanticMatchingService: SemanticMatchingService,
     private readonly pexelsIntegrationService: PexelsIntegrationService,
     private readonly queueService: QueueService,
+    private readonly geminiAnalysisService: GeminiAnalysisService,
     @Inject(PRISMA_SERVICE) private readonly prisma: PrismaClient,
   ) {
     this.logger.log(
@@ -80,6 +82,14 @@ export class AlignmentService {
       );
       throw error;
     }
+  }
+
+  /**
+   * Direct test for Gemini Image Analysis
+   */
+  async testImageAnalysis(imageUrl: string) {
+    this.logger.debug(`Direct test analysis for: ${imageUrl}`);
+    return this.geminiAnalysisService.analyzeImage(imageUrl);
   }
 
   /**

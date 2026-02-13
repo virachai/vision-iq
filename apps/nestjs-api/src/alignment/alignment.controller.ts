@@ -23,6 +23,15 @@ export class AlignmentController {
   }
 
   /**
+   * POST /alignment/test-analysis
+   * Direct test for Gemini Image Analysis
+   */
+  @Post("test-analysis")
+  async testAnalysis(@Body() body: { imageUrl: string }) {
+    return this.alignmentService.testImageAnalysis(body.imageUrl);
+  }
+
+  /**
    * POST /alignment/find-images
    * Find semantically aligned images for a sequence of scenes
    */

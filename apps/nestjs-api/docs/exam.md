@@ -59,14 +59,28 @@ curl -X POST http://localhost:3006/alignment/find-images \
 
 ### Sync Pexels
 
-Trigger Pexels library sync to populate the database.
+Trigger Pexels library sync to populate the database and run batch image analysis.
 
 ```bash
 curl -X POST http://localhost:3006/alignment/sync-pexels \
      -H "Content-Type: application/json" \
      -d '{
        "search_query": "nature",
-       "batch_size": 20
+       "batch_size": 3
+     }'
+```
+
+---
+
+### Test Image Analysis
+
+Directly test the Gemini Live analysis for a specific image URL. This uses the Raw Text format and Rule 5 (Turn Completion Control).
+
+```bash
+curl -X POST http://localhost:3006/alignment/test-analysis \
+     -H "Content-Type: application/json" \
+     -d '{
+       "imageUrl": "https://images.pexels.com/photos/206359/pexels-photo-206359.jpeg"
      }'
 ```
 

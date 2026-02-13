@@ -7,7 +7,7 @@ import {
 } from "@google/genai";
 import { Injectable, Logger } from "@nestjs/common";
 
-interface GeminiAnalysisResult {
+export interface GeminiAnalysisResult {
   impact_score: number;
   visual_weight: number;
   composition: {
@@ -32,7 +32,7 @@ interface GeminiAnalysisResult {
   cinematic_notes: string;
 }
 
-type GradeLevel = "none" | "easy" | "medium" | "hard";
+export type GradeLevel = "none" | "easy" | "medium" | "hard";
 
 interface GradeValidationResult {
   passed: boolean;
@@ -146,7 +146,7 @@ export class GeminiAnalysisService {
     if (validIndices.length === 0) return results;
 
     parts.unshift({
-      text: `Analyze all ${validIndices.length} images below. Return a JSON array with one object per image, in the same order. Each object must include the "id" field matching the provided id.`,
+      text: "Analyze all images provided below using the format specified in the system instructions.",
     });
 
     try {
@@ -328,7 +328,6 @@ export class GeminiAnalysisService {
                 this.logger.debug(
                   `Turn completed, received ${fullText.length} chars`,
                 );
-                finish();
               }
             },
 
@@ -341,27 +340,46 @@ export class GeminiAnalysisService {
               this.logger.debug(
                 `Gemini Live session closed (turnCompleted=${turnCompleted}, chars=${fullText.length})`,
               );
-              // If the server closed before turn completed, fail immediately
-              if (!turnCompleted) {
-                finish(
-                  new Error(
-                    `Gemini Live session closed unexpectedly (received ${fullText.length} chars)`,
-                  ),
-                );
-              }
+              // If the server closed before turn completed, the interval loop will handle timeout
             },
           },
         })
-        .then((s) => {
-          if (settled) return; // Already failed
+        .then(async (s) => {
+          if (settled) return;
           session = s;
 
           this.logger.debug("Sending content to Gemini Live session...");
 
-          // Send all parts as a single user turn
           session.sendClientContent({
             turns: [{ role: "user", parts: userParts }],
           });
+
+          // Rule 5: Turn Completion Control loop
+          try {
+            await new Promise<void>((resolve, reject) => {
+              const timeout = setTimeout(() => {
+                reject(new Error("Timeout waiting for response"));
+              }, timeoutMs);
+
+              const interval = setInterval(() => {
+                if (turnCompleted) {
+                  clearTimeout(timeout);
+                  clearInterval(interval);
+                  resolve();
+                }
+
+                if (settled) {
+                  clearTimeout(timeout);
+                  clearInterval(interval);
+                  resolve(); // Already handled
+                }
+              }, 50);
+            });
+
+            finish();
+          } catch (err) {
+            finish(err as Error);
+          }
         })
         .catch((err) => {
           this.logger.error(
@@ -736,9 +754,22 @@ Rules:
     }
   }
 
-  // biome-ignore lint/suspicious/noExplicitAny: Parsing untyped Gemini JSON response
+  // biome-ignore lint/suspicious/noExplicitAny: Parsing untyped Gemini response
   private parseBatchResponse(content: string): any[] {
     try {
+      // Try Raw Text first
+      if (content.includes("IMAGE_ID:")) {
+        const segments = content.split(/IMAGE_ID:\s*/).filter(Boolean);
+        return segments.map((segment) => {
+          const lines = segment.split("\n");
+          const id = lines[0].trim();
+          const remainder = lines.slice(1).join("\n");
+          const result = this.parseRawTextResponse(remainder);
+          return { id, ...result };
+        });
+      }
+
+      // Legacy fallback
       const jsonStr = this.extractJson(content);
       const parsed = JSON.parse(jsonStr);
 
@@ -749,12 +780,10 @@ Rules:
 
       return [parsed];
     } catch (error) {
-      this.logger.error(
-        "Failed to parse batch Gemini response",
-        (error as Error).message,
+      void error;
+      this.logger.warn(
+        `Failed to parse batch Gemini response. Raw content was: ${content}`,
       );
-      // Fallback: return empty array so the batch process doesn't crash entirely
-      this.logger.warn(`Raw content was: ${content}`);
       return [];
     }
   }

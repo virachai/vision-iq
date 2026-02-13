@@ -3,10 +3,13 @@ import { GeminiAnalysisService } from "./gemini-analysis.service";
 import { GoogleGenAI, Modality } from "@google/genai";
 
 jest.mock("@google/genai", () => {
-  const original = jest.requireActual("@google/genai");
   return {
-    ...original,
     GoogleGenAI: jest.fn(),
+    Modality: {
+      TEXT: "TEXT",
+      AUDIO: "AUDIO",
+      IMAGE: "IMAGE",
+    },
   };
 });
 
