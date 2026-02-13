@@ -9,6 +9,9 @@ const connectionString = process.env.DATABASE_URL;
 
 export const pool = new Pool({
   connectionString,
+  ssl: {
+    rejectUnauthorized: false, // For development with Supabase self-signed certs
+  },
 });
 
 // 2. Pass the pool to the adapter

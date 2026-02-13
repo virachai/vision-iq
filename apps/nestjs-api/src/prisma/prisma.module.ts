@@ -13,7 +13,12 @@ export const PRISMA_SERVICE = "PRISMA_SERVICE";
       provide: PG_POOL,
       useFactory: () => {
         const connectionString = process.env.DATABASE_URL;
-        return new Pool({ connectionString });
+        return new Pool({
+          connectionString,
+          ssl: {
+            rejectUnauthorized: false, // For development with Supabase self-signed certs
+          },
+        });
       },
     },
     {
