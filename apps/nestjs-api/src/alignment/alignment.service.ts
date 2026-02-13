@@ -222,9 +222,15 @@ export class AlignmentService {
             },
           });
 
-          // Create analysis job for this image
-          const _job = await this.prisma.imageAnalysisJob.create({
-            data: {
+          // Create or reset analysis job for this image
+          const _job = await this.prisma.imageAnalysisJob.upsert({
+            where: { imageId: pexelsImage.id },
+            update: {
+              status: "PENDING",
+              retryCount: 0,
+              errorMessage: null,
+            },
+            create: {
               imageId: pexelsImage.id,
               status: "PENDING",
               retryCount: 0,

@@ -191,9 +191,15 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
       });
 
       // Update job status
-      await this.prisma.imageAnalysisJob.update({
+      await this.prisma.imageAnalysisJob.upsert({
         where: { imageId: data.imageId },
-        data: {
+        update: {
+          status: "COMPLETED",
+          // biome-ignore lint/suspicious/noExplicitAny: Prisma JSON type mapping
+          result: analysis as any,
+        },
+        create: {
+          imageId: data.imageId,
           status: "COMPLETED",
           // biome-ignore lint/suspicious/noExplicitAny: Prisma JSON type mapping
           result: analysis as any,
@@ -211,14 +217,19 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
       );
 
       // Update job status to failed
-      await this.prisma.imageAnalysisJob.update({
+      await this.prisma.imageAnalysisJob.upsert({
         where: { imageId: data.imageId },
-        data: {
+        update: {
           status: "FAILED",
           errorMessage: (error as Error).message,
           retryCount: {
             increment: 1,
           },
+        },
+        create: {
+          imageId: data.imageId,
+          status: "FAILED",
+          errorMessage: (error as Error).message,
         },
       });
 

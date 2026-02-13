@@ -1,4 +1,10 @@
-import { type Part, GoogleGenAI } from "@google/genai";
+import {
+  GoogleGenAI,
+  type LiveServerMessage,
+  Modality,
+  type Part,
+  type Session,
+} from "@google/genai";
 import { Injectable, Logger } from "@nestjs/common";
 
 interface GeminiAnalysisResult {
@@ -32,7 +38,8 @@ interface BatchAnalysisResult {
 export class GeminiAnalysisService {
   private readonly logger = new Logger(GeminiAnalysisService.name);
   private readonly ai: GoogleGenAI;
-  private readonly modelName = "gemini-2.5-flash";
+  private readonly modelName = "models/gemini-2.5-flash";
+  private readonly maxRetries = 3;
 
   constructor() {
     const apiKey = process.env.GEMINI_API_KEY || "";
@@ -44,50 +51,27 @@ export class GeminiAnalysisService {
   }
 
   /**
-   * Analyze a single image
+   * Analyze a single image via Gemini Live session (with retries)
    */
   async analyzeImage(imageUrl: string): Promise<GeminiAnalysisResult> {
-    try {
-      const { imageBase64, imageMime } = await this.fetchImageData(imageUrl);
+    const { imageBase64, imageMime } = await this.fetchImageData(imageUrl);
 
-      const response = await this.ai.models.generateContent({
-        model: this.modelName,
-        contents: [
-          {
-            role: "user",
-            parts: [
-              {
-                text: "Analyze this image and return only the JSON.",
-              },
-              {
-                inlineData: {
-                  mimeType: imageMime,
-                  data: imageBase64,
-                },
-              },
-            ],
-          },
-        ],
-        config: {
-          systemInstruction: this.getSingleAnalysisPrompt(),
-          responseMimeType: "application/json",
-        },
-      });
+    const fullText = await this.runLiveSessionWithRetry(
+      this.getSingleAnalysisPrompt(),
+      [
+        { text: "Analyze this image and return only the JSON." },
+        { inlineData: { mimeType: imageMime, data: imageBase64 } },
+      ],
+      60_000,
+    );
 
-      const fullText = response.text ?? "";
-
-      return this.parseGeminiResponse(fullText);
-    } catch (error) {
-      this.logger.error("Image analysis failed", (error as Error).message);
-
-      throw new Error(`Gemini analysis failed: ${(error as Error).message}`);
-    }
+    return this.parseGeminiResponse(fullText);
   }
 
   /**
-   * Analyze multiple images in a single Gemini API request.
-   * Returns results keyed by the provided `id` for each image.
-   * Max ~10 images per batch recommended to stay within token limits.
+   * Analyze multiple images in a single Gemini Live session.
+   * Each image is labeled so Gemini returns keyed results.
+   * Recommended max ~10 images per batch.
    */
   async analyzeImages(
     items: BatchAnalysisItem[],
@@ -103,68 +87,53 @@ export class GeminiAnalysisService {
       }
     }
 
+    // Fetch all images in parallel
+    const imageDataArr = await Promise.allSettled(
+      items.map((item) => this.fetchImageData(item.imageUrl)),
+    );
+
+    const results: BatchAnalysisResult[] = items.map((item) => ({
+      id: item.id,
+    }));
+
+    const parts: Part[] = [];
+    const validIndices: number[] = [];
+
+    for (let i = 0; i < items.length; i++) {
+      const settled = imageDataArr[i];
+      if (settled.status === "rejected") {
+        results[i].error = `Failed to fetch image: ${
+          settled.reason?.message ?? settled.reason
+        }`;
+        continue;
+      }
+
+      const { imageBase64, imageMime } = settled.value;
+      validIndices.push(i);
+
+      parts.push({ text: `[IMAGE_${i}] id="${items[i].id}"` });
+      parts.push({
+        inlineData: { mimeType: imageMime, data: imageBase64 },
+      });
+    }
+
+    if (validIndices.length === 0) return results;
+
+    parts.unshift({
+      text: `Analyze all ${validIndices.length} images below. Return a JSON array with one object per image, in the same order. Each object must include the "id" field matching the provided id.`,
+    });
+
     try {
-      // Fetch all images in parallel
-      const imageDataArr = await Promise.allSettled(
-        items.map((item) => this.fetchImageData(item.imageUrl)),
+      const timeoutMs = 60_000 + validIndices.length * 15_000;
+
+      const fullText = await this.runLiveSessionWithRetry(
+        this.getBatchAnalysisPrompt(),
+        parts,
+        timeoutMs,
       );
 
-      // Build parts: label each image by index so Gemini returns keyed results
-      const parts: Part[] = [];
-      const validIndices: number[] = [];
-      const results: BatchAnalysisResult[] = items.map((item) => ({
-        id: item.id,
-      }));
-
-      for (let i = 0; i < items.length; i++) {
-        const settled = imageDataArr[i];
-        if (settled.status === "rejected") {
-          results[i].error = `Failed to fetch image: ${
-            settled.reason?.message ?? settled.reason
-          }`;
-          continue;
-        }
-
-        const { imageBase64, imageMime } = settled.value;
-        validIndices.push(i);
-
-        parts.push({
-          text: `[IMAGE_${i}] id="${items[i].id}"`,
-        });
-        parts.push({
-          inlineData: {
-            mimeType: imageMime,
-            data: imageBase64,
-          },
-        });
-      }
-
-      if (validIndices.length === 0) {
-        return results;
-      }
-
-      parts.unshift({
-        text: `Analyze all ${validIndices.length} images below. Return a JSON array with one object per image, in the same order. Each object must include the "id" field matching the provided id.`,
-      });
-
-      const response = await this.ai.models.generateContent({
-        model: this.modelName,
-        contents: [
-          {
-            role: "user",
-            parts,
-          },
-        ],
-        config: {
-          systemInstruction: this.getBatchAnalysisPrompt(),
-          responseMimeType: "application/json",
-        },
-      });
-
-      const fullText = response.text ?? "";
       const parsed = this.parseBatchResponse(fullText);
 
-      // Map parsed results back by id
       const parsedById = new Map<string, GeminiAnalysisResult>();
       for (const entry of parsed) {
         if (entry.id) {
@@ -189,13 +158,174 @@ export class GeminiAnalysisService {
         (error as Error).message,
       );
 
-      // Return all as errors
-      return items.map((item) => ({
-        id: item.id,
-        error: `Batch analysis failed: ${(error as Error).message}`,
-      }));
+      for (const idx of validIndices) {
+        results[idx].error = `Batch analysis failed: ${
+          (error as Error).message
+        }`;
+      }
+      return results;
     }
   }
+
+  // ---------------------------------------------------------------------------
+  // Live session runner with retry
+  // ---------------------------------------------------------------------------
+
+  private async runLiveSessionWithRetry(
+    systemPrompt: string,
+    userParts: Part[],
+    timeoutMs: number,
+  ): Promise<string> {
+    let lastError: Error | undefined;
+
+    for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
+      try {
+        return await this.runLiveSession(systemPrompt, userParts, timeoutMs);
+      } catch (error) {
+        lastError = error as Error;
+        this.logger.warn(
+          `Live session attempt ${attempt}/${this.maxRetries} failed: ${lastError.message}`,
+        );
+
+        if (attempt < this.maxRetries) {
+          const delay = attempt * 2000; // 2s, 4s backoff
+          this.logger.debug(`Retrying in ${delay}ms...`);
+          await this.sleep(delay);
+        }
+      }
+    }
+
+    throw lastError;
+  }
+
+  /**
+   * Open a Gemini Live session, send content, wait for turn completion,
+   * then close and return accumulated text.
+   */
+  private runLiveSession(
+    systemPrompt: string,
+    userParts: Part[],
+    timeoutMs: number,
+  ): Promise<string> {
+    return new Promise((resolve, reject) => {
+      let session: Session | undefined;
+      let fullText = "";
+      let turnCompleted = false;
+      let settled = false;
+      let timeoutHandle: ReturnType<typeof setTimeout>;
+
+      const finish = (error?: Error) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timeoutHandle);
+
+        if (session) {
+          try {
+            session.close();
+          } catch {}
+          session = undefined;
+        }
+
+        if (error) {
+          reject(error);
+        } else if (!fullText.trim()) {
+          reject(new Error("Gemini returned empty response"));
+        } else {
+          resolve(fullText);
+        }
+      };
+
+      // Timeout
+      timeoutHandle = setTimeout(() => {
+        this.logger.error(
+          `Gemini Live timeout after ${timeoutMs}ms (received ${fullText.length} chars so far)`,
+        );
+        finish(new Error("Gemini Live timeout"));
+      }, timeoutMs);
+
+      this.ai.live
+        .connect({
+          model: this.modelName,
+          config: {
+            responseModalities: [Modality.TEXT],
+            systemInstruction: {
+              parts: [{ text: systemPrompt }],
+            },
+          },
+          callbacks: {
+            onopen: () => {
+              this.logger.debug("Gemini Live session opened");
+            },
+
+            onmessage: (message: LiveServerMessage) => {
+              const content = message.serverContent;
+
+              const parts = content?.modelTurn?.parts;
+              if (parts) {
+                for (const part of parts) {
+                  if (part.text) {
+                    fullText += part.text;
+                  }
+                }
+              }
+
+              if (content?.turnComplete) {
+                turnCompleted = true;
+                this.logger.debug(
+                  `Turn completed, received ${fullText.length} chars`,
+                );
+                finish();
+              }
+            },
+
+            onerror: (err) => {
+              this.logger.error("Gemini Live session error", err.message);
+              finish(new Error(`Gemini Live error: ${err.message}`));
+            },
+
+            onclose: () => {
+              this.logger.debug(
+                `Gemini Live session closed (turnCompleted=${turnCompleted}, chars=${fullText.length})`,
+              );
+              // If the server closed before turn completed, fail immediately
+              if (!turnCompleted) {
+                finish(
+                  new Error(
+                    `Gemini Live session closed unexpectedly (received ${fullText.length} chars)`,
+                  ),
+                );
+              }
+            },
+          },
+        })
+        .then((s) => {
+          if (settled) return; // Already failed
+          session = s;
+
+          this.logger.debug("Sending content to Gemini Live session...");
+
+          // Send all parts as a single user turn
+          session.sendClientContent({
+            turns: [{ role: "user", parts: userParts }],
+          });
+        })
+        .catch((err) => {
+          this.logger.error(
+            "Failed to connect to Gemini Live",
+            (err as Error).message,
+          );
+          finish(
+            new Error(
+              `Gemini Live connection failed: ${(err as Error).message}`,
+            ),
+          );
+        });
+    });
+  }
+
+  // ---------------------------------------------------------------------------
+  // Prompts
+  // ---------------------------------------------------------------------------
 
   private getSingleAnalysisPrompt(): string {
     return `You are a professional film cinematographer analyzing visual composition and mood.
@@ -239,33 +369,52 @@ Each object MUST include the "id" field.
 Return ONLY valid JSON. No markdown. No explanation.`;
   }
 
+  // ---------------------------------------------------------------------------
+  // Data fetching & parsing
+  // ---------------------------------------------------------------------------
+
+  private async fetchImageData(
+    imageUrl: string,
+  ): Promise<{ imageBase64: string; imageMime: string }> {
+    const res = await fetch(imageUrl);
+    if (!res.ok) {
+      throw new Error(`Failed to fetch image: ${res.statusText}`);
+    }
+
+    const buffer = Buffer.from(await res.arrayBuffer());
+    const imageBase64 = buffer.toString("base64");
+    const imageMime = res.headers.get("content-type") || "image/jpeg";
+
+    this.logger.debug(
+      `Fetched image: ${imageMime}, ${Math.round(buffer.byteLength / 1024)}KB`,
+    );
+
+    return { imageBase64, imageMime };
+  }
+
+  private parseGeminiResponse(content: string): GeminiAnalysisResult {
+    try {
+      const parsed = JSON.parse(this.stripCodeFence(content));
+      return this.normalizeResult(parsed);
+    } catch (error) {
+      this.logger.error(
+        "Failed to parse Gemini response",
+        (error as Error).message,
+      );
+      throw new Error(`Invalid JSON from Gemini: ${(error as Error).message}`);
+    }
+  }
+
   // biome-ignore lint/suspicious/noExplicitAny: Parsing untyped Gemini JSON response
   private parseBatchResponse(content: string): any[] {
     try {
-      let jsonStr = content.trim();
+      const parsed = JSON.parse(this.stripCodeFence(content));
 
-      if (jsonStr.startsWith("```")) {
-        jsonStr = jsonStr
-          .replace(/^```json\n?/, "")
-          .replace(/^```\n?/, "")
-          .replace(/\n?```$/, "");
-      }
-
-      const parsed = JSON.parse(jsonStr);
-
-      if (Array.isArray(parsed)) {
-        return parsed;
-      }
-
-      // If Gemini returns a wrapper object, try common keys
-      if (parsed.results && Array.isArray(parsed.results)) {
+      if (Array.isArray(parsed)) return parsed;
+      if (parsed.results && Array.isArray(parsed.results))
         return parsed.results;
-      }
-      if (parsed.images && Array.isArray(parsed.images)) {
-        return parsed.images;
-      }
+      if (parsed.images && Array.isArray(parsed.images)) return parsed.images;
 
-      // Single object — wrap in array
       return [parsed];
     } catch (error) {
       this.logger.error(
@@ -276,6 +425,17 @@ Return ONLY valid JSON. No markdown. No explanation.`;
         `Invalid JSON from Gemini batch: ${(error as Error).message}`,
       );
     }
+  }
+
+  private stripCodeFence(text: string): string {
+    let s = text.trim();
+    if (s.startsWith("```")) {
+      s = s
+        .replace(/^```json\n?/, "")
+        .replace(/^```\n?/, "")
+        .replace(/\n?```$/, "");
+    }
+    return s;
   }
 
   // biome-ignore lint/suspicious/noExplicitAny: Normalizing untyped Gemini response fields
@@ -307,41 +467,7 @@ Return ONLY valid JSON. No markdown. No explanation.`;
     };
   }
 
-  private async fetchImageData(
-    imageUrl: string,
-  ): Promise<{ imageBase64: string; imageMime: string }> {
-    const res = await fetch(imageUrl);
-    if (!res.ok) {
-      throw new Error(`Failed to fetch image: ${res.statusText}`);
-    }
-
-    const buffer = Buffer.from(await res.arrayBuffer());
-    const imageBase64 = buffer.toString("base64");
-    const imageMime = res.headers.get("content-type") || "image/jpeg";
-
-    return { imageBase64, imageMime };
-  }
-
-  private parseGeminiResponse(content: string): GeminiAnalysisResult {
-    try {
-      let jsonStr = content.trim();
-
-      if (jsonStr.startsWith("```")) {
-        jsonStr = jsonStr
-          .replace(/^```json\n?/, "")
-          .replace(/^```\n?/, "")
-          .replace(/\n?```$/, "");
-      }
-
-      const parsed = JSON.parse(jsonStr);
-
-      return this.normalizeResult(parsed);
-    } catch (error) {
-      this.logger.error(
-        "Failed to parse Gemini response",
-        (error as Error).message,
-      );
-      throw new Error(`Invalid JSON from Gemini: ${(error as Error).message}`);
-    }
+  private sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
