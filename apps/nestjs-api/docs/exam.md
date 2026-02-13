@@ -4,7 +4,7 @@ This document provides example `curl` commands for interacting with the Vision I
 
 ## Base URL
 
-The default base URL is `http://localhost:3001`.
+The default base URL is `http://localhost:4000`.
 
 ## Alignment API
 
@@ -13,7 +13,7 @@ The default base URL is `http://localhost:3001`.
 Extract scene visual intents from raw Gemini Live text.
 
 ```bash
-curl -X POST http://localhost:3001/alignment/extract-visual-intent \
+curl -X POST http://localhost:4000/alignment/extract-visual-intent \
      -H "Content-Type: application/json" \
      -d '{
        "raw_gemini_text": "I want a scene with a lone tree in a field at sunset, followed by a close up of the bark."
@@ -27,7 +27,7 @@ curl -X POST http://localhost:3001/alignment/extract-visual-intent \
 Find semantically aligned images for a sequence of scenes.
 
 ```bash
-curl -X POST http://localhost:3001/alignment/find-images \
+curl -X POST http://localhost:4000/alignment/find-images \
      -H "Content-Type: application/json" \
      -d '{
        "scenes": [
@@ -62,7 +62,7 @@ curl -X POST http://localhost:3001/alignment/find-images \
 Trigger Pexels library sync to populate the database.
 
 ```bash
-curl -X POST http://localhost:3001/alignment/sync-pexels \
+curl -X POST http://localhost:4000/alignment/sync-pexels \
      -H "Content-Type: application/json" \
      -d '{
        "search_query": "nature",
@@ -77,7 +77,7 @@ curl -X POST http://localhost:3001/alignment/sync-pexels \
 Get sync and analysis statistics.
 
 ```bash
-curl -X GET http://localhost:3001/alignment/stats
+curl -X GET http://localhost:4000/alignment/stats
 ```
 
 ## Links API
@@ -85,7 +85,7 @@ curl -X GET http://localhost:3001/alignment/stats
 ### Create Link
 
 ```bash
-curl -X POST http://localhost:3001/links \
+curl -X POST http://localhost:4000/links \
      -H "Content-Type: application/json" \
      -d '{
        "title": "Example Link",
@@ -99,7 +99,7 @@ curl -X POST http://localhost:3001/links \
 ### Find All Links
 
 ```bash
-curl -X GET http://localhost:3001/links
+curl -X GET http://localhost:4000/links
 ```
 
 ---
@@ -107,7 +107,7 @@ curl -X GET http://localhost:3001/links
 ### Find One Link
 
 ```bash
-curl -X GET http://localhost:3001/links/1
+curl -X GET http://localhost:4000/links/1
 ```
 
 ---
@@ -115,7 +115,7 @@ curl -X GET http://localhost:3001/links/1
 ### Update Link
 
 ```bash
-curl -X PATCH http://localhost:3001/links/1 \
+curl -X PATCH http://localhost:4000/links/1 \
      -H "Content-Type: application/json" \
      -d '{
        "title": "Updated Title"
@@ -127,7 +127,7 @@ curl -X PATCH http://localhost:3001/links/1 \
 ### Delete Link
 
 ```bash
-curl -X DELETE http://localhost:3001/links/1
+curl -X DELETE http://localhost:4000/links/1
 ```
 
 ## App Root
@@ -135,5 +135,5 @@ curl -X DELETE http://localhost:3001/links/1
 ### Get Hello
 
 ```bash
-curl -X GET http://localhost:3001/
+curl -X GET http://localhost:4000/
 ```
