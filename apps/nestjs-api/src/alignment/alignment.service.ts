@@ -63,6 +63,13 @@ export class AlignmentService {
     );
 
     try {
+      // 1. Persist the raw request
+      const request = await this.prisma.visualIntentRequest.create({
+        data: {
+          rawGeminiText: dto.raw_gemini_text,
+        },
+      });
+
       const scenes = await this.deepseekService.extractVisualIntent(
         dto.raw_gemini_text,
       );
@@ -71,13 +78,29 @@ export class AlignmentService {
         throw new Error("DeepSeek returned no valid scenes");
       }
 
+      // 2. Persist each extracted scene intent
+      await Promise.all(
+        scenes.map((scene, index) =>
+          this.prisma.sceneIntent.create({
+            data: {
+              requestId: request.id,
+              projectId: "default-project", // Placeholder until project logic implemented
+              sceneIndex: index,
+              intent: scene.intent,
+              requiredImpact: scene.required_impact,
+              composition: scene.preferred_composition as any,
+            },
+          }),
+        ),
+      );
+
       this.logger.log(
-        `Successfully extracted ${scenes.length} scenes from narrative`,
+        `Successfully extracted and persisted ${scenes.length} scenes for request ${request.id}`,
       );
       return scenes;
     } catch (error) {
       this.logger.error(
-        "Visual intent extraction failed",
+        "Visual intent extraction/persistence failed",
         (error as Error).message,
       );
       throw error;

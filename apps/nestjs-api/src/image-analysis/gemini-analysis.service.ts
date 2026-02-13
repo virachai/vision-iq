@@ -79,7 +79,7 @@ export class GeminiAnalysisService {
    */
   async analyzeImage(
     imageUrl: string,
-    level: GradeLevel = "easy",
+    level: GradeLevel = "none",
   ): Promise<{ result: GeminiAnalysisResult; rawResponse: string }> {
     const { imageBase64, imageMime } = await this.fetchImageData(imageUrl);
 
@@ -274,7 +274,7 @@ export class GeminiAnalysisService {
     systemPrompt: string,
     userParts: Part[],
     timeoutMs: number,
-    level: GradeLevel = "easy",
+    level: GradeLevel = "none",
   ): Promise<string> {
     let lastError: Error | undefined;
 
@@ -575,7 +575,7 @@ Rules:
 
   private gradeRawText(
     content: string,
-    level: GradeLevel = "easy",
+    level: GradeLevel = "none",
   ): GradeValidationResult {
     if (level === "none") {
       return { passed: true, score: 100, failures: [] };

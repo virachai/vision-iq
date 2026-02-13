@@ -39,9 +39,17 @@ export class PexelsSyncService {
       errors: [],
     };
 
+    const syncHistory = await this.prisma.pexelsSyncHistory.create({
+      data: {
+        searchQuery: search_query,
+        batchSize: batchSize,
+        status: "pending",
+      },
+    });
+
     try {
       this.logger.log(
-        `Starting Pexels sync: query="${search_query}", batchSize=${batchSize}`,
+        `Starting Pexels sync (ID: ${syncHistory.id}): query="${search_query}", batchSize=${batchSize}`,
       );
 
       for await (const batch of this.pexelsIntegrationService.syncPexelsLibrary(
@@ -54,6 +62,16 @@ export class PexelsSyncService {
           const jobIds = await this.ingestionBatch(batch.images);
           result.job_ids.push(...jobIds);
           result.total_images += batch.images.length;
+
+          // Update history with progress
+          await this.prisma.pexelsSyncHistory.update({
+            where: { id: syncHistory.id },
+            data: {
+              totalImages: result.total_images,
+              totalBatches: result.total_batches,
+              jobIds: result.job_ids,
+            },
+          });
 
           this.logger.log(
             `Processed batch ${batch.batch_number}/${batch.total_batches} (${batch.images.length} images)`,
@@ -74,6 +92,13 @@ export class PexelsSyncService {
 
           if (failureRate > failureThreshold) {
             result.status = "failed";
+            await this.prisma.pexelsSyncHistory.update({
+              where: { id: syncHistory.id },
+              data: {
+                status: "failed",
+                error: (batchError as Error).message,
+              },
+            });
             throw new Error(
               `Batch failure rate (${failureRate * 100}%) exceeds threshold`,
             );
@@ -83,11 +108,31 @@ export class PexelsSyncService {
 
       result.status = "queued";
       result.total_images = result.job_ids.length;
+
+      // Mark history as completed
+      await this.prisma.pexelsSyncHistory.update({
+        where: { id: syncHistory.id },
+        data: {
+          status: "completed",
+          totalImages: result.total_images,
+        },
+      });
+
       return result;
     } catch (error) {
       result.status = "failed";
       result.errors?.push((error as Error).message);
       this.logger.error("Pexels sync failed", (error as Error).message);
+
+      // Final update for error status
+      await this.prisma.pexelsSyncHistory.update({
+        where: { id: syncHistory.id },
+        data: {
+          status: "failed",
+          error: (error as Error).message,
+        },
+      });
+
       throw error;
     }
   }

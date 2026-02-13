@@ -113,20 +113,36 @@ model ImageAnalysisJob {
   @@map("vision_iq_image_analysis_jobs")
 }
 
+// Scene Intent Request (stores raw Gemini narrative)
+model VisualIntentRequest {
+  id              String   @id @default(cuid())
+  rawGeminiText   String   @db.Text
+  
+  // Relations
+  scenes          SceneIntent[]
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("vision_iq_visual_intent_requests")
+}
+
 // Scene Intent from narrative parsing
 model SceneIntent {
   id                  String   @id @default(cuid())
-  projectId           String   // FK to narrative/project (future relation)
+  requestId           String?  // Linked to the raw request
+  request             VisualIntentRequest? @relation(fields: [requestId], references: [id], onDelete: SetNull)
   
+  projectId           String   // FK to narrative/project
   sceneIndex          Int      // Order in narrative
   
   intent              String   // "show a lonely figure in vast landscape"
-  requiredImpact      Float    // 1.0 - 10.0: how prominent should subject be
+  requiredImpact      Float    // 1.0 - 10.0
   
   // Preferred composition constraints
   composition         Json     // { "negative_space": "left" | "right" | "center", "shot_type": "CU" | "MS" | "WS" }
   
-  // Visual anchor (set after first image selection for consistency)
+  // Visual anchor
   moodAnchor          Json?    // { "temp": "warm" | "cold", "primary_color": "hex" }
   
   createdAt           DateTime @default(now())
@@ -134,5 +150,27 @@ model SceneIntent {
 
   @@index([projectId])
   @@index([sceneIndex])
+  @@index([requestId])
   @@map("vision_iq_scene_intents")
+}
+
+// Pexels Sync History
+model PexelsSyncHistory {
+  id              String   @id @default(cuid())
+  searchQuery     String
+  batchSize       Int
+  status          String   // "pending", "completed", "failed"
+  
+  totalImages     Int      @default(0)
+  totalBatches    Int      @default(0)
+  
+  error           String?
+  jobIds          String[] @default([]) // List of analysis job IDs created
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+  @@map("vision_iq_pexels_sync_history")
 }
