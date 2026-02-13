@@ -88,4 +88,74 @@ export class AnalysisSchedulerService {
       this.logger.error("Error in handlePendingJobs cron:", error.message);
     }
   }
+
+  /**
+   * Cron job that runs every 10 minutes to recheck stalled orchestration steps
+   * (VisualIntentRequest, SceneIntent, VisualDescription)
+   */
+  @Cron(CronExpression.EVERY_10_MINUTES)
+  async handleStalledOrchestration() {
+    this.logger.log(
+      "Running cron job: Checking for stalled orchestration steps",
+    );
+
+    const stalledThreshold = new Date();
+    stalledThreshold.setMinutes(stalledThreshold.getMinutes() - 15);
+
+    try {
+      // 1. Stalled VisualIntentRequests
+      const stalledRequests = await this.prisma.visualIntentRequest.findMany({
+        where: {
+          status: { in: ["PENDING", "IN_PROGRESS"] },
+          updatedAt: { lt: stalledThreshold },
+        },
+        select: { id: true },
+      });
+
+      for (const req of stalledRequests) {
+        await this.alignmentService.resumeProcessing("request", req.id);
+      }
+
+      // 2. Stalled SceneIntents
+      const stalledScenes = await this.prisma.sceneIntent.findMany({
+        where: {
+          status: { in: ["PENDING", "IN_PROGRESS"] },
+          updatedAt: { lt: stalledThreshold },
+        },
+        select: { id: true },
+      });
+
+      for (const scene of stalledScenes) {
+        await this.alignmentService.resumeProcessing("scene", scene.id);
+      }
+
+      // 3. Stalled VisualDescriptions
+      const stalledDescriptions = await this.prisma.visualDescription.findMany({
+        where: {
+          status: { in: ["PENDING", "IN_PROGRESS"] },
+          updatedAt: { lt: stalledThreshold },
+        },
+        select: { id: true },
+      });
+
+      for (const desc of stalledDescriptions) {
+        await this.alignmentService.resumeProcessing("description", desc.id);
+      }
+
+      if (
+        stalledRequests.length > 0 ||
+        stalledScenes.length > 0 ||
+        stalledDescriptions.length > 0
+      ) {
+        this.logger.log(
+          `Resumed ${stalledRequests.length} requests, ${stalledScenes.length} scenes, and ${stalledDescriptions.length} descriptions.`,
+        );
+      }
+    } catch (error: any) {
+      this.logger.error(
+        "Error in handleStalledOrchestration cron:",
+        error.message,
+      );
+    }
+  }
 }

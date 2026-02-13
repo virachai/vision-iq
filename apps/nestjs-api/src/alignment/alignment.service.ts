@@ -418,6 +418,72 @@ export class AlignmentService {
   }
 
   /**
+   * Orchestration: Resume stalled processing for various entities
+   * This is used by cron jobs to recheck rows that haven't reached COMPLETED/FAILED
+   */
+  async resumeProcessing(
+    entityType: "request" | "scene" | "description",
+    id: string,
+  ) {
+    this.logger.log(`Resuming processing for ${entityType}: ${id}`);
+
+    try {
+      if (entityType === "request") {
+        const request = await this.prisma.visualIntentRequest.findUnique({
+          where: { id },
+          select: { rawGeminiText: true },
+        });
+        if (request) {
+          // Re-trigger extraction
+          return this.extractVisualIntent({
+            raw_gemini_text: request.rawGeminiText,
+            auto_match: true,
+          });
+        }
+      } else if (entityType === "scene") {
+        const scene = await this.prisma.sceneIntent.findUnique({
+          where: { id },
+          select: { intent: true },
+        });
+        if (scene) {
+          // Re-trigger expansion
+          const expanded = await this.deepseekService.expandSceneIntent(
+            scene.intent,
+          );
+          for (const exp of expanded) {
+            const analysisData = exp.analysis as any;
+            await this.prisma.visualDescription.create({
+              data: {
+                sceneIntentId: id,
+                description: exp.description,
+                analysis: analysisData as any,
+                status: "IN_PROGRESS",
+                keywords: {
+                  create:
+                    analysisData?.keywords?.map((k: string) => ({
+                      keyword: k,
+                    })) || [],
+                },
+              },
+            });
+          }
+          await this.prisma.sceneIntent.update({
+            where: { id },
+            data: { status: "COMPLETED" },
+          });
+        }
+      } else if (entityType === "description") {
+        return this.syncPexelsByDescriptionId(id);
+      }
+    } catch (error: any) {
+      this.logger.error(
+        `Failed to resume ${entityType} ${id}: ${error.message}`,
+      );
+      // Mark as FAILED if it keeps failing? For now we just log.
+    }
+  }
+
+  /**
    * CRON: Process pending DeepSeek analysis jobs every 10 seconds
    * Finds completed Gemini analysis jobs that haven't been refined yet (isUsed: false)
    */
