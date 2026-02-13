@@ -312,6 +312,7 @@ export class AlignmentService {
 
     const description = await this.prisma.visualDescription.findUnique({
       where: { id: descriptionId },
+      include: { keywords: true },
     });
 
     if (!description) {
@@ -343,6 +344,63 @@ export class AlignmentService {
         });
         return result;
       });
+  }
+
+  /**
+   * Automatically sync Pexels for all descriptions that have unused keywords
+   */
+  async autoSyncUnusedKeywords(): Promise<{
+    processed: number;
+    results: any[];
+  }> {
+    this.logger.log("Checking for unused keywords to trigger auto-sync");
+
+    // Find all descriptions that have at least one unused keyword
+    const descriptionsWithUnusedKeywords =
+      await this.prisma.visualDescription.findMany({
+        where: {
+          keywords: {
+            some: {
+              isUsed: false,
+            },
+          },
+        },
+        select: {
+          id: true,
+        },
+      });
+
+    if (descriptionsWithUnusedKeywords.length === 0) {
+      this.logger.debug("No descriptions with unused keywords found");
+      return { processed: 0, results: [] };
+    }
+
+    this.logger.log(
+      `Found ${descriptionsWithUnusedKeywords.length} descriptions with unused keywords. Triggering sync...`,
+    );
+
+    const results = [];
+    for (const desc of descriptionsWithUnusedKeywords) {
+      try {
+        const result = await this.syncPexelsByDescriptionId(desc.id);
+        results.push({ descriptionId: desc.id, status: "success", result });
+      } catch (error) {
+        this.logger.error(
+          `Auto-sync failed for description ${desc.id}`,
+          (error as Error).message,
+        );
+        results.push({
+          descriptionId: desc.id,
+          status: "failed",
+          error: (error as Error).message,
+        });
+      }
+    }
+
+    return {
+      processed: descriptionsWithUnusedKeywords.length,
+      results,
+    };
   }
 
   /**

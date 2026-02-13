@@ -87,3 +87,28 @@ flowchart LR
 
 - **Gemini Vision Worker**: Extracts impact scores, shot types, camera angles, and metaphorical tags.
 - **Embedding Worker**: Transforms visual metadata into high-dimensional vectors for semantic search.
+
+## 5. Automated Keyword-Driven Pexels Sync
+
+A background orchestration step that handles pending keyword-based image discovery.
+
+```mermaid
+sequenceDiagram
+    participant Cron as AnalysisScheduler (Cron)
+    participant AlignmentService
+    participant Prisma
+    participant PexelsSyncService
+
+    Cron->>AlignmentService: autoSyncUnusedKeywords()
+    AlignmentService->>Prisma: Find unique descriptionIds with unused keywords
+    loop For each descriptionId
+        AlignmentService->>AlignmentService: syncPexelsByDescriptionId(id)
+        AlignmentService->>PexelsSyncService: syncPexelsLibrary(keywords, ...)
+        PexelsSyncService-->>AlignmentService: Sync Success
+        AlignmentService->>Prisma: Mark keywords as used (isUsed=true)
+    end
+```
+
+- **Frequency**: Runs every 5 minutes by default.
+- **Trigger**: Can also be manually triggered via `POST /alignment/trigger-keyword-sync`.
+- **Keyword Source**: Uses keywords extracted from `VisualDescription` analysis results.

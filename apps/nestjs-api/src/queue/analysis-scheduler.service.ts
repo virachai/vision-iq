@@ -2,6 +2,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { PrismaClient } from "@repo/database";
 import { QueueService } from "./queue.service";
+import { AlignmentService } from "../alignment/alignment.service";
 
 @Injectable()
 export class AnalysisSchedulerService {
@@ -10,7 +11,27 @@ export class AnalysisSchedulerService {
   constructor(
     private readonly prisma: PrismaClient,
     private readonly queueService: QueueService,
+    private readonly alignmentService: AlignmentService,
   ) {}
+
+  /**
+   * Cron job that runs every 5 minutes to trigger Pexels sync
+   * for VisualDescriptions that have unused keywords.
+   */
+  @Cron(CronExpression.EVERY_5_MINUTES)
+  async handleUnusedKeywords() {
+    this.logger.log("Running cron job: Checking for unused keywords to sync");
+    try {
+      const result = await this.alignmentService.autoSyncUnusedKeywords();
+      if (result.processed > 0) {
+        this.logger.log(
+          `Auto-sync triggered for ${result.processed} descriptions`,
+        );
+      }
+    } catch (error: any) {
+      this.logger.error("Error in handleUnusedKeywords cron:", error.message);
+    }
+  }
 
   /**
    * Cron job that runs every 5 minutes to recheck pending analysis jobs

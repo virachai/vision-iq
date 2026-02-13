@@ -28,7 +28,7 @@ Finds existing images or pulls new ones from external libraries (Pexels) based o
 
 - **Service**: `SemanticMatchingService` & `PexelsSyncService`
 - **Tracking**: Every discovered image is linked back to the specific `VisualDescription` that found it via the `PexelsImageDescription` join table. This allows upstream/downstream tracking of image provenance.
-- **Auto-Sync**: If `auto_match` is enabled, the system automatically fetches new images from Pexels using the expanded descriptions as search queries.
+- **Auto-Sync**: If `auto_match` is enabled, the system automatically fetches new images from Pexels using the expanded descriptions as search queries. Additionally, a background cron job handles any pending keyword searches for descriptions that weren't immediately synced.
 
 ### 4. Asynchronous Pipeline (Enrichment)
 
@@ -46,6 +46,7 @@ flowchart TD
 ```
 
 - **VisualAnchorLogic**: Ensures visual continuity.
+- **Automated Keyword Trigger**: Background orchestration (`AnalysisSchedulerService`) that picks up unused keywords from the `vision_iq_visual_description_keywords` table and triggers Pexels syncs to fill gaps in the library.
 - **OrchestrationStatus**: Tracks the lifecycle of requests, scenes, and descriptions (`PENDING`, `IN_PROGRESS`, `COMPLETED`, `FAILED`).
 
 ## Sequence Diagram: Visual Orchestration

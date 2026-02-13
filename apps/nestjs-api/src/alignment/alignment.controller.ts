@@ -74,6 +74,15 @@ export class AlignmentController {
   }
 
   /**
+   * POST /alignment/trigger-keyword-sync
+   * Manually trigger the automated sync flow for all descriptions with unused keywords
+   */
+  @Post("trigger-keyword-sync")
+  async triggerKeywordSync() {
+    return this.alignmentService.autoSyncUnusedKeywords();
+  }
+
+  /**
    * GET /alignment/stats
    * Get sync and analysis statistics
    */

@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { Module, forwardRef } from "@nestjs/common";
 import { DeepSeekModule } from "../deepseek-integration/deepseek.module";
 import { ImageAnalysisModule } from "../image-analysis/image-analysis.module";
 import { PexelsIntegrationModule } from "../pexels-sync/pexels-integration.module";
@@ -12,7 +12,7 @@ import { AlignmentService } from "./alignment.service";
     DeepSeekModule,
     SemanticMatchingModule,
     PexelsIntegrationModule,
-    QueueModule,
+    forwardRef(() => QueueModule),
     ImageAnalysisModule,
   ],
   controllers: [AlignmentController],
