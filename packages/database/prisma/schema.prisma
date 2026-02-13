@@ -28,6 +28,7 @@ model PexelsImage {
   width           Int?
   height          Int?
   avgColor        String?
+  alt             String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 

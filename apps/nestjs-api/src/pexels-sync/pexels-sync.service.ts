@@ -159,6 +159,7 @@ export class PexelsSyncService {
             width: image.width,
             height: image.height,
             avgColor: image.avg_color,
+            alt: image.alt,
           },
         });
 
@@ -199,6 +200,7 @@ export class PexelsSyncService {
           pexelsImage.id,
           image.url,
           image.pexels_id,
+          image.alt,
         );
 
         jobIds.push(queueJobId);

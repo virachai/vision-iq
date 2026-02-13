@@ -14,6 +14,7 @@ interface ImageAnalysisJob {
   imageId: string;
   imageUrl: string;
   pexelsId: string;
+  alt?: string;
 }
 
 interface EmbeddingGenerationJob {
@@ -148,11 +149,12 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
     imageId: string,
     imageUrl: string,
     pexelsId: string,
+    alt?: string,
   ) {
     try {
       const job = await this.imageAnalysisQueue.add(
         "analyze",
-        { imageId, imageUrl, pexelsId },
+        { imageId, imageUrl, pexelsId, alt },
         {
           jobId: `analysis-${imageId}`,
           priority: 10,
@@ -222,9 +224,26 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
     this.logger.log(`Processing image analysis: ${data.pexelsId}`);
 
     try {
+      // Verify image still exists before proceeding
+      const imageExists = await this.prisma.pexelsImage.findUnique({
+        where: { id: data.imageId },
+        select: { id: true },
+      });
+
+      if (!imageExists) {
+        this.logger.warn(
+          `Image ${data.imageId} (Pexels: ${data.pexelsId}) not found in database. Discarding analysis job.`,
+        );
+        return;
+      }
+
       // Call Gemini to analyze image
       const { result: analysis, rawResponse } =
-        await this.geminiAnalysisService.analyzeImage(data.imageUrl);
+        await this.geminiAnalysisService.analyzeImage(
+          data.imageUrl,
+          "none",
+          data.alt,
+        );
 
       // Store metadata in database
       await this.prisma.imageMetadata.upsert({
@@ -290,6 +309,13 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
           errorMessage: (error as Error).message,
         },
       });
+
+      if ((error as any).code === "P2003") {
+        this.logger.warn(
+          `Foreign key constraint failed for image ${data.imageId} (Pexels: ${data.pexelsId}). Image may have been deleted.`,
+        );
+        return;
+      }
 
       throw error;
     }

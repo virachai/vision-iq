@@ -51,6 +51,7 @@ export class AnalysisSchedulerService {
             job.imageId,
             job.image.url,
             job.image.pexelsId,
+            job.image.alt,
           );
 
           this.logger.debug(

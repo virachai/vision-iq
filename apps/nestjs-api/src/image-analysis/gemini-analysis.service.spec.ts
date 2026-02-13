@@ -1,6 +1,8 @@
 import { Test, type TestingModule } from "@nestjs/testing";
 import { GeminiAnalysisService } from "./gemini-analysis.service";
 import { GoogleGenAI, Modality } from "@google/genai";
+import { DeepSeekService } from "../deepseek-integration/deepseek.service";
+import { PRISMA_SERVICE } from "../prisma/prisma.module";
 
 jest.mock("@google/genai", () => {
   return {
@@ -36,7 +38,19 @@ describe("GeminiAnalysisService", () => {
     }));
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [GeminiAnalysisService],
+      providers: [
+        GeminiAnalysisService,
+        {
+          provide: DeepSeekService,
+          useValue: {
+            parseGeminiRawResponse: jest.fn(),
+          },
+        },
+        {
+          provide: PRISMA_SERVICE,
+          useValue: mockSession, // Just a placeholder mock
+        },
+      ],
     }).compile();
 
     service = module.get<GeminiAnalysisService>(GeminiAnalysisService);
@@ -176,6 +190,7 @@ The wide shot emphasizes the vastness of the landscape. The low angle provides a
 
       const { result } = await service.analyzeImage(
         "https://example.com/image.jpg",
+        "hard",
       );
 
       expect(attempts).toBe(2);
@@ -212,6 +227,7 @@ The wide shot emphasizes the vastness of the landscape. The low angle provides a
 
       const result = await service.analyzeImage(
         "https://example.com/image.jpg",
+        "hard",
       );
       expect(attempts).toBe((service as any).maxRetries);
       expect(result.rawResponse).toBe("Bad response");
@@ -255,7 +271,7 @@ This is a long enough sentence to satisfy the character count requirement of one
 
     it("should fail if missing sections", () => {
       const invalidText = "IMPACT: 5";
-      const result = (service as any).gradeRawText(invalidText);
+      const result = (service as any).gradeRawText(invalidText, "hard");
       expect(result.passed).toBe(false);
       expect(result.failures).toContain("Missing section: VISUAL_WEIGHT:");
     });
@@ -279,7 +295,7 @@ METAPHORICAL_FIELD:
 CINEMATIC_NOTES:
 Sentence one. Sentence two. Long enough text here to pass the char count check probably.
 `;
-      const result = (service as any).gradeRawText(invalidText);
+      const result = (service as any).gradeRawText(invalidText, "hard");
       expect(result.passed).toBe(false);
       expect(result.failures).toContain(
         "Composition or Color Profile enum validation failed",

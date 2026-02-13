@@ -80,15 +80,27 @@ export class GeminiAnalysisService {
   async analyzeImage(
     imageUrl: string,
     level: GradeLevel = "none",
+    alt?: string,
   ): Promise<{ result: GeminiAnalysisResult; rawResponse: string }> {
     const { imageBase64, imageMime } = await this.fetchImageData(imageUrl);
 
+    const userParts: Part[] = [
+      {
+        text: "EXTRACT VISUAL METADATA. STRICT DATA MODE. NO CONVERSATION. NO MARKDOWN. START WITH 'IMPACT:'.",
+      },
+    ];
+
+    if (alt) {
+      userParts.push({ text: `HINT/ALT TEXT: ${alt}` });
+    }
+
+    userParts.push({
+      inlineData: { mimeType: imageMime, data: imageBase64 },
+    });
+
     const fullText = await this.runLiveSessionWithRetry(
       this.getSingleAnalysisPrompt(),
-      [
-        { text: "Analyze this image in structured raw text format." },
-        { inlineData: { mimeType: imageMime, data: imageBase64 } },
-      ],
+      userParts,
       60_000,
       level,
     );
@@ -143,7 +155,11 @@ export class GeminiAnalysisService {
       const { imageBase64, imageMime } = settled.value;
       validIndices.push(i);
 
-      parts.push({ text: `[IMAGE_${i}] id="${items[i].id}"` });
+      parts.push({
+        text: `[IMAGE_${i}] id="${items[i].id}"${
+          (items[i] as any).alt ? ` alt="${(items[i] as any).alt}"` : ""
+        }`,
+      });
       parts.push({
         inlineData: { mimeType: imageMime, data: imageBase64 },
       });
@@ -474,20 +490,15 @@ export class GeminiAnalysisService {
 
   private getSingleAnalysisPrompt(): string {
     return `
-You are a professional cinematographer performing structured visual analysis.
-
-Respond in structured RAW TEXT format.
-Do NOT use JSON.
-Do NOT use markdown.
-Do NOT explain the format.
-Do NOT add commentary outside the structure.
-
-Use the exact section headers below.
+SYSTEM: High-speed visual metadata extraction engine.
+MODE: STRICT DATA ONLY.
+FORBIDDEN: Conversational fillers, thinking steps, markdown, headers, commentary, explanation.
+REQUIREMENT: Return ONLY the structured raw text fields below. Start immediately with IMPACT:
 
 FORMAT:
 
-IMPACT: <integer 1-10>
-VISUAL_WEIGHT: <integer 1-10>
+IMPACT: <1-10>
+VISUAL_WEIGHT: <1-10>
 
 COMPOSITION:
 - negative_space: left | right | center
@@ -498,44 +509,36 @@ COMPOSITION:
 
 COLOR_PROFILE:
 - temperature: warm | cold
-- primary_color: dominant color word
-- secondary_colors: comma-separated color words
+- primary_color: color word
+- secondary_colors: comma-separated
 - contrast_level: low | medium | high
 
 MOOD_DNA:
-- vibe: 1-3 word phrase, lowercase
+- vibe: lowercase phrase
 - emotional_intensity: low | restrained | medium | strong
 - rhythm: calm | dynamic | tense | still
 
 METAPHORICAL_FIELD:
-5-8 abstract concepts (one per line, lowercase, no sentences)
+5-8 concepts (one per line, lowercase)
 
 CINEMATIC_NOTES:
-3-5 concise sentences describing the overall cinematic character.
-
-Rules:
-- Keep language precise.
-- No extra sections.
-- No emojis.
-- No repetition.
+3-5 concise descriptive sentences.
 `;
   }
 
   private getBatchAnalysisPrompt(): string {
     return `
-You are a professional cinematographer analyzing multiple images.
+SYSTEM: Batch visual metadata extraction engine.
+MODE: STRICT DATA ONLY.
+FORBIDDEN: Conversational fillers, headers, markdown, commentary.
+PROCESS: Repeat the format for REACH IMAGE. Do not merge.
 
-Respond in structured RAW TEXT.
-Do NOT use JSON.
-Do NOT use markdown.
-Do NOT include explanations.
-
-For EACH image, use this format:
+For EACH image:
 
 IMAGE_ID: <id>
 
-IMPACT: <integer 1-10>
-VISUAL_WEIGHT: <integer 1-10>
+IMPACT: <1-10>
+VISUAL_WEIGHT: <1-10>
 
 COMPOSITION:
 - negative_space: left | right | center
@@ -546,26 +549,20 @@ COMPOSITION:
 
 COLOR_PROFILE:
 - temperature: warm | cold
-- primary_color: dominant color word
-- secondary_colors: comma-separated color words
+- primary_color: color word
+- secondary_colors: comma-separated
 - contrast_level: low | medium | high
 
 MOOD_DNA:
-- vibe: 1-3 word phrase, lowercase
+- vibe: lowercase phrase
 - emotional_intensity: low | restrained | medium | strong
 - rhythm: calm | dynamic | tense | still
 
 METAPHORICAL_FIELD:
-5-8 abstract concepts (one per line)
+5-8 concepts (one per line)
 
 CINEMATIC_NOTES:
 3-5 concise sentences.
-
-Rules:
-- Repeat this full structure for every image.
-- Do not skip any image.
-- Do not merge analyses.
-- Keep sections clearly separated.
 `;
   }
 
