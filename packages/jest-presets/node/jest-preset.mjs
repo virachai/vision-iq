@@ -9,7 +9,7 @@ const config = {
   },
 
   transformIgnorePatterns: [
-    "node_modules/(?!.*\\.pnpm.*(p-retry|is-network-error|@google/genai))",
+    "node_modules/(?!((.+/)?(p-retry|is-network-error|@google/genai|is-ip|is-network-error)))",
   ],
 
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],

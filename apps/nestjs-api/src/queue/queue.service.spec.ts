@@ -5,6 +5,8 @@ import { Queue, Worker } from "bullmq";
 import { GeminiAnalysisService } from "../image-analysis/gemini-analysis.service";
 import { QueueService } from "./queue.service";
 import { PexelsSyncService } from "../pexels-sync/pexels-sync.service";
+import { PRISMA_SERVICE } from "../prisma/prisma.module";
+import { forwardRef } from "@nestjs/common";
 
 // Mock BullMQ
 jest.mock("bullmq", () => {
@@ -38,7 +40,7 @@ describe("QueueService", () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         QueueService,
-        { provide: PrismaClient, useValue: mockPrisma },
+        { provide: PRISMA_SERVICE, useValue: mockPrisma },
         { provide: GeminiAnalysisService, useValue: mockGemini },
         { provide: PexelsSyncService, useValue: mockPexels },
       ],

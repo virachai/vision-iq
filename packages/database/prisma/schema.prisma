@@ -39,6 +39,8 @@ model PexelsImage {
   descriptions    PexelsImageDescription[] // Track which descriptions this image satisfies
   deepseekAnalysis DeepSeekAnalysis?
   
+  syncHistory     PexelsSyncImage[]
+  
   source          String?  @default("SYNC_PEXELS") // "TRIGGER", "SYNC_PEXELS"
 
   @@index([pexelsId])
@@ -244,6 +246,8 @@ model PexelsSyncHistory {
   error           String?
   jobIds          String[] @default([]) // List of analysis job IDs created
   
+  images          PexelsSyncImage[]
+  
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
@@ -295,4 +299,21 @@ model DeepSeekAnalysis {
   @@index([imageId])
   @@index([jobId])
   @@map("vision_iq_deepseek_analysis")
+}
+
+// Direct tracking between sync history and images
+model PexelsSyncImage {
+  id              String             @id @default(cuid())
+  syncHistoryId   String
+  syncHistory     PexelsSyncHistory  @relation(fields: [syncHistoryId], references: [id], onDelete: Cascade)
+  
+  pexelsImageId   String
+  pexelsImage     PexelsImage        @relation(fields: [pexelsImageId], references: [id], onDelete: Cascade)
+
+  createdAt       DateTime           @default(now())
+
+  @@unique([syncHistoryId, pexelsImageId])
+  @@index([syncHistoryId])
+  @@index([pexelsImageId])
+  @@map("vision_iq_pexels_sync_images")
 }

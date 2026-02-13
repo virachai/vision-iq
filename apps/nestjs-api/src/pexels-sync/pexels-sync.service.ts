@@ -61,6 +61,7 @@ export class PexelsSyncService {
         try {
           const jobIds = await this.ingestionBatch(
             batch.images,
+            syncHistory.id,
             descriptionId,
             keywordId,
           );
@@ -146,6 +147,7 @@ export class PexelsSyncService {
    */
   private async ingestionBatch(
     images: Array<any>,
+    syncHistoryId: string,
     descriptionId?: string,
     keywordId?: string,
   ): Promise<string[]> {
@@ -164,6 +166,21 @@ export class PexelsSyncService {
             height: image.height,
             avgColor: image.avg_color,
             alt: image.alt,
+          },
+        });
+
+        // Track image-sync association
+        await this.prisma.pexelsSyncImage.upsert({
+          where: {
+            syncHistoryId_pexelsImageId: {
+              syncHistoryId: syncHistoryId,
+              pexelsImageId: pexelsImage.id,
+            },
+          },
+          update: {},
+          create: {
+            syncHistoryId: syncHistoryId,
+            pexelsImageId: pexelsImage.id,
           },
         });
 

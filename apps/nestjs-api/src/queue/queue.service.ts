@@ -9,6 +9,7 @@ import { Queue, Worker } from "bullmq";
 import { GeminiAnalysisService } from "../image-analysis/gemini-analysis.service";
 import { PexelsSyncService } from "../pexels-sync/pexels-sync.service";
 import { forwardRef, Inject } from "@nestjs/common";
+import { PRISMA_SERVICE } from "../prisma/prisma.module";
 
 interface ImageAnalysisJob {
   imageId: string;
@@ -40,7 +41,7 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
   private readonly redisUrl = process.env.REDIS_URL || "redis://localhost:6379";
 
   constructor(
-    private readonly prisma: PrismaClient,
+    @Inject("PRISMA_SERVICE") private readonly prisma: PrismaClient,
     private readonly geminiAnalysisService: GeminiAnalysisService,
     @Inject(forwardRef(() => PexelsSyncService))
     private readonly pexelsSyncService: PexelsSyncService,

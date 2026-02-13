@@ -110,6 +110,8 @@ The wide shot emphasizes the vastness of the landscape. The low angle provides a
         vibe: "energetic",
         emotional_intensity: "strong",
         rhythm: "dynamic",
+        temp: "warm",
+        primary_color: "#FF5733",
       },
       metaphorical_tags: [
         "freedom",
