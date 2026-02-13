@@ -72,6 +72,16 @@ curl -X POST http://localhost:3006/alignment/sync-pexels \
 
 ---
 
+### Sync Pexels by Description ID
+
+Trigger keyword-based Pexels sync for a specific scene description.
+
+```bash
+curl -X POST http://localhost:3006/alignment/sync-pexels/cm73p6p2a000108l23f3f2d3p
+```
+
+---
+
 ### Test Image Analysis
 
 Directly test the Gemini Live analysis for a specific image URL. This uses the Raw Text format and Rule 5 (Turn Completion Control).

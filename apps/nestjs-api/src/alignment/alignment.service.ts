@@ -123,10 +123,18 @@ export class AlignmentService {
                 )}..."`,
               );
 
+              // Extraction logic for search query: Prioritize keywords from analysis
+              const analysis = exp.analysis as any;
+              const searchQuery =
+                analysis?.keywords && Array.isArray(analysis.keywords)
+                  ? analysis.keywords.join(" ")
+                  : exp.description;
+
+              this.logger.log(`Using search query: "${searchQuery}"`);
+
               // Trigger Pexels Sync with descriptionId for tracking
-              // We'll update the description status to COMPLETED once sync is done
               this.pexelsSyncService
-                .syncPexelsLibrary(exp.description, 5, 0.1, description.id)
+                .syncPexelsLibrary(searchQuery, 5, 0.1, description.id)
                 .then(async () => {
                   await this.prisma.visualDescription.update({
                     where: { id: description.id },
@@ -277,6 +285,40 @@ export class AlignmentService {
       search_query,
       batchSize,
       failureThreshold,
+    );
+  }
+
+  /**
+   * Sync Pexels library using keywords from a specific VisualDescription
+   */
+  async syncPexelsByDescriptionId(descriptionId: string): Promise<SyncResult> {
+    this.logger.log(
+      `Manual keyword-sync request for description ${descriptionId}`,
+    );
+
+    const description = await this.prisma.visualDescription.findUnique({
+      where: { id: descriptionId },
+    });
+
+    if (!description) {
+      throw new Error(`VisualDescription not found: ${descriptionId}`);
+    }
+
+    const analysis = description.analysis as any;
+    const keywords =
+      analysis?.keywords && Array.isArray(analysis.keywords)
+        ? analysis.keywords.join(" ")
+        : description.description;
+
+    this.logger.log(
+      `Triggering manual sync with keywords: "${keywords}" for description ${descriptionId}`,
+    );
+
+    return this.pexelsSyncService.syncPexelsLibrary(
+      keywords,
+      5, // Default small batch for manual precision sync
+      0.1,
+      descriptionId,
     );
   }
 

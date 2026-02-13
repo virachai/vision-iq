@@ -65,6 +65,15 @@ export class AlignmentController {
   }
 
   /**
+   * POST /alignment/sync-pexels/:descriptionId
+   * Trigger keyword-based sync for a specific description
+   */
+  @Post("sync-pexels/:descriptionId")
+  async syncPexelsByDescription(@Param("descriptionId") descriptionId: string) {
+    return this.alignmentService.syncPexelsByDescriptionId(descriptionId);
+  }
+
+  /**
    * GET /alignment/stats
    * Get sync and analysis statistics
    */
