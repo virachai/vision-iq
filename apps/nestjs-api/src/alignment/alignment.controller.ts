@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Param, Post } from "@nestjs/common";
 import { AlignmentService } from "./alignment.service";
+import { CleanupService } from "./cleanup.service";
 import type {
   ExtractVisualIntentDto,
   FindAlignedImagesDto,
@@ -9,7 +10,10 @@ import type {
 
 @Controller("alignment")
 export class AlignmentController {
-  constructor(private readonly alignmentService: AlignmentService) {}
+  constructor(
+    private readonly alignmentService: AlignmentService,
+    private readonly cleanupService: CleanupService,
+  ) {}
 
   /**
    * POST /alignment/extract-visual-intent
@@ -89,5 +93,14 @@ export class AlignmentController {
   @Get("stats")
   async getStats() {
     return this.alignmentService.getStats();
+  }
+
+  /**
+   * POST /alignment/rollback/:requestId
+   * Rollback a visual intent request and all its downstream entities
+   */
+  @Post("rollback/:requestId")
+  async rollback(@Param("requestId") requestId: string) {
+    return this.cleanupService.rollbackRequest(requestId);
   }
 }

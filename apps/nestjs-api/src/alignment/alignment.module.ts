@@ -6,6 +6,7 @@ import { QueueModule } from "../queue/queue.module";
 import { SemanticMatchingModule } from "../semantic-matching/semantic-matching.module";
 import { AlignmentController } from "./alignment.controller";
 import { AlignmentService } from "./alignment.service";
+import { CleanupService } from "./cleanup.service";
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { AlignmentService } from "./alignment.service";
     ImageAnalysisModule,
   ],
   controllers: [AlignmentController],
-  providers: [AlignmentService],
-  exports: [AlignmentService],
+  providers: [AlignmentService, CleanupService],
+  exports: [AlignmentService, CleanupService],
 })
 export class AlignmentModule {}
