@@ -78,25 +78,64 @@ export class AlignmentService {
         throw new Error("DeepSeek returned no valid scenes");
       }
 
-      // 2. Persist each extracted scene intent
-      await Promise.all(
-        scenes.map((scene, index) =>
-          this.prisma.sceneIntent.create({
+      // 2. Persist each extracted scene intent and EXPAND it
+      for (let index = 0; index < scenes.length; index++) {
+        const sceneData = scenes[index];
+        const scene = await this.prisma.sceneIntent.create({
+          data: {
+            requestId: request.id,
+            projectId: "default-project", // Placeholder until project logic implemented
+            sceneIndex: index,
+            intent: sceneData.intent,
+            requiredImpact: sceneData.required_impact,
+            composition: sceneData.preferred_composition as any,
+          },
+        });
+
+        this.logger.debug(
+          `Expanding scene ${index} ("${scene.intent.substring(0, 30)}...")`,
+        );
+
+        // 3. Deepseek Expansion: 1 raw intent to many detailed descriptions
+        const expanded = await this.deepseekService.expandSceneIntent(
+          sceneData.intent,
+        );
+
+        for (const exp of expanded) {
+          const description = await this.prisma.visualDescription.create({
             data: {
-              requestId: request.id,
-              projectId: "default-project", // Placeholder until project logic implemented
-              sceneIndex: index,
-              intent: scene.intent,
-              requiredImpact: scene.required_impact,
-              composition: scene.preferred_composition as any,
+              sceneIntentId: scene.id,
+              description: exp.description,
+              analysis: exp.analysis as any,
             },
-          }),
-        ),
-      );
+          });
+
+          // 4. Automated Flow: Trigger image matching/syncing if requested
+          if (dto.auto_match) {
+            this.logger.log(
+              `Auto-match triggered for expanded description: "${exp.description.substring(
+                0,
+                30,
+              )}..."`,
+            );
+
+            // Trigger Pexels Sync with descriptionId for tracking
+            this.pexelsSyncService
+              .syncPexelsLibrary(exp.description, 5, 0.1, description.id)
+              .catch((err) => {
+                this.logger.error(
+                  `Automated sync/matching failed for description ${description.id}`,
+                  err.message,
+                );
+              });
+          }
+        }
+      }
 
       this.logger.log(
-        `Successfully extracted and persisted ${scenes.length} scenes for request ${request.id}`,
+        `Successfully processed ${scenes.length} scenes for request ${request.id}`,
       );
+
       return scenes;
     } catch (error) {
       this.logger.error(

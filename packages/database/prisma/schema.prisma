@@ -35,6 +35,7 @@ model PexelsImage {
   metadata        ImageMetadata?
   embedding       ImageEmbedding?
   analysisJob     ImageAnalysisJob?
+  descriptions    PexelsImageDescription[] // Track which descriptions this image satisfies
 
   @@index([pexelsId])
   @@map("vision_iq_pexels_images")
@@ -142,6 +143,9 @@ model SceneIntent {
   // Preferred composition constraints
   composition         Json     // { "negative_space": "left" | "right" | "center", "shot_type": "CU" | "MS" | "WS" }
   
+  // Expanded detailed descriptions
+  descriptions        VisualDescription[]
+  
   // Visual anchor
   moodAnchor          Json?    // { "temp": "warm" | "cold", "primary_color": "hex" }
   
@@ -152,6 +156,43 @@ model SceneIntent {
   @@index([sceneIndex])
   @@index([requestId])
   @@map("vision_iq_scene_intents")
+}
+
+// Detailed visual descriptions expanded from a scene intent
+model VisualDescription {
+  id              String         @id @default(cuid())
+  sceneIntentId   String
+  sceneIntent     SceneIntent    @relation(fields: [sceneIntentId], references: [id], onDelete: Cascade)
+  
+  description     String         @db.Text
+  analysis        Json?          // Captured DeepSeek analysis/summary metadata
+  
+  // Provenance tracking: images found for this specific description
+  images          PexelsImageDescription[]
+  
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([sceneIntentId])
+  @@map("vision_iq_visual_descriptions")
+}
+
+// Join table for tracking image provenance (which description led to which image)
+model PexelsImageDescription {
+  id                  String            @id @default(cuid())
+  descriptionId       String
+  description         VisualDescription @relation(fields: [descriptionId], references: [id], onDelete: Cascade)
+  
+  pexelsImageId       String
+  pexelsImage         PexelsImage       @relation(fields: [pexelsImageId], references: [id], onDelete: Cascade)
+  
+  matchScore          Float?            // Score at time of matching
+  discoveryMethod     String            @default("SEARCH") // "SEARCH", "RECOMMENDED", "MANUAL"
+  
+  createdAt           DateTime          @default(now())
+
+  @@unique([descriptionId, pexelsImageId])
+  @@map("vision_iq_pexels_image_descriptions")
 }
 
 // Pexels Sync History

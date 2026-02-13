@@ -95,6 +95,53 @@ Example:
   }
 
   /**
+   * Expand a single scene intent into multiple highly detailed visual descriptions
+   * Optimized for diverse image search coverage
+   */
+  async expandSceneIntent(
+    intent: string,
+    count = 3,
+  ): Promise<{ description: string; analysis: any }[]> {
+    this.logger.debug(
+      `Expanding intent: "${intent}" into ${count} descriptions`,
+    );
+
+    const systemPrompt = `You are an expert cinematic visual researcher. Your task is to take a core visual intent and expand it into ${count} distinct, highly detailed visual descriptions (prompts) that could be used for image search or generation.
+    
+    Each expanded description should maintain the core intent but explore different:
+    - Lighting setups (e.g., moody noir, bright airy, neon-drenched)
+    - Environments/Settings (e.g., urban, natural, abstract)
+    - Camera perspectives that align with the core idea.
+    
+    Return a valid JSON array of objects, where each object has:
+    1. description: The detailed visual prompt (2-3 sentences)
+    2. analysis: A small JSON object with "keywords" (array) and "mood_score" (1-10)
+    
+    Return ONLY valid JSON, no markdown.`;
+
+    const userPrompt = `Expand this visual intent: "${intent}"`;
+
+    try {
+      const response = await this.callDeepSeekAPI(systemPrompt, userPrompt);
+      const parsed = this.parseJsonResponse(response.content) as any[];
+
+      return parsed.map((item) => ({
+        description: item.description || "",
+        analysis: item.analysis || {},
+      }));
+    } catch (error) {
+      this.logger.error("Intent expansion failed", (error as Error).message);
+      // Fallback to the original intent
+      return [
+        {
+          description: intent,
+          analysis: { keywords: [intent], mood_score: 5 },
+        },
+      ];
+    }
+  }
+
+  /**
    * Parse granular cinematic analysis metadata from Gemini's raw textual output
    * Handles both single and batch results by detecting IMAGE_ID: or multiple blocks
    */

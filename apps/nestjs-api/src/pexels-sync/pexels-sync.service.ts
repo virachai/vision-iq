@@ -30,6 +30,7 @@ export class PexelsSyncService {
     search_query = "nature",
     batchSize = 50,
     failureThreshold = 0.1,
+    descriptionId?: string,
   ): Promise<SyncResult> {
     const result: SyncResult = {
       total_images: 0,
@@ -59,7 +60,7 @@ export class PexelsSyncService {
         result.total_batches = batch.total_batches;
 
         try {
-          const jobIds = await this.ingestionBatch(batch.images);
+          const jobIds = await this.ingestionBatch(batch.images, descriptionId);
           result.job_ids.push(...jobIds);
           result.total_images += batch.images.length;
 
@@ -140,7 +141,10 @@ export class PexelsSyncService {
   /**
    * Ingest a batch of images into the database
    */
-  private async ingestionBatch(images: Array<any>): Promise<string[]> {
+  private async ingestionBatch(
+    images: Array<any>,
+    descriptionId?: string,
+  ): Promise<string[]> {
     const jobIds: string[] = [];
 
     for (const image of images) {
@@ -157,6 +161,24 @@ export class PexelsSyncService {
             avgColor: image.avg_color,
           },
         });
+
+        // Track provenance if descriptionId provided
+        if (descriptionId) {
+          await this.prisma.pexelsImageDescription.upsert({
+            where: {
+              descriptionId_pexelsImageId: {
+                descriptionId: descriptionId,
+                pexelsImageId: pexelsImage.id,
+              },
+            },
+            update: {},
+            create: {
+              descriptionId: descriptionId,
+              pexelsImageId: pexelsImage.id,
+              discoveryMethod: "SEARCH",
+            },
+          });
+        }
 
         // Create or reset analysis job
         await this.prisma.imageAnalysisJob.upsert({
