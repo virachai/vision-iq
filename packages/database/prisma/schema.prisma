@@ -114,10 +114,19 @@ model ImageAnalysisJob {
   @@map("vision_iq_image_analysis_jobs")
 }
 
+// Orchestration Status
+enum OrchestrationStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+}
+
 // Scene Intent Request (stores raw Gemini narrative)
 model VisualIntentRequest {
   id              String   @id @default(cuid())
   rawGeminiText   String   @db.Text
+  status          OrchestrationStatus @default(PENDING)
   
   // Relations
   scenes          SceneIntent[]
@@ -143,6 +152,8 @@ model SceneIntent {
   // Preferred composition constraints
   composition         Json     // { "negative_space": "left" | "right" | "center", "shot_type": "CU" | "MS" | "WS" }
   
+  status              OrchestrationStatus @default(PENDING)
+  
   // Expanded detailed descriptions
   descriptions        VisualDescription[]
   
@@ -166,6 +177,7 @@ model VisualDescription {
   
   description     String         @db.Text
   analysis        Json?          // Captured DeepSeek analysis/summary metadata
+  status          OrchestrationStatus @default(PENDING)
   
   // Provenance tracking: images found for this specific description
   images          PexelsImageDescription[]

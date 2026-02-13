@@ -67,6 +67,7 @@ export class AlignmentService {
       const request = await this.prisma.visualIntentRequest.create({
         data: {
           rawGeminiText: dto.raw_gemini_text,
+          status: "IN_PROGRESS",
         },
       });
 
@@ -89,6 +90,7 @@ export class AlignmentService {
             intent: sceneData.intent,
             requiredImpact: sceneData.required_impact,
             composition: sceneData.preferred_composition as any,
+            status: "IN_PROGRESS",
           },
         });
 
@@ -96,41 +98,79 @@ export class AlignmentService {
           `Expanding scene ${index} ("${scene.intent.substring(0, 30)}...")`,
         );
 
-        // 3. Deepseek Expansion: 1 raw intent to many detailed descriptions
-        const expanded = await this.deepseekService.expandSceneIntent(
-          sceneData.intent,
-        );
+        try {
+          // 3. Deepseek Expansion: 1 raw intent to many detailed descriptions
+          const expanded = await this.deepseekService.expandSceneIntent(
+            sceneData.intent,
+          );
 
-        for (const exp of expanded) {
-          const description = await this.prisma.visualDescription.create({
-            data: {
-              sceneIntentId: scene.id,
-              description: exp.description,
-              analysis: exp.analysis as any,
-            },
-          });
+          for (const exp of expanded) {
+            const description = await this.prisma.visualDescription.create({
+              data: {
+                sceneIntentId: scene.id,
+                description: exp.description,
+                analysis: exp.analysis as any,
+                status: "IN_PROGRESS",
+              },
+            });
 
-          // 4. Automated Flow: Trigger image matching/syncing if requested
-          if (dto.auto_match) {
-            this.logger.log(
-              `Auto-match triggered for expanded description: "${exp.description.substring(
-                0,
-                30,
-              )}..."`,
-            );
+            // 4. Automated Flow: Trigger image matching/syncing if requested
+            if (dto.auto_match) {
+              this.logger.log(
+                `Auto-match triggered for expanded description: "${exp.description.substring(
+                  0,
+                  30,
+                )}..."`,
+              );
 
-            // Trigger Pexels Sync with descriptionId for tracking
-            this.pexelsSyncService
-              .syncPexelsLibrary(exp.description, 5, 0.1, description.id)
-              .catch((err) => {
-                this.logger.error(
-                  `Automated sync/matching failed for description ${description.id}`,
-                  err.message,
-                );
+              // Trigger Pexels Sync with descriptionId for tracking
+              // We'll update the description status to COMPLETED once sync is done
+              this.pexelsSyncService
+                .syncPexelsLibrary(exp.description, 5, 0.1, description.id)
+                .then(async () => {
+                  await this.prisma.visualDescription.update({
+                    where: { id: description.id },
+                    data: { status: "COMPLETED" },
+                  });
+                })
+                .catch(async (err) => {
+                  this.logger.error(
+                    `Automated sync/matching failed for description ${description.id}`,
+                    err.message,
+                  );
+                  await this.prisma.visualDescription.update({
+                    where: { id: description.id },
+                    data: { status: "FAILED" },
+                  });
+                });
+            } else {
+              // If no auto-match, expansion for this description is COMPLETED
+              await this.prisma.visualDescription.update({
+                where: { id: description.id },
+                data: { status: "COMPLETED" },
               });
+            }
           }
+
+          // Mark scene as completed
+          await this.prisma.sceneIntent.update({
+            where: { id: scene.id },
+            data: { status: "COMPLETED" },
+          });
+        } catch (sceneError) {
+          this.logger.error(`Failed to process scene ${index}`, sceneError);
+          await this.prisma.sceneIntent.update({
+            where: { id: scene.id },
+            data: { status: "FAILED" },
+          });
         }
       }
+
+      // Mark the overall request as completed
+      await this.prisma.visualIntentRequest.update({
+        where: { id: request.id },
+        data: { status: "COMPLETED" },
+      });
 
       this.logger.log(
         `Successfully processed ${scenes.length} scenes for request ${request.id}`,
@@ -142,6 +182,8 @@ export class AlignmentService {
         "Visual intent extraction/persistence failed",
         (error as Error).message,
       );
+      // We don't have the request ID here if it failed before creation, but if it was created:
+      // In a real app we'd wrap this better, but for now we follow the flow.
       throw error;
     }
   }

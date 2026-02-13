@@ -45,8 +45,8 @@ flowchart TD
     G --> H[Store pgvector Embedding]
 ```
 
-- **Gemini Vision Worker**: Extracts impact scores (1-10), shot types (CU/MS/WS), angles, and metaphorical tags.
-- **Embedding Worker**: Transforms visual metadata and descriptions into vectors for high-precision semantic search.
+- **VisualAnchorLogic**: Ensures visual continuity.
+- **OrchestrationStatus**: Tracks the lifecycle of requests, scenes, and descriptions (`PENDING`, `IN_PROGRESS`, `COMPLETED`, `FAILED`).
 
 ## Sequence Diagram: Visual Orchestration
 
