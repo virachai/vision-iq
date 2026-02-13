@@ -1,65 +1,65 @@
 {
-	"$schema": "https://turborepo.dev/schema.json",
-	"globalDependencies": [".env"],
-	"globalEnv": ["NODE_ENV"],
-	"tasks": {
-		"build": {
-			"inputs": ["$TURBO_DEFAULT$", ".env*"],
-			"dependsOn": ["^build"],
-			"outputs": [
-				"build/**",
-				".vercel/**",
-				"dist/**",
-				".next/**",
-				"!.next/cache/**"
-			],
-			"env": [
-				"POSTGRES_URL",
-				"AUTH_SECRET",
-				"AUTH_URL",
-				"API_NEST_PORT",
-				"API_EXPRESS_PORT",
-				"ADMIN_PORT",
-				"BLOG_PORT",
-				"NEXTJS_DASHBOARD_PORT",
-				"PRISMA_WEB_PORT",
-				"STOREFRONT_PORT"
-			]
-		},
-		"test": {
-			"outputs": ["coverage/**"],
-			"dependsOn": []
-		},
-		"lint": {
-			"dependsOn": ["^lint"]
-		},
-		"format": {
-			"dependsOn": ["^format"]
-		},
-		"check-types": {
-			"dependsOn": ["^build", "^check-types"]
-		},
-		"dev": {
-			"dependsOn": ["^build"],
-			"cache": false,
-			"persistent": true
-		},
-		"start": {
-			"dependsOn": ["^build"],
-			"cache": false,
-			"persistent": true,
-			"env": [
-				"POSTGRES_URL",
-				"AUTH_SECRET",
-				"AUTH_URL",
-				"API_NEST_PORT",
-				"API_EXPRESS_PORT",
-				"ADMIN_PORT",
-				"BLOG_PORT",
-				"NEXTJS_DASHBOARD_PORT",
-				"PRISMA_WEB_PORT",
-				"STOREFRONT_PORT"
-			]
-		}
-	}
+  "$schema": "https://turborepo.dev/schema.json",
+  "globalDependencies": [".env"],
+  "globalEnv": ["NODE_ENV"],
+  "tasks": {
+    "build": {
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "dependsOn": ["^build"],
+      "outputs": [
+        "build/**",
+        ".vercel/**",
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**"
+      ],
+      "env": [
+        "POSTGRES_URL",
+        "AUTH_SECRET",
+        "AUTH_URL",
+        "NESTJS_API_PORT",
+        "API_EXPRESS_PORT",
+        "ADMIN_PORT",
+        "BLOG_PORT",
+        "NEXTJS_DASHBOARD_PORT",
+        "PRISMA_WEB_PORT",
+        "STOREFRONT_PORT"
+      ]
+    },
+    "test": {
+      "outputs": ["coverage/**"],
+      "dependsOn": []
+    },
+    "lint": {
+      "dependsOn": ["^lint"]
+    },
+    "format": {
+      "dependsOn": ["^format"]
+    },
+    "check-types": {
+      "dependsOn": ["^build", "^check-types"]
+    },
+    "dev": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
+    },
+    "start": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true,
+      "env": [
+        "POSTGRES_URL",
+        "AUTH_SECRET",
+        "AUTH_URL",
+        "NESTJS_API_PORT",
+        "API_EXPRESS_PORT",
+        "ADMIN_PORT",
+        "BLOG_PORT",
+        "NEXTJS_DASHBOARD_PORT",
+        "PRISMA_WEB_PORT",
+        "STOREFRONT_PORT"
+      ]
+    }
+  }
 }
