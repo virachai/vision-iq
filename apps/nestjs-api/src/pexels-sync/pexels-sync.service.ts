@@ -194,6 +194,30 @@ export class PexelsSyncService {
           },
         });
 
+        // Check if image already has analysis data
+        const existingJob = await this.prisma.imageAnalysisJob.findUnique({
+          where: { pexelsImageId: pexelsImage.id },
+          include: {
+            deepseekAnalysis: true,
+            pexelsImage: {
+              include: {
+                visualIntentAnalysis: true,
+              },
+            },
+          },
+        });
+
+        const hasAnalysis =
+          existingJob?.deepseekAnalysis ||
+          existingJob?.pexelsImage?.visualIntentAnalysis;
+
+        if (hasAnalysis) {
+          this.logger.log(
+            `Skipping analysis for ${image.pexels_id} - already analyzed`,
+          );
+          continue; // Skip to next image
+        }
+
         // Create or reset analysis job
         await this.prisma.imageAnalysisJob.upsert({
           where: { pexelsImageId: pexelsImage.id },
