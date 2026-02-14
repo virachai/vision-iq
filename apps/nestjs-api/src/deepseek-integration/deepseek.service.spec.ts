@@ -81,7 +81,7 @@ describe("DeepSeekService", () => {
 
       expect(result).toHaveLength(1);
       expect(result[0].intent).toBe("A lone figure in a field");
-      expect(result[0].required_impact).toBe(8);
+      expect(result[0].requiredImpact).toBe(8);
     });
 
     it("should handle JSON in markdown code blocks", async () => {
@@ -133,7 +133,7 @@ describe("DeepSeekService", () => {
 
       const result = await service.extractVisualIntent("Test");
 
-      expect(result[0].required_impact).toBe(10);
+      expect(result[0].requiredImpact).toBe(10);
     });
 
     it("should validate composition values", async () => {
@@ -163,9 +163,9 @@ describe("DeepSeekService", () => {
 
       const result = await service.extractVisualIntent("Test");
 
-      expect(result[0].preferred_composition.negative_space).toBe("center");
-      expect(result[0].preferred_composition.shot_type).toBe("MS");
-      expect(result[0].preferred_composition.angle).toBe("eye");
+      expect(result[0].preferredComposition.negative_space).toBe("center");
+      expect(result[0].preferredComposition.shot_type).toBe("MS");
+      expect(result[0].preferredComposition.angle).toBe("eye");
     });
 
     it("should retry on rate limiting (429)", async () => {

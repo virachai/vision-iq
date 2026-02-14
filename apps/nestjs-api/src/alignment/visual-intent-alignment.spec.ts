@@ -1,165 +1,90 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import { Test, type TestingModule } from "@nestjs/testing";
 import { AlignmentService } from "./alignment.service";
-import { DeepSeekService } from "../deepseek-integration/deepseek.service";
-import { SemanticMatchingService } from "../semantic-matching/semantic-matching.service";
-import { PexelsSyncService } from "../pexels-sync/pexels-sync.service";
-import { QueueService } from "../queue/queue.service";
-import { GeminiAnalysisService } from "../image-analysis/gemini-analysis.service";
-import { PRISMA_SERVICE } from "../prisma/prisma.module";
+import { VisualIntentService } from "./services/visual-intent.service";
+import { SceneAlignmentService } from "./services/scene-alignment.service";
+import { KeywordSyncService } from "./services/keyword-sync.service";
+import { RefinementService } from "./services/refinement.service";
+import { VisualIntentRepository } from "./repositories/visual-intent.repository";
+import { SceneRepository } from "./repositories/scene.repository";
 
 describe("Visual Intent Alignment (System Verification)", () => {
   let alignmentService: AlignmentService;
-  let deepseekService: DeepSeekService;
+  let visualIntentService: jest.Mocked<VisualIntentService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AlignmentService,
         {
-          provide: DeepSeekService,
+          provide: VisualIntentService,
           useValue: {
             extractVisualIntent: jest.fn(),
-            expandSceneIntent: jest.fn(),
           },
         },
         {
-          provide: SemanticMatchingService,
+          provide: SceneAlignmentService,
           useValue: {
             findAlignedImages: jest.fn(),
           },
         },
         {
-          provide: PexelsSyncService,
+          provide: KeywordSyncService,
           useValue: {
             syncPexelsLibrary: jest.fn(),
           },
         },
         {
-          provide: QueueService,
+          provide: RefinementService,
           useValue: {
-            queueAutoSync: jest.fn(),
+            processPendingDeepSeekAnalysis: jest.fn(),
           },
         },
         {
-          provide: GeminiAnalysisService,
-          useValue: {
-            analyzeImage: jest.fn(),
-          },
+          provide: VisualIntentRepository,
+          useValue: {},
         },
         {
-          provide: PRISMA_SERVICE,
-          useValue: {
-            visualIntentRequest: {
-              create: jest.fn().mockResolvedValue({ id: "req-1" }) as any,
-              update: jest.fn() as any,
-            },
-            sceneIntent: {
-              create: jest
-                .fn()
-                .mockResolvedValue({ id: "scene-1", intent: "test" }) as any,
-              update: jest.fn() as any,
-            },
-            visualDescription: {
-              create: jest.fn().mockResolvedValue({ id: "desc-1" }) as any,
-              update: jest.fn() as any,
-            },
-            visualDescriptionKeyword: {
-              findMany: jest.fn().mockResolvedValue([]) as any,
-            },
-          },
+          provide: SceneRepository,
+          useValue: {},
         },
       ],
     }).compile();
 
     alignmentService = module.get<AlignmentService>(AlignmentService);
-    deepseekService = module.get<DeepSeekService>(DeepSeekService);
+    visualIntentService = module.get(VisualIntentService) as any;
   });
 
-  it("should extract 4-layer visual intent correctly", async () => {
+  it("should extract visual intent correctly (delegation test)", async () => {
     const mockRawText = "A narrative description...";
     const mockScenes = [
       {
         intent: "A person feeling overwhelmed by laundry",
-        required_impact: 8,
-        preferred_composition: {
+        requiredImpact: 8,
+        preferredComposition: {
           negative_space: "center",
           shot_type: "MS",
           angle: "eye",
         },
-        visual_intent: {
+        visualIntent: {
           emotional_layer: {
-            intent_words: ["overwhelmed", "suffocation"],
+            intent_words: ["overwhelmed"],
             vibe: "oppressive",
-          },
-          spatial_strategy: {
-            strategy_words: ["cluttered frame"],
-            shot_type: "MS",
-            balance: "asymmetrical",
-          },
-          subject_treatment: {
-            treatment_words: ["hidden face"],
-            identity: "concealed",
-            dominance: "overwhelmed",
-          },
-          color_mapping: {
-            temperature_words: ["harsh light"],
-            temperature: "cold",
-            contrast: "high",
           },
         },
       },
     ];
 
-    (deepseekService.extractVisualIntent as any).mockResolvedValue(mockScenes);
-    (deepseekService.expandSceneIntent as any).mockResolvedValue([]);
+    visualIntentService.extractVisualIntent.mockResolvedValue(
+      mockScenes as any,
+    );
 
     const result = await alignmentService.extractVisualIntent({
-      raw_gemini_text: mockRawText,
-      auto_match: false,
+      rawGeminiText: mockRawText,
+      autoMatch: false,
     });
 
     expect(result).toHaveLength(1);
-    expect(result[0].visual_intent).toBeDefined();
-    expect(result[0].visual_intent?.emotional_layer?.intent_words).toContain(
-      "overwhelmed",
-    );
-    expect(result[0].visual_intent?.color_mapping?.temperature).toBe("cold");
-  });
-
-  it("should generate the structured search formula correctly", async () => {
-    const scene = {
-      intent: "A person feeling overwhelmed",
-      visual_intent: {
-        emotional_layer: { intent_words: ["overwhelmed"], vibe: "oppressive" },
-        spatial_strategy: {
-          strategy_words: ["cluttered frame"],
-          shot_type: "MS",
-          balance: "asymmetrical",
-        },
-        subject_treatment: {
-          treatment_words: ["hidden face"],
-          identity: "concealed",
-          dominance: "overwhelmed",
-        },
-        color_mapping: {
-          temperature_words: ["harsh light"],
-          temperature: "cold",
-          contrast: "high",
-        },
-      },
-    };
-
-    // Accessing private method for testing purpose
-    const formula = (alignmentService as any).generateStructuredSearchFormula(
-      scene,
-    );
-
-    expect(formula).toContain("CORE_INTENT: overwhelmed");
-    expect(formula).toContain("SPATIAL_STRATEGY: cluttered frame");
-    expect(formula).toContain("COLOR_PROFILE: harsh light");
-    expect(formula).toContain(
-      "KEYWORD_STRING: A person feeling overwhelmed, cluttered frame, overwhelmed, harsh light",
-    );
+    expect(visualIntentService.extractVisualIntent).toHaveBeenCalled();
   });
 });

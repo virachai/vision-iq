@@ -105,21 +105,21 @@ model PexelsSyncHistory {
 }
 
 model PexelsImage {
-  id                   String                @id @default(uuid())
-  syncHistoryId        String
-  pexelsImageId        String                @unique
-  url                  String
-  photographer         String?
-  width                Int?
-  height               Int?
-  avgColor             String?
-  alt                  String?
-  createdAt            DateTime              @default(now())
-  updatedAt            DateTime              @updatedAt
-  analysisJobs         ImageAnalysisJob?
-  embedding            ImageEmbedding?
-  syncHistory          PexelsSyncHistory     @relation(fields: [syncHistoryId], references: [id], onDelete: Cascade)
-  visualIntentAnalysis VisualIntentAnalysis?
+  id                              String                           @id @default(uuid())
+  syncHistoryId                   String
+  pexelsImageId                   String                           @unique
+  url                             String
+  photographer                    String?
+  width                           Int?
+  height                          Int?
+  avgColor                        String?
+  alt                             String?
+  createdAt                       DateTime                         @default(now())
+  updatedAt                       DateTime                         @updatedAt
+  analysisJobs                    ImageAnalysisJob?
+  embedding                       ImageEmbedding?
+  syncHistory                     PexelsSyncHistory                @relation(fields: [syncHistoryId], references: [id], onDelete: Cascade)
+  visualIntentAnalysis            VisualIntentAnalysis?
 
   @@index([syncHistoryId])
   @@index([pexelsImageId])
@@ -234,10 +234,7 @@ model ImageEmbedding {
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   image     PexelsImage @relation(fields: [imageId], references: [id], onDelete: Cascade)
-  
-  // 768-dimensional embedding for Gemini text-embedding-004
-  embedding Unsupported("vector(768)")
-  // embedding Float[]
+  embedding Float[]
 
   @@index([imageId])
   @@map("vision_iq_image_embeddings")

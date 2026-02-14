@@ -1,242 +1,144 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import { Test, type TestingModule } from "@nestjs/testing";
-import type { PrismaClient } from "@repo/database";
-import { DeepSeekService } from "../deepseek-integration/deepseek.service";
-import { GeminiAnalysisService } from "../image-analysis/gemini-analysis.service";
-import { PexelsSyncService } from "../pexels-sync/pexels-sync.service";
-import { QueueService } from "../queue/queue.service";
-import { SemanticMatchingService } from "../semantic-matching/semantic-matching.service";
 import { AlignmentService } from "./alignment.service";
-import { PRISMA_SERVICE } from "../prisma/prisma.module";
+import { VisualIntentService } from "./services/visual-intent.service";
+import { SceneAlignmentService } from "./services/scene-alignment.service";
+import { KeywordSyncService } from "./services/keyword-sync.service";
+import { RefinementService } from "./services/refinement.service";
+import { VisualIntentRepository } from "./repositories/visual-intent.repository";
+import { SceneRepository } from "./repositories/scene.repository";
 import type { ImageMatch, SceneIntentDto } from "./dto/scene-intent.dto";
-
-type CreateMockVisualDescriptionFindMany =
-  PrismaClient["visualDescription"]["findMany"];
-
-type CreateMockVisualDescriptionKeywordFindMany =
-  PrismaClient["visualDescriptionKeyword"]["findMany"];
 
 describe("AlignmentService", () => {
   let service: AlignmentService;
-  let deepSeekService: DeepSeekService;
-  let semanticMatchingService: SemanticMatchingService;
-  let _pexelsSyncService: PexelsSyncService;
-  let _queueService: QueueService;
-  let _geminiAnalysisService: GeminiAnalysisService;
-  let prismaClient: PrismaClient;
-
-  type CreateMockVisualIntentRequest = jest.MockedFunction<
-    () => Promise<{ id: string }>
-  >;
-  type CreateMockSceneIntent = () => Promise<{ id: string; intent: string }>;
-  type CreateMockVisualDescription = () => Promise<{ id: string }>;
-  // type CreateMockVisualDescriptionFindMany = () => Promise<VisualDescription[]>;
-  // type CreateMockVisualDescriptionKeywordFindMany = () => Promise<
-  //   VisualDescriptionKeyword[]
-  // >;
+  let visualIntentService: jest.Mocked<VisualIntentService>;
+  let sceneAlignmentService: jest.Mocked<SceneAlignmentService>;
+  let keywordSyncService: jest.Mocked<KeywordSyncService>;
+  let refinementService: jest.Mocked<RefinementService>;
+  let visualIntentRepo: jest.Mocked<VisualIntentRepository>;
+  let sceneRepo: jest.Mocked<SceneRepository>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AlignmentService,
         {
-          provide: DeepSeekService,
+          provide: VisualIntentService,
           useValue: {
             extractVisualIntent: jest.fn(),
-            expandSceneIntent: jest
-              .fn<() => Promise<SceneIntentDto[]>>()
-              .mockResolvedValue([]),
+            testImageAnalysis: jest.fn(),
           },
         },
         {
-          provide: SemanticMatchingService,
+          provide: SceneAlignmentService,
           useValue: {
             findAlignedImages: jest.fn(),
           },
         },
         {
-          provide: PexelsSyncService,
+          provide: KeywordSyncService,
           useValue: {
             syncPexelsLibrary: jest.fn(),
+            syncPexelsByDescriptionId: jest.fn(),
+            autoSyncUnusedKeywords: jest.fn(),
           },
         },
         {
-          provide: QueueService,
+          provide: RefinementService,
           useValue: {
-            queueImageAnalysis: jest.fn(),
+            processPendingDeepSeekAnalysis: jest.fn(),
+            refineAnalysis: jest.fn(),
           },
         },
         {
-          provide: GeminiAnalysisService,
+          provide: VisualIntentRepository,
           useValue: {
-            analyzeImage: jest.fn(),
+            findRequestById: jest.fn(),
+            getStats: jest.fn(),
           },
         },
         {
-          provide: PRISMA_SERVICE,
+          provide: SceneRepository,
           useValue: {
-            pexelsImage: {
-              upsert: jest.fn(),
-              count: jest.fn(),
-            },
-            imageAnalysisJob: {
-              create: jest.fn(),
-              count: jest.fn(),
-            },
-            imageEmbedding: {
-              count: jest.fn(),
-            },
-            visualIntentRequest: {
-              create: jest
-                .fn<CreateMockVisualIntentRequest>()
-                .mockResolvedValue({
-                  id: "req-1",
-                }),
-              findUnique: jest.fn(),
-              update: jest.fn(),
-            },
-            sceneIntent: {
-              create: jest.fn<CreateMockSceneIntent>().mockResolvedValue({
-                id: "scene-1",
-                intent: "mock-intent",
-              }),
-              findUnique: jest.fn(),
-              update: jest.fn(),
-            },
-            visualDescription: {
-              create: jest
-                .fn<CreateMockVisualDescription>()
-                .mockResolvedValue({ id: "desc-1" }),
-              findUnique: jest.fn(),
-              findMany: jest
-                .fn<CreateMockVisualDescriptionFindMany>()
-                .mockResolvedValue([]),
-              update: jest.fn(),
-            },
-            visualDescriptionKeyword: {
-              findMany: jest
-                .fn<CreateMockVisualDescriptionKeywordFindMany>()
-                .mockResolvedValue([]),
-              update: jest.fn(),
-            },
-          } as unknown as PrismaClient,
+            findSceneById: jest.fn(),
+          },
         },
       ],
     }).compile();
 
     service = module.get<AlignmentService>(AlignmentService);
-    deepSeekService = module.get<DeepSeekService>(DeepSeekService);
-    semanticMatchingService = module.get<SemanticMatchingService>(
-      SemanticMatchingService,
-    );
-    _pexelsSyncService = module.get<PexelsSyncService>(PexelsSyncService);
-    _queueService = module.get<QueueService>(QueueService);
-    _geminiAnalysisService = module.get<GeminiAnalysisService>(
-      GeminiAnalysisService,
-    );
-    prismaClient = module.get<PrismaClient>(PRISMA_SERVICE);
+    visualIntentService = module.get(VisualIntentService) as any;
+    sceneAlignmentService = module.get(SceneAlignmentService) as any;
+    keywordSyncService = module.get(KeywordSyncService) as any;
+    refinementService = module.get(RefinementService) as any;
+    visualIntentRepo = module.get(VisualIntentRepository) as any;
+    sceneRepo = module.get(SceneRepository) as any;
   });
 
   describe("extractVisualIntent", () => {
-    it("should extract scene intents from raw Gemini text", async () => {
-      const mockScenes: SceneIntentDto[] = [
-        {
-          intent: "A lone figure standing in an empty field",
-          requiredImpact: 8,
-          preferredComposition: {
-            negative_space: "left",
-            shot_type: "WS",
-            angle: "eye",
-            balance: "symmetrical",
-            subject_dominance: "moderate",
-          },
-        },
-      ];
+    it("should delegate to visualIntentService", async () => {
+      const mockDto = { rawGeminiText: "test" };
+      const mockResult = [{ intent: "test" }] as SceneIntentDto[];
+      visualIntentService.extractVisualIntent.mockResolvedValue(mockResult);
 
-      jest
-        .spyOn(deepSeekService, "extractVisualIntent")
-        .mockResolvedValue(mockScenes);
+      const result = await service.extractVisualIntent(mockDto);
 
-      const result = await service.extractVisualIntent({
-        rawGeminiText: "A man stands alone in a vast cornfield at sunset",
-      });
-
-      expect(result).toEqual(mockScenes);
-      expect(deepSeekService.extractVisualIntent).toHaveBeenCalled();
-    });
-
-    it("should throw error if no scenes extracted", async () => {
-      jest.spyOn(deepSeekService, "extractVisualIntent").mockResolvedValue([]);
-
-      await expect(
-        service.extractVisualIntent({ rawGeminiText: "Some text" }),
-      ).rejects.toThrow("DeepSeek returned no valid scenes");
+      expect(result).toBe(mockResult);
+      expect(visualIntentService.extractVisualIntent).toHaveBeenCalledWith(
+        mockDto,
+      );
     });
   });
 
   describe("findAlignedImages", () => {
-    it("should find aligned images for scenes", async () => {
-      const mockScenes: SceneIntentDto[] = [
-        {
-          intent: "A lone figure",
-          requiredImpact: 8,
-          preferredComposition: {
-            negative_space: "left",
-            shot_type: "WS",
-            angle: "eye",
-            balance: "asymmetrical",
-            subject_dominance: "strong",
-          },
-        },
-      ];
+    it("should delegate to sceneAlignmentService", async () => {
+      const mockDto = { scenes: [] as any[], topK: 5 };
+      const mockResult = [[{ imageId: "img1" }]] as ImageMatch[][];
+      sceneAlignmentService.findAlignedImages.mockResolvedValue(mockResult);
 
-      const mockMatches = [
-        [
-          {
-            imageId: "img-1",
-            pexelsId: "pexels-123",
-            url: "https://example.com/image.jpg",
-            matchScore: 0.92,
-            vectorSimilarity: 0.85,
-            impactRelevance: 0.9,
-            compositionMatch: 0.8,
-            moodConsistencyScore: 1.0,
-            metadata: {},
-          },
-        ],
-      ];
+      const result = await service.findAlignedImages(mockDto);
 
-      jest
-        .spyOn(semanticMatchingService, "findAlignedImages")
-        .mockResolvedValue(mockMatches as unknown as ImageMatch[][]);
-
-      const result = await service.findAlignedImages({
-        scenes: mockScenes,
-        topK: 5,
-      });
-
-      expect(result).toEqual(mockMatches);
-      expect(semanticMatchingService.findAlignedImages).toHaveBeenCalled();
+      expect(result).toBe(mockResult);
+      expect(sceneAlignmentService.findAlignedImages).toHaveBeenCalledWith(
+        mockDto,
+      );
     });
+  });
 
-    it("should throw error if no scenes provided", async () => {
-      await expect(service.findAlignedImages({ scenes: [] })).rejects.toThrow(
-        "No scenes provided",
+  describe("syncPexelsLibrary", () => {
+    it("should delegate to keywordSyncService", async () => {
+      await service.syncPexelsLibrary("nature", 50);
+      expect(keywordSyncService.syncPexelsLibrary).toHaveBeenCalledWith(
+        "nature",
+        50,
+        0.1,
       );
     });
   });
 
   describe("getStats", () => {
-    it("should return database statistics", async () => {
-      jest.spyOn(prismaClient.pexelsImage, "count").mockResolvedValue(1000);
-      jest.spyOn(prismaClient.imageEmbedding, "count").mockResolvedValue(950);
-      jest.spyOn(prismaClient.imageAnalysisJob, "count").mockResolvedValue(50);
+    it("should delegate to visualIntentRepo", async () => {
+      const mockStats = { total_images: 100 } as any;
+      visualIntentRepo.getStats.mockResolvedValue(mockStats);
 
       const result = await service.getStats();
 
-      expect(result.total_images).toBe(1000);
-      expect(result.total_embeddings).toBe(950);
-      expect(result.pending_analysis_jobs).toBe(50);
+      expect(result).toBe(mockStats);
+      expect(visualIntentRepo.getStats).toHaveBeenCalled();
+    });
+  });
+
+  describe("resumeProcessing", () => {
+    it("should handle request resume", async () => {
+      const mockId = "req-1";
+      visualIntentRepo.findRequestById.mockResolvedValue({
+        rawGeminiText: "test",
+      } as any);
+
+      await service.resumeProcessing("request", mockId);
+
+      expect(visualIntentRepo.findRequestById).toHaveBeenCalledWith(mockId);
+      expect(visualIntentService.extractVisualIntent).toHaveBeenCalled();
     });
   });
 });

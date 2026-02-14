@@ -64,8 +64,8 @@ export class AlignmentController {
   @Post("sync-pexels")
   async syncPexels(@Body() dto: SyncPexelsDto) {
     return this.alignmentService.syncPexelsLibrary(
-      dto.searchQuery,
-      dto.batchSize,
+      dto.searchQuery ?? "nature",
+      dto.batchSize ?? 50,
     );
   }
 
