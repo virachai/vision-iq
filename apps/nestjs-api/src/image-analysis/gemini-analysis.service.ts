@@ -197,18 +197,18 @@ export class GeminiAnalysisService {
   async refineWithDeepSeek(jobId: string): Promise<void> {
     const job = await this.prisma.imageAnalysisJob.findUnique({
       where: { id: jobId },
-      include: { image: true },
+      include: { pexelsImage: true },
     });
 
     if (!job) throw new Error(`Analysis job ${jobId} not found`);
-    if (!job.rawResponse)
+    if (!job.rawApiResponse)
       throw new Error(`No raw response to refine for job ${jobId}`);
 
     this.logger.log(`Refining analysis for job ${jobId} using DeepSeek...`);
 
     try {
       const refinedResults = await this.deepseekService.parseGeminiRawResponse(
-        job.rawResponse,
+        job.rawApiResponse as any,
       );
 
       if (refinedResults.length === 0) {
@@ -218,48 +218,17 @@ export class GeminiAnalysisService {
       // We take the first result (usually 1:1, unless it was a batch that got merged into one job)
       const refined = refinedResults[0];
 
-      // Update Metadata
-      await this.prisma.imageMetadata.upsert({
-        where: { imageId: job.imageId },
-        update: {
-          impactScore: refined.impact_score,
-          visualWeight: refined.visual_weight,
-          composition: refined.composition as any,
-          moodDna: refined.mood_dna as any,
-          metaphoricalTags: refined.metaphorical_tags,
-        },
-        create: {
-          imageId: job.imageId,
-          impactScore: refined.impact_score,
-          visualWeight: refined.visual_weight,
-          composition: refined.composition as any,
-          moodDna: refined.mood_dna as any,
-          metaphoricalTags: refined.metaphorical_tags,
-        },
-      });
-
       // Update Structured DeepSeek Analysis Results
       await this.prisma.deepSeekAnalysis.upsert({
-        where: { jobId: jobId },
+        where: { analysisJobId: jobId },
         update: {
-          impactScore: refined.impact_score,
-          visualWeight: refined.visual_weight,
-          composition: refined.composition as any,
-          colorProfile: refined.color_profile as any,
-          moodDna: refined.mood_dna as any,
-          metaphoricalTags: refined.metaphorical_tags,
-          cinematicNotes: refined.cinematic_notes,
+          analysisResult: refined as any,
+          confidenceScore: 1.0,
         },
         create: {
-          jobId: jobId,
-          imageId: job.imageId,
-          impactScore: refined.impact_score,
-          visualWeight: refined.visual_weight,
-          composition: refined.composition as any,
-          colorProfile: refined.color_profile as any,
-          moodDna: refined.mood_dna as any,
-          metaphoricalTags: refined.metaphorical_tags,
-          cinematicNotes: refined.cinematic_notes,
+          analysisJobId: jobId,
+          analysisResult: refined as any,
+          confidenceScore: 1.0,
         },
       });
 
@@ -267,9 +236,8 @@ export class GeminiAnalysisService {
       await this.prisma.imageAnalysisJob.update({
         where: { id: jobId },
         data: {
-          status: "COMPLETED",
-          result: refined as any,
-          isUsed: true, // Mark as used/refined
+          jobStatus: "COMPLETED",
+          completedAt: new Date(),
         },
       });
 

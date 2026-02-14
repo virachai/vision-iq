@@ -7,125 +7,23 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
-  output = "../generated/client"
+  output   = "../generated/client"
 }
 
-model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-
-  @@map("vision_iq_users")
-}
-
-// Pexels Image Library
-model PexelsImage {
-  id              String   @id @default(cuid())
-  pexelsId        String   @unique
-  url             String
-  photographer    String?
-  width           Int?
-  height          Int?
-  avgColor        String?
-  alt             String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  // Relations
-  metadata        ImageMetadata?
-  embedding       ImageEmbedding?
-  analysisJob     ImageAnalysisJob?
-  descriptions    PexelsImageDescription[] // Track which descriptions this image satisfies
-  deepseekAnalysis DeepSeekAnalysis?
-  
-  syncHistory     PexelsSyncImage[]
-  
-  source          String?  @default("SYNC_PEXELS") // "TRIGGER", "SYNC_PEXELS"
-
-  @@index([pexelsId])
-  @@map("vision_iq_pexels_images")
-}
-
-// Vector embeddings for semantic search
-model ImageEmbedding {
-  id        String   @id @default(cuid())
-  imageId   String   @unique
-  image     PexelsImage @relation(fields: [imageId], references: [id], onDelete: Cascade)
-  
-  // 1536-dimensional embedding for semantic search
-  embedding Unsupported("vector(1536)")
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([imageId])
-  // Note: HNSW index on embedding created in migration: CREATE INDEX ON "ImageEmbedding" USING hnsw ("embedding" vector_cosine_ops);
-  @@map("vision_iq_image_embeddings")
-}
-
-// Image Analysis Metadata
-model ImageMetadata {
-  id                  String   @id @default(cuid())
-  imageId             String   @unique
-  image               PexelsImage @relation(fields: [imageId], references: [id], onDelete: Cascade)
-  
-  // Impact and visual properties
-  impactScore         Float    @default(5.0) // 1.0 - 10.0: subject prominence and visual strength
-  visualWeight        Float    @default(5.0) // contrast, saturation, focal clarity
-  
-  // Composition metadata
-  composition         Json     // { "negative_space": "left" | "right" | "center", "shot_type": "CU" | "MS" | "WS", "angle": "low" | "eye" | "high" }
-  
-  // Mood/aesthetic metadata
-  moodDna             Json     // { "temp": "warm" | "cold", "primary_color": "hex", "vibe": "minimalist" | "cinematic" | ... }
-  
-  // Metaphorical/semantic tags
-  metaphoricalTags    String[] @default([]) // e.g., ["solitude", "breakthrough", "journey"]
-  
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
-
-  @@index([imageId])
-  @@index([impactScore])
-  @@map("vision_iq_image_metadata")
-}
-
-// Image Analysis Job Status
-enum AnalysisStatus {
-  PENDING
-  IN_PROGRESS
+// 🔹 Enums
+enum JobStatus {
+  QUEUED
+  PROCESSING
   COMPLETED
   FAILED
 }
 
-model ImageAnalysisJob {
-  id              String   @id @default(cuid())
-  imageId         String   @unique
-  image           PexelsImage @relation(fields: [imageId], references: [id], onDelete: Cascade)
-  
-  status          AnalysisStatus @default(PENDING)
-  retryCount      Int      @default(0)
-  maxRetries      Int      @default(3)
-  
-  errorMessage    String?
-  result          Json?    // Stores analysis result from Gemini/DeepSeek
-  rawResponse     String?  // Raw text response from AI for debugging
-  
-  isUsed          Boolean  @default(false) // Used in next step (DeepSeek analysis)
-  
-  deepseekAnalysis DeepSeekAnalysis?
-  
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  @@index([status])
-  @@index([imageId])
-  @@index([isUsed])
-  @@map("vision_iq_image_analysis_jobs")
+enum SyncStatus {
+  PENDING
+  COMPLETED
+  FAILED
 }
 
-// Orchestration Status
 enum OrchestrationStatus {
   PENDING
   IN_PROGRESS
@@ -133,187 +31,249 @@ enum OrchestrationStatus {
   FAILED
 }
 
-// Scene Intent Request (stores raw Gemini narrative)
-model VisualIntentRequest {
-  id              String   @id @default(cuid())
-  rawGeminiText   String   @db.Text
-  status          OrchestrationStatus @default(PENDING)
-  
-  // Relations
-  scenes          SceneIntent[]
-  
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+enum ApiProvider {
+  PEXELS
+  DEEPSEEK
+  OPENAI
+  GEMINI
+}
 
+// 🔹 Core Tables
+model User {
+  id            String                @id @default(uuid())
+  name          String?
+  email         String?               @unique
+  emailVerified DateTime?
+  requests      VisualIntentRequest[]
+
+  @@map("vision_iq_users")
+}
+
+model VisualIntentRequest {
+  id            String              @id @default(uuid())
+  userId        String?
+  user          User?               @relation(fields: [userId], references: [id], onDelete: SetNull)
+  rawGeminiText String              @db.Text
+  status        OrchestrationStatus @default(PENDING)
+  deletedAt     DateTime? // Soft delete support
+
+  scenes SceneIntent[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
   @@map("vision_iq_visual_intent_requests")
 }
 
-// Scene Intent from narrative parsing
 model SceneIntent {
-  id                  String   @id @default(cuid())
-  requestId           String?  // Linked to the raw request
-  request             VisualIntentRequest? @relation(fields: [requestId], references: [id], onDelete: SetNull)
-  
-  projectId           String   // FK to narrative/project
-  sceneIndex          Int      // Order in narrative
-  
-  intent              String   // "show a lonely figure in vast landscape"
-  requiredImpact      Float    // 1.0 - 10.0
-  
-  // Preferred composition constraints
-  composition         Json     // { "negative_space": "left" | "right" | "center", "shot_type": "CU" | "MS" | "WS" }
-  
-  status              OrchestrationStatus @default(PENDING)
-  
-  // Expanded detailed descriptions
-  descriptions        VisualDescription[]
-  
-  // Visual anchor
-  moodAnchor          Json?    // { "temp": "warm" | "cold", "primary_color": "hex" }
-  
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  id                    String              @id @default(uuid())
+  visualIntentRequestId String
+  visualIntentRequest   VisualIntentRequest @relation(fields: [visualIntentRequestId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  @@index([projectId])
-  @@index([sceneIndex])
-  @@index([requestId])
+  sceneIndex     Int
+  intent         String              @db.Text
+  requiredImpact Float               @default(5.0)
+  composition    Json // { "negative_space": "left" | "right" | "center", "shot_type": "CU" | "MS" | "WS" }
+  status         OrchestrationStatus @default(PENDING)
+
+  descriptions VisualDescription[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([visualIntentRequestId])
+  @@index([visualIntentRequestId, createdAt])
   @@map("vision_iq_scene_intents")
 }
 
-// Detailed visual descriptions expanded from a scene intent
 model VisualDescription {
-  id              String         @id @default(cuid())
-  sceneIntentId   String
-  sceneIntent     SceneIntent    @relation(fields: [sceneIntentId], references: [id], onDelete: Cascade)
-  
-  description     String         @db.Text
-  analysis        Json?          // Captured DeepSeek analysis/summary metadata
-  status          OrchestrationStatus @default(PENDING)
-  
-  // Provenance tracking: images found for this specific description
-  images          PexelsImageDescription[]
-  
-  // Keywords tracking
-  keywords        VisualDescriptionKeyword[]
-  
-  // Relations
-  pexelsSyncHistory PexelsSyncHistory[]
-  
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  id            String      @id @default(uuid())
+  sceneIntentId String
+  sceneIntent   SceneIntent @relation(fields: [sceneIntentId], references: [id], onDelete: Cascade)
+
+  description String              @db.Text
+  status      OrchestrationStatus @default(PENDING)
+
+  keywords VisualDescriptionKeyword[]
+  tagMap   DescriptionTagMap[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([sceneIntentId])
+  @@index([sceneIntentId, createdAt])
   @@map("vision_iq_visual_descriptions")
 }
 
-// Join table for tracking image provenance (which description led to which image)
-model PexelsImageDescription {
-  id                  String            @id @default(cuid())
-  descriptionId       String
-  description         VisualDescription @relation(fields: [descriptionId], references: [id], onDelete: Cascade)
-  
-  pexelsImageId       String
-  pexelsImage         PexelsImage       @relation(fields: [pexelsImageId], references: [id], onDelete: Cascade)
-  
-  keywordId           String?
-  keyword             VisualDescriptionKeyword? @relation(fields: [keywordId], references: [id], onDelete: SetNull)
-
-  matchScore          Float?            // Score at time of matching
-  discoveryMethod     String            @default("SEARCH") // "SEARCH", "RECOMMENDED", "MANUAL"
-  
-  createdAt           DateTime          @default(now())
-
-  @@unique([descriptionId, pexelsImageId])
-  @@map("vision_iq_pexels_image_descriptions")
-}
-
-// Pexels Sync History
-model PexelsSyncHistory {
-  id              String   @id @default(cuid())
-  searchQuery     String
-  batchSize       Int
-  status          String   // "pending", "completed", "failed"
-  
-  descriptionId   String?
-  description     VisualDescription? @relation(fields: [descriptionId], references: [id], onDelete: SetNull)
-
-  keywordId       String?
-  keyword         VisualDescriptionKeyword? @relation(fields: [keywordId], references: [id], onDelete: SetNull)
-
-  totalImages     Int      @default(0)
-  totalBatches    Int      @default(0)
-  
-  error           String?
-  jobIds          String[] @default([]) // List of analysis job IDs created
-  
-  images          PexelsSyncImage[]
-  
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  @@index([status])
-  @@index([createdAt])
-  @@map("vision_iq_pexels_sync_history")
-}
-
 model VisualDescriptionKeyword {
-  id              String            @id @default(cuid())
-  descriptionId   String
-  description     VisualDescription @relation(fields: [descriptionId], references: [id], onDelete: Cascade)
-  
-  keyword         String
-  isUsed          Boolean           @default(false)
-  
-  // Tracking
-  pexelsSyncHistory  PexelsSyncHistory[]
-  imageDescriptions  PexelsImageDescription[]
+  id                  String            @id @default(uuid())
+  visualDescriptionId String
+  visualDescription   VisualDescription @relation(fields: [visualDescriptionId], references: [id], onDelete: Cascade)
 
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
+  keyword String
+  isUsed  Boolean @default(false)
 
-  @@index([descriptionId])
-  @@index([isUsed])
+  syncHistory PexelsSyncHistory[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([visualDescriptionId])
   @@map("vision_iq_visual_description_keywords")
 }
 
-// Structured DeepSeek Analysis Results
+model PexelsSyncHistory {
+  id        String                   @id @default(uuid())
+  keywordId String
+  keyword   VisualDescriptionKeyword @relation(fields: [keywordId], references: [id], onDelete: Cascade)
+
+  syncStatus   SyncStatus @default(PENDING)
+  syncAttempt  Int        @default(1)
+  apiResponse  Json? // JSONB API response
+  errorMessage String?
+  syncedAt     DateTime?  @default(now())
+
+  images PexelsImage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([keywordId])
+  @@map("vision_iq_pexels_sync_history")
+}
+
+model PexelsImage {
+  id            String            @id @default(uuid())
+  syncHistoryId String
+  syncHistory   PexelsSyncHistory @relation(fields: [syncHistoryId], references: [id], onDelete: Cascade)
+
+  pexelsImageId String  @unique
+  url           String  @db.Text
+  photographer  String?
+  width         Int?
+  height        Int?
+  avgColor      String?
+  alt           String? @db.Text
+
+  analysisJobs ImageAnalysisJob[]
+  embedding    ImageEmbedding?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([syncHistoryId])
+  @@index([pexelsImageId])
+  @@map("vision_iq_pexels_images")
+}
+
+model ImageAnalysisJob {
+  id            String      @id @default(uuid())
+  pexelsImageId String      @unique
+  pexelsImage   PexelsImage @relation(fields: [pexelsImageId], references: [id], onDelete: Cascade)
+
+  jobStatus      JobStatus   @default(QUEUED)
+  provider       ApiProvider @default(DEEPSEEK)
+  payload        Json? // JSONB request/config payload
+  rawApiResponse Json? // JSONB raw output from the provider
+  retryCount     Int         @default(0)
+
+  startedAt   DateTime?
+  completedAt DateTime?
+
+  deepseekAnalysis DeepSeekAnalysis?
+  apiLogs          ApiLog[]
+  events           AnalysisEvent[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([pexelsImageId])
+  @@index([jobStatus, provider])
+  @@map("vision_iq_image_analysis_jobs")
+}
+
 model DeepSeekAnalysis {
-  id              String   @id @default(cuid())
-  imageId         String   @unique
-  image           PexelsImage @relation(fields: [imageId], references: [id], onDelete: Cascade)
-  
-  jobId           String   @unique
-  job             ImageAnalysisJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  id            String           @id @default(uuid())
+  analysisJobId String           @unique
+  analysisJob   ImageAnalysisJob @relation(fields: [analysisJobId], references: [id], onDelete: Cascade)
 
-  impactScore     Float
-  visualWeight    Float
-  composition     Json
-  colorProfile    Json
-  moodDna         Json
-  metaphoricalTags String[]
-  cinematicNotes  String   @db.Text
+  modelVersion    String @default("deepseek-v3")
+  tokensUsed      Int    @default(0)
+  analysisResult  Json // JSONB data: { impactScore, composition, moodDna, etc. }
+  confidenceScore Float  @default(1.0)
 
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  @@index([imageId])
-  @@index([jobId])
+  @@index([analysisJobId])
   @@map("vision_iq_deepseek_analysis")
 }
 
-// Direct tracking between sync history and images
-model PexelsSyncImage {
-  id              String             @id @default(cuid())
-  syncHistoryId   String
-  syncHistory     PexelsSyncHistory  @relation(fields: [syncHistoryId], references: [id], onDelete: Cascade)
-  
-  pexelsImageId   String
-  pexelsImage     PexelsImage        @relation(fields: [pexelsImageId], references: [id], onDelete: Cascade)
+// 🔹 Supporting & Performance Tables
+model ApiLog {
+  id    String            @id @default(uuid())
+  jobId String?
+  job   ImageAnalysisJob? @relation(fields: [jobId], references: [id], onDelete: SetNull)
 
-  createdAt       DateTime           @default(now())
+  provider        ApiProvider
+  endpoint        String
+  requestPayload  Json?
+  responsePayload Json?
+  statusCode      Int?
+  durationMs      Int?
 
-  @@unique([syncHistoryId, pexelsImageId])
-  @@index([syncHistoryId])
-  @@index([pexelsImageId])
-  @@map("vision_iq_pexels_sync_images")
+  createdAt DateTime @default(now())
+
+  @@index([jobId])
+  @@map("vision_iq_api_logs")
+}
+
+model AnalysisEvent {
+  id    String           @id @default(uuid())
+  jobId String
+  job   ImageAnalysisJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  eventName String
+  eventData Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([jobId])
+  @@map("vision_iq_analysis_events")
+}
+
+model Tag {
+  id           String              @id @default(uuid())
+  name         String              @unique
+  descriptions DescriptionTagMap[]
+
+  @@map("vision_iq_tags")
+}
+
+model DescriptionTagMap {
+  descriptionId String
+  description   VisualDescription @relation(fields: [descriptionId], references: [id], onDelete: Cascade)
+  tagId         String
+  tag           Tag               @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([descriptionId, tagId])
+  @@map("vision_iq_description_tag_map")
+}
+
+// 🔹 Vector Search (Specialized)
+model ImageEmbedding {
+  id      String      @id @default(uuid())
+  imageId String      @unique
+  image   PexelsImage @relation(fields: [imageId], references: [id], onDelete: Cascade)
+
+  // 1536-dimensional embedding for semantic search
+  // embedding Unsupported("vector(1536)")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([imageId])
+  @@map("vision_iq_image_embeddings")
 }

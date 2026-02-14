@@ -39,11 +39,9 @@ export class PexelsSyncService {
 
     const syncHistory = await this.prisma.pexelsSyncHistory.create({
       data: {
-        searchQuery: search_query,
-        batchSize: batchSize,
-        status: "pending",
-        descriptionId: descriptionId,
-        keywordId: keywordId,
+        keywordId: keywordId!, // Ensure keywordId is passed and mapped to keywordId
+        syncStatus: "PENDING",
+        syncAttempt: 1,
       },
     });
 
@@ -118,8 +116,8 @@ export class PexelsSyncService {
       await this.prisma.pexelsSyncHistory.update({
         where: { id: syncHistory.id },
         data: {
-          status: "completed",
-          totalImages: result.total_images,
+          syncStatus: "COMPLETED",
+          syncedAt: new Date(),
         },
       });
 
@@ -133,8 +131,8 @@ export class PexelsSyncService {
       await this.prisma.pexelsSyncHistory.update({
         where: { id: syncHistory.id },
         data: {
-          status: "failed",
-          error: (error as Error).message,
+          syncStatus: "FAILED",
+          errorMessage: (error as Error).message,
         },
       });
 
@@ -156,10 +154,13 @@ export class PexelsSyncService {
     for (const image of images) {
       try {
         const pexelsImage = await this.prisma.pexelsImage.upsert({
-          where: { pexelsId: image.pexels_id },
-          update: {},
+          where: { pexelsImageId: image.pexels_id },
+          update: {
+            syncHistoryId: syncHistoryId,
+          },
           create: {
-            pexelsId: image.pexels_id,
+            syncHistoryId: syncHistoryId,
+            pexelsImageId: image.pexels_id,
             url: image.url,
             photographer: image.photographer,
             width: image.width,
@@ -169,51 +170,17 @@ export class PexelsSyncService {
           },
         });
 
-        // Track image-sync association
-        await this.prisma.pexelsSyncImage.upsert({
-          where: {
-            syncHistoryId_pexelsImageId: {
-              syncHistoryId: syncHistoryId,
-              pexelsImageId: pexelsImage.id,
-            },
-          },
-          update: {},
-          create: {
-            syncHistoryId: syncHistoryId,
-            pexelsImageId: pexelsImage.id,
-          },
-        });
-
-        // Track provenance if descriptionId provided
-        if (descriptionId) {
-          await this.prisma.pexelsImageDescription.upsert({
-            where: {
-              descriptionId_pexelsImageId: {
-                descriptionId: descriptionId,
-                pexelsImageId: pexelsImage.id,
-              },
-            },
-            update: {},
-            create: {
-              descriptionId: descriptionId,
-              pexelsImageId: pexelsImage.id,
-              keywordId: keywordId,
-              discoveryMethod: "SEARCH",
-            },
-          });
-        }
-
         // Create or reset analysis job
         await this.prisma.imageAnalysisJob.upsert({
-          where: { imageId: pexelsImage.id },
+          where: { pexelsImageId: pexelsImage.id },
           update: {
-            status: "PENDING",
+            jobStatus: "QUEUED",
             retryCount: 0,
-            errorMessage: null,
           },
           create: {
-            imageId: pexelsImage.id,
-            status: "PENDING",
+            pexelsImageId: pexelsImage.id,
+            jobStatus: "QUEUED",
+            provider: "DEEPSEEK",
             retryCount: 0,
           },
         });

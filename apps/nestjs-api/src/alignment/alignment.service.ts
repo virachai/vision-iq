@@ -78,8 +78,7 @@ export class AlignmentService {
         const sceneData = scenes[index];
         const scene = await this.prisma.sceneIntent.create({
           data: {
-            requestId: request.id,
-            projectId: "default-project", // Placeholder until project logic implemented
+            visualIntentRequestId: request.id,
             sceneIndex: index,
             intent: sceneData.intent,
             requiredImpact: sceneData.required_impact,
@@ -104,7 +103,6 @@ export class AlignmentService {
               data: {
                 sceneIntentId: scene.id,
                 description: exp.description,
-                analysis: analysisData as any,
                 status: "IN_PROGRESS",
                 keywords: {
                   create:
@@ -122,13 +120,14 @@ export class AlignmentService {
                   `Auto-match triggered for expanded description: "${exp.description.substring(
                     0,
                     30,
+                    125,
                   )}..."`,
                 );
 
                 // Trigger Pexels Sync for each keyword with tracking
                 const keywords =
                   await this.prisma.visualDescriptionKeyword.findMany({
-                    where: { descriptionId: description.id },
+                    where: { visualDescriptionId: description.id },
                   });
 
                 for (const kw of keywords) {
@@ -154,7 +153,7 @@ export class AlignmentService {
                     });
                 }
 
-                // Mark description specifically separately if needed, but the loop handles keywords
+                // Mark description specifically separately if needed
                 await this.prisma.visualDescription.update({
                   where: { id: description.id },
                   data: { status: "COMPLETED" },
@@ -208,8 +207,6 @@ export class AlignmentService {
         "Visual intent extraction/persistence failed",
         (error as Error).message,
       );
-      // We don't have the request ID here if it failed before creation, but if it was created:
-      // In a real app we'd wrap this better, but for now we follow the flow.
       throw error;
     }
   }
@@ -456,7 +453,6 @@ export class AlignmentService {
               data: {
                 sceneIntentId: id,
                 description: exp.description,
-                analysis: analysisData as any,
                 status: "IN_PROGRESS",
                 keywords: {
                   create:
@@ -479,7 +475,6 @@ export class AlignmentService {
       this.logger.error(
         `Failed to resume ${entityType} ${id}: ${error.message}`,
       );
-      // Mark as FAILED if it keeps failing? For now we just log.
     }
   }
 
@@ -541,48 +536,13 @@ export class AlignmentService {
    */
   async getStats() {
     try {
-      try {
-        const fs = require("fs");
-        const path = require("path");
-        const logPath = path.resolve(process.cwd(), "debug-getStats.log");
-        fs.appendFileSync(
-          logPath,
-          `getStats called. this.prisma: ${!!this.prisma}\n`,
-        );
-        if (this.prisma) {
-          const keys = Object.keys(this.prisma);
-          fs.appendFileSync(logPath, `Keys: ${keys.join(",")}\n`);
-          // @ts-ignore
-          fs.appendFileSync(
-            logPath,
-            `pexelsImage: ${!!this.prisma.pexelsImage}\n`,
-          );
-        } else {
-          fs.appendFileSync(logPath, `this.prisma is undefined\n`);
-        }
-      } catch (e) {
-        console.error(e);
-      }
-
-      let totalImages = 0;
-      try {
-        totalImages = await this.prisma.pexelsImage.count();
-      } catch (countError) {
-        this.logger.error(
-          "Error counting pexelsImage",
-          (countError as Error).message,
-          (countError as Error).stack,
-        );
-        console.error("pexelsImage.count() error:", countError);
-        throw countError;
-      }
-
+      const totalImages = await this.prisma.pexelsImage.count();
       const totalEmbeddings = await this.prisma.imageEmbedding.count();
       const pendingJobs = await this.prisma.imageAnalysisJob.count({
-        where: { status: "PENDING" },
+        where: { jobStatus: "QUEUED" },
       });
       const failedJobs = await this.prisma.imageAnalysisJob.count({
-        where: { status: "FAILED" },
+        where: { jobStatus: "FAILED" },
       });
 
       return {
@@ -590,7 +550,7 @@ export class AlignmentService {
         total_embeddings: totalEmbeddings,
         pending_analysis_jobs: pendingJobs,
         failed_jobs: failedJobs,
-        ready_for_search: totalEmbeddings, // Images with embeddings are searchable
+        ready_for_search: totalEmbeddings,
       };
     } catch (error) {
       this.logger.error(
