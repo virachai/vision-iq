@@ -19,10 +19,13 @@ describe("GeminiAnalysisService", () => {
   let service: GeminiAnalysisService;
   let mockConnect: jest.Mock;
   let mockSession: any;
+  let mockDeepSeekServiceValue: any;
+  let mockPrisma: any;
 
   beforeEach(async () => {
     jest.clearAllMocks();
     process.env.GEMINI_API_KEY = "test-api-key";
+    process.env.ENABLE_GEMINI = "true";
 
     mockSession = {
       sendClientContent: jest.fn(),
@@ -37,7 +40,7 @@ describe("GeminiAnalysisService", () => {
       },
     }));
 
-    const mockPrisma = {
+    mockPrisma = {
       pexelsImage: {
         findUnique: jest.fn(),
       },
@@ -53,14 +56,17 @@ describe("GeminiAnalysisService", () => {
       },
     };
 
+    mockDeepSeekServiceValue = {
+      parseGeminiRawResponse: jest.fn(),
+      analyzeDetailedVisualIntent: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         GeminiAnalysisService,
         {
           provide: DeepSeekService,
-          useValue: {
-            parseGeminiRawResponse: jest.fn(),
-          },
+          useValue: mockDeepSeekServiceValue,
         },
         {
           provide: PRISMA_SERVICE,
@@ -70,6 +76,34 @@ describe("GeminiAnalysisService", () => {
     }).compile();
 
     service = module.get<GeminiAnalysisService>(GeminiAnalysisService);
+  });
+
+  describe("Feature Flag", () => {
+    it("should return fallbacks when ENABLE_GEMINI is false", async () => {
+      process.env.ENABLE_GEMINI = "false";
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [
+          GeminiAnalysisService,
+          { provide: DeepSeekService, useValue: mockDeepSeekServiceValue },
+          { provide: PRISMA_SERVICE, useValue: mockPrisma },
+        ],
+      }).compile();
+      const disabledService = module.get<GeminiAnalysisService>(
+        GeminiAnalysisService,
+      );
+
+      const result = await disabledService.analyzeImage(
+        "http://example.com/img.jpg",
+      );
+      expect(result.rawResponse).toBe("Gemini disabled - Fallback returned");
+      expect(result.result).toBeDefined();
+
+      const batchResult = await disabledService.analyzeImages([
+        { id: "1", imageUrl: "url" },
+      ]);
+      expect(batchResult).toHaveLength(1);
+      expect(batchResult[0].result).toBeDefined();
+    });
   });
 
   describe("analyzeVisualIntent", () => {

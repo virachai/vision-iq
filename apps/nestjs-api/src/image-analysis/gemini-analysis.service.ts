@@ -36,6 +36,7 @@ export class GeminiAnalysisService {
   private readonly modelName =
     "models/gemini-2.5-flash-native-audio-preview-12-2025";
   private readonly maxRetries = 3;
+  private readonly isEnabled: boolean;
 
   constructor(
     private readonly deepseekService: DeepSeekService,
@@ -43,9 +44,16 @@ export class GeminiAnalysisService {
   ) {
     const apiKey = process.env.GEMINI_API_KEY || "";
     this.ai = new GoogleGenAI({ apiKey });
+    this.isEnabled = process.env.ENABLE_GEMINI === "true";
 
     if (!apiKey) {
       this.logger.error("GEMINI_API_KEY not configured.");
+    }
+
+    if (this.isEnabled) {
+      this.logger.log("Gemini analysis is ENABLED");
+    } else {
+      this.logger.warn("Gemini analysis is DISABLED via ENABLE_GEMINI flag");
     }
   }
 
@@ -57,6 +65,13 @@ export class GeminiAnalysisService {
     level: GradeLevel = "none",
     alt?: string,
   ): Promise<{ result: GeminiAnalysisResult; rawResponse: string }> {
+    if (!this.isEnabled) {
+      this.logger.debug("Skipping analyzeImage: Gemini disabled");
+      return {
+        result: normalizeGeminiResult({} as any),
+        rawResponse: "Gemini disabled - Fallback returned",
+      };
+    }
     const { imageBase64, imageMime } = await this.fetchImageData(imageUrl);
 
     const userParts: Part[] = [
@@ -96,6 +111,14 @@ export class GeminiAnalysisService {
     items: BatchAnalysisItem[],
   ): Promise<BatchAnalysisResult[]> {
     if (items.length === 0) return [];
+
+    if (!this.isEnabled) {
+      this.logger.debug("Skipping analyzeImages: Gemini disabled");
+      return items.map((item) => ({
+        id: item.id,
+        result: normalizeGeminiResult({} as any),
+      }));
+    }
 
     if (items.length === 1) {
       try {
@@ -195,6 +218,10 @@ export class GeminiAnalysisService {
    * Parses rawResponse text into structured metadata and updates DB
    */
   async refineWithDeepSeek(jobId: string): Promise<void> {
+    if (!this.isEnabled) {
+      this.logger.debug("Skipping refineWithDeepSeek: Gemini disabled");
+      return;
+    }
     const job = await this.prisma.imageAnalysisJob.findUnique({
       where: { id: jobId },
       include: { pexelsImage: true },
@@ -257,6 +284,10 @@ export class GeminiAnalysisService {
    * Saves directly to VisualIntentAnalysis table.
    */
   async analyzeVisualIntent(pexelsImageId: string): Promise<void> {
+    if (!this.isEnabled) {
+      this.logger.debug("Skipping analyzeVisualIntent: Gemini disabled");
+      return;
+    }
     const image = await this.prisma.pexelsImage.findUnique({
       where: { id: pexelsImageId },
     });

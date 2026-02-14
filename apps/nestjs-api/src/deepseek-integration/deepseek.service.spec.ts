@@ -10,12 +10,43 @@ describe("DeepSeekService", () => {
 
   beforeEach(async () => {
     process.env.DEEPSEEK_API_KEY = "test-key";
+    process.env.ENABLE_DEEPSEEK = "true";
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [DeepSeekService],
     }).compile();
 
     service = module.get<DeepSeekService>(DeepSeekService);
+  });
+
+  describe("Feature Flag", () => {
+    it("should return fallbacks when ENABLE_DEEPSEEK is false", async () => {
+      process.env.ENABLE_DEEPSEEK = "false";
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [DeepSeekService],
+      }).compile();
+      const disabledService = module.get<DeepSeekService>(DeepSeekService);
+
+      const result = await disabledService.extractVisualIntent("test prompt");
+      expect(result).toHaveLength(1);
+      expect(result[0].intent).toBe("test prompt");
+
+      const keywords = await disabledService.extractSearchKeywords(
+        "one two three four",
+      );
+      expect(keywords).toBe("one two three");
+
+      const expanded = await disabledService.expandSceneIntent("test");
+      expect(expanded[0].description).toBe("test");
+
+      const analysis = await disabledService.parseGeminiRawResponse("text");
+      expect(analysis).toEqual([]);
+
+      const detailed = await disabledService.analyzeDetailedVisualIntent(
+        "text",
+      );
+      expect(detailed).toBeNull();
+    });
   });
 
   describe("extractVisualIntent", () => {

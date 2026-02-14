@@ -58,15 +58,25 @@ export class DeepSeekService {
   private readonly apiKey: string;
   private readonly apiUrl: string;
   private readonly model = "deepseek-chat";
+  private readonly isEnabled: boolean;
 
   constructor() {
     this.apiKey = process.env.DEEPSEEK_API_KEY || "";
     this.apiUrl =
       process.env.DEEPSEEK_API_URL ||
       "https://api.deepseek.com/chat/completions";
+    this.isEnabled = process.env.ENABLE_DEEPSEEK === "true";
 
     if (!this.apiKey) {
       this.logger.warn("DEEPSEEK_API_KEY not configured");
+    }
+
+    if (this.isEnabled) {
+      this.logger.log("DeepSeek analysis is ENABLED");
+    } else {
+      this.logger.warn(
+        "DeepSeek analysis is DISABLED via ENABLE_DEEPSEEK flag",
+      );
     }
   }
 
@@ -75,6 +85,16 @@ export class DeepSeekService {
    * Single scene per call (as per requirements)
    */
   async extractVisualIntent(rawGeminiText: string): Promise<SceneIntentDto[]> {
+    if (!this.isEnabled) {
+      this.logger.debug("Skipping extractVisualIntent: DeepSeek disabled");
+      return [
+        {
+          intent: rawGeminiText.substring(0, 100),
+          required_impact: 5,
+          preferred_composition: this.validateComposition({}),
+        },
+      ];
+    }
     try {
       // Prompt design: instruct model to extract scene visual intent
       const systemPrompt = `You are an expert film director who analyzes narrative scripts and extracts visual intent for each scene.
@@ -146,6 +166,15 @@ Example:
     intent: string,
     count = 3,
   ): Promise<{ description: string; analysis: unknown }[]> {
+    if (!this.isEnabled) {
+      this.logger.debug("Skipping expandSceneIntent: DeepSeek disabled");
+      return [
+        {
+          description: intent,
+          analysis: { keywords: [intent], mood_score: 5 },
+        },
+      ];
+    }
     this.logger.debug(
       `Expanding intent: "${intent}" into ${count} descriptions`,
     );
@@ -204,6 +233,10 @@ Example:
   async parseGeminiRawResponse(
     rawText: string,
   ): Promise<GeminiAnalysisResult[]> {
+    if (!this.isEnabled) {
+      this.logger.debug("Skipping parseGeminiRawResponse: DeepSeek disabled");
+      return [];
+    }
     this.logger.debug(
       `Parsing Gemini raw response with DeepSeek (${rawText.length} chars)`,
     );
@@ -266,6 +299,12 @@ Return ONLY the valid JSON, no markdown, no explanations.`;
    * Based on a rich textual description of an image.
    */
   async analyzeDetailedVisualIntent(rawDescription: string): Promise<any> {
+    if (!this.isEnabled) {
+      this.logger.debug(
+        "Skipping analyzeDetailedVisualIntent: DeepSeek disabled",
+      );
+      return null;
+    }
     this.logger.debug(
       `Analyzing detailed visual intent with DeepSeek (${rawDescription.length} chars)`,
     );
@@ -334,6 +373,10 @@ Return ONLY the valid JSON, no markdown, no explanations.`;
    * Optimized for Pexels API search
    */
   async extractSearchKeywords(intent: string): Promise<string> {
+    if (!this.isEnabled) {
+      this.logger.debug("Skipping extractSearchKeywords: DeepSeek disabled");
+      return intent.split(" ").slice(0, 3).join(" ");
+    }
     this.logger.debug(`Extracting keywords for intent: "${intent}"`);
 
     const systemPrompt = `You are an expert image researcher. Your task is to condense a visual description into 2-3 searchable keywords for an image bank (Pexels).

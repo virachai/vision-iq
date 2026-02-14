@@ -53,6 +53,7 @@ export class PexelsIntegrationService {
   private readonly apiUrl = "https://api.pexels.com/v1/search";
   private readonly requestsPerHour: number;
   private lastRequestTime = 0;
+  private readonly isEnabled: boolean;
 
   constructor() {
     this.apiKey = process.env.PEXELS_API_KEY || "";
@@ -60,9 +61,16 @@ export class PexelsIntegrationService {
       process.env.PEXELS_REQUESTS_PER_HOUR || "200",
       10,
     );
+    this.isEnabled = process.env.ENABLE_PEXELS === "true";
 
     if (!this.apiKey) {
       this.logger.warn("PEXELS_API_KEY not configured");
+    }
+
+    if (this.isEnabled) {
+      this.logger.log("Pexels integration is ENABLED");
+    } else {
+      this.logger.warn("Pexels integration is DISABLED via ENABLE_PEXELS flag");
     }
   }
 
@@ -74,6 +82,10 @@ export class PexelsIntegrationService {
     search_query: string,
     batchSize = 50,
   ): AsyncGenerator<SyncBatch> {
+    if (!this.isEnabled) {
+      this.logger.debug("Skipping syncPexelsLibrary: Pexels disabled");
+      return;
+    }
     let page = 1;
     let totalResults = 0;
     let batchNumber = 0;
@@ -140,6 +152,16 @@ export class PexelsIntegrationService {
     perPage: number,
     retryCount = 0,
   ): Promise<PexelsApiResponse> {
+    if (!this.isEnabled) {
+      this.logger.debug("Skipping getPexelsPage: Pexels disabled");
+      return {
+        page: page,
+        per_page: perPage,
+        photos: [],
+        total_results: 0,
+        next_page: "",
+      };
+    }
     const maxRetries = 3;
 
     // Rate limiting: ensure ~200 requests/hour (one every 18 seconds)

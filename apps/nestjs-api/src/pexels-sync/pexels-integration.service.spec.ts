@@ -13,12 +13,33 @@ describe("PexelsIntegrationService", () => {
     jest.clearAllMocks();
     process.env.PEXELS_API_KEY = "test-api-key";
     process.env.PEXELS_REQUESTS_PER_HOUR = "100000";
+    process.env.ENABLE_PEXELS = "true";
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [PexelsIntegrationService],
     }).compile();
 
     service = module.get<PexelsIntegrationService>(PexelsIntegrationService);
+  });
+
+  describe("Feature Flag", () => {
+    it("should return fallbacks when ENABLE_PEXELS is false", async () => {
+      process.env.ENABLE_PEXELS = "false";
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [PexelsIntegrationService],
+      }).compile();
+      const disabledService = module.get<PexelsIntegrationService>(
+        PexelsIntegrationService,
+      );
+
+      const generator = disabledService.syncPexelsLibrary("test");
+      const result = await generator.next();
+      expect(result.done).toBe(true);
+
+      const page = await (disabledService as any).getPexelsPage("test", 1, 10);
+      expect(page.photos).toHaveLength(0);
+      expect(page.total_results).toBe(0);
+    });
   });
 
   it("should be defined", () => {
