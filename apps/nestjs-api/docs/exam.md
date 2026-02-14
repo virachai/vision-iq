@@ -164,6 +164,16 @@ curl -X PATCH http://localhost:3006/links/1 \
 curl -X DELETE http://localhost:3006/links/1
 ```
 
+## Maintenance API
+
+### Requeue Fallback
+
+Trigger recovery for image analysis jobs that were previously completed with "Gemini disabled" fallback content.
+
+```bash
+curl -X POST http://localhost:3006/maintenance/requeue-fallback
+```
+
 ## App Root
 
 ### Get Hello
