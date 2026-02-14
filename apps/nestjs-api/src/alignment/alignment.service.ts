@@ -483,11 +483,11 @@ export class AlignmentService {
 
     try {
       // Find jobs that necessitate DeepSeek refinement
-      // Criteria: Status=COMPLETED, isUsed=false, has rawResponse
+      // Criteria: Status=COMPLETED, deepseekAnalysis is empty, has rawApiResponse
       const pendingJobs = await this.prisma.imageAnalysisJob.findMany({
         where: {
           jobStatus: "COMPLETED",
-          deepseekAnalysis: { is: null },
+          deepseekAnalysis: null, // Use standard null check for 1-to-1 relation
           rawApiResponse: { not: null },
           retryCount: { lt: 5 }, // Hard ceiling for refinement retries
         },
@@ -525,6 +525,7 @@ export class AlignmentService {
       this.logger.error(
         "Error in processPendingDeepSeekAnalysis cron",
         (error as Error).message,
+        (error as Error).stack,
       );
     }
   }

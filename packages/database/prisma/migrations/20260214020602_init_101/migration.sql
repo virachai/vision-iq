@@ -1,11 +1,5 @@
 -- CreateEnum
-CREATE TYPE "JobStatus" AS ENUM ('QUEUED', 'PROCESSING', 'COMPLETED', 'FAILED');
-
--- CreateEnum
-CREATE TYPE "SyncStatus" AS ENUM ('PENDING', 'COMPLETED', 'FAILED');
-
--- CreateEnum
-CREATE TYPE "OrchestrationStatus" AS ENUM ('PENDING', 'IN_PROGRESS', 'COMPLETED', 'FAILED');
+CREATE TYPE "PipelineStatus" AS ENUM ('PENDING', 'QUEUED', 'PROCESSING', 'COMPLETED', 'FAILED', 'STALLED');
 
 -- CreateEnum
 CREATE TYPE "ApiProvider" AS ENUM ('PEXELS', 'DEEPSEEK', 'OPENAI', 'GEMINI');
@@ -25,7 +19,9 @@ CREATE TABLE "vision_iq_visual_intent_requests" (
     "id" TEXT NOT NULL,
     "userId" TEXT,
     "rawGeminiText" TEXT NOT NULL,
-    "status" "OrchestrationStatus" NOT NULL DEFAULT 'PENDING',
+    "status" "PipelineStatus" NOT NULL DEFAULT 'PENDING',
+    "retryCount" INTEGER NOT NULL DEFAULT 0,
+    "errorMessage" TEXT,
     "deletedAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -41,7 +37,9 @@ CREATE TABLE "vision_iq_scene_intents" (
     "intent" TEXT NOT NULL,
     "requiredImpact" DOUBLE PRECISION NOT NULL DEFAULT 5.0,
     "composition" JSONB NOT NULL,
-    "status" "OrchestrationStatus" NOT NULL DEFAULT 'PENDING',
+    "status" "PipelineStatus" NOT NULL DEFAULT 'PENDING',
+    "retryCount" INTEGER NOT NULL DEFAULT 0,
+    "errorMessage" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -53,7 +51,9 @@ CREATE TABLE "vision_iq_visual_descriptions" (
     "id" TEXT NOT NULL,
     "sceneIntentId" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "status" "OrchestrationStatus" NOT NULL DEFAULT 'PENDING',
+    "status" "PipelineStatus" NOT NULL DEFAULT 'PENDING',
+    "retryCount" INTEGER NOT NULL DEFAULT 0,
+    "errorMessage" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -76,7 +76,7 @@ CREATE TABLE "vision_iq_visual_description_keywords" (
 CREATE TABLE "vision_iq_pexels_sync_history" (
     "id" TEXT NOT NULL,
     "keywordId" TEXT NOT NULL,
-    "syncStatus" "SyncStatus" NOT NULL DEFAULT 'PENDING',
+    "syncStatus" "PipelineStatus" NOT NULL DEFAULT 'PENDING',
     "syncAttempt" INTEGER NOT NULL DEFAULT 1,
     "apiResponse" JSONB,
     "errorMessage" TEXT,
@@ -108,10 +108,11 @@ CREATE TABLE "vision_iq_pexels_images" (
 CREATE TABLE "vision_iq_image_analysis_jobs" (
     "id" TEXT NOT NULL,
     "pexelsImageId" TEXT NOT NULL,
-    "jobStatus" "JobStatus" NOT NULL DEFAULT 'QUEUED',
+    "jobStatus" "PipelineStatus" NOT NULL DEFAULT 'PENDING',
     "provider" "ApiProvider" NOT NULL DEFAULT 'DEEPSEEK',
     "payload" JSONB,
     "rawApiResponse" JSONB,
+    "errorMessage" TEXT,
     "retryCount" INTEGER NOT NULL DEFAULT 0,
     "startedAt" TIMESTAMP(3),
     "completedAt" TIMESTAMP(3),
