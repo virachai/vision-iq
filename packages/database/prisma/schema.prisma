@@ -234,7 +234,8 @@ model ImageEmbedding {
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   image     PexelsImage @relation(fields: [imageId], references: [id], onDelete: Cascade)
-  embedding Unsupported("vector(768)")
+  // embedding Unsupported("vector(768)")
+  embedding Float[]
 
   @@index([imageId])
   @@map("vision_iq_image_embeddings")
