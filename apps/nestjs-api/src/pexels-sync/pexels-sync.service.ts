@@ -174,6 +174,8 @@ export class PexelsSyncService {
     keywordId?: string,
   ): Promise<string[]> {
     const jobIds: string[] = [];
+    void descriptionId;
+    void keywordId;
 
     for (const image of images) {
       try {
