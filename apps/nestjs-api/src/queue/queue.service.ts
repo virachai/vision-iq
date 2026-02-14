@@ -131,6 +131,15 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
     // Setup event listeners
     this.setupWorkerListeners();
 
+    // Trigger re-queue of fallback jobs if Gemini is enabled
+    // We do this asynchronously to not block module initialization
+    this.requeueFallbackJobs().catch((err) => {
+      this.logger.error(
+        "Failed to re-queue fallback jobs on startup",
+        err.message,
+      );
+    });
+
     this.logger.log("BullMQ queues initialized successfully");
   }
 
@@ -216,6 +225,72 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
     } catch (error) {
       this.logger.error("Failed to queue auto-sync", (error as Error).message);
       throw error;
+    }
+  }
+
+  /**
+   * Re-queue all image analysis jobs that were completed with a fallback message.
+   * This is useful when Gemini was previously disabled but is now enabled.
+   */
+  async requeueFallbackJobs(): Promise<number> {
+    this.logger.log("Searching for fallback analysis jobs to re-queue...");
+
+    try {
+      // Find jobs with the specific fallback response in rawApiResponse
+      // Use equals to ensure we target only the exact fallback string
+      const fallbackJobs = await this.prisma.imageAnalysisJob.findMany({
+        where: {
+          rawApiResponse: {
+            equals: "Gemini disabled - Fallback returned" as any,
+          },
+        },
+        include: {
+          pexelsImage: true,
+        },
+      });
+
+      if (fallbackJobs.length === 0) {
+        this.logger.debug("No fallback jobs found.");
+        return 0;
+      }
+
+      this.logger.log(
+        `Found ${fallbackJobs.length} fallback jobs. Re-queueing...`,
+      );
+
+      let count = 0;
+      for (const job of fallbackJobs) {
+        try {
+          // Reset status to PENDING before re-queueing to allow processing
+          await this.prisma.imageAnalysisJob.update({
+            where: { id: job.id },
+            data: {
+              jobStatus: "PENDING",
+              rawApiResponse: null, // Clear fallback message
+              startedAt: null,
+              completedAt: null,
+            },
+          });
+
+          await this.queueImageAnalysis(
+            job.pexelsImageId,
+            job.pexelsImage.url,
+            job.pexelsImage.pexelsImageId,
+            job.pexelsImage.alt,
+          );
+          count++;
+        } catch (jobError: any) {
+          this.logger.error(
+            `Failed to re-queue individual fallback job ${job.id}: ${jobError.message}`,
+          );
+        }
+      }
+
+      this.logger.log(`Successfully re-queued ${count} fallback jobs.`);
+      return count;
+    } catch (error: any) {
+      this.logger.error("Failed to re-queue fallback jobs", error.message);
+      return 0;
     }
   }
 

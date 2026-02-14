@@ -10,6 +10,7 @@ import { JwtAuthGuard } from "./auth/jwt-auth.guard";
 import { RolesGuard } from "./auth/roles.guard";
 import { CorrelationIdMiddleware } from "./common/middleware/correlation-id.middleware";
 import { LoggingInterceptor } from "./common/interceptors/logging.interceptor";
+import { QueueModule } from "./queue/queue.module";
 
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
@@ -20,6 +21,7 @@ import { AppService } from "./app.service";
     AuthModule,
     LinksModule,
     AlignmentModule,
+    QueueModule,
     ScheduleModule.forRoot(),
   ],
   controllers: [AppController],

@@ -31,7 +31,12 @@ describe("QueueService", () => {
   beforeEach(async () => {
     mockPrisma = {
       imageMetadata: { upsert: jest.fn() },
-      imageAnalysisJob: { upsert: jest.fn() },
+      imageAnalysisJob: {
+        upsert: jest.fn(),
+        findMany: jest.fn(),
+        update: jest.fn(),
+        findUnique: jest.fn(),
+      },
       pexelsImage: { findUnique: jest.fn() },
     };
     mockGemini = { analyzeImage: jest.fn() };
@@ -65,6 +70,54 @@ describe("QueueService", () => {
       });
 
       expect(mockGemini.analyzeImage).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("requeueFallbackJobs", () => {
+    it("should find and re-queue fallback jobs", async () => {
+      const mockJobs = [
+        {
+          id: "job-1",
+          pexelsImageId: "img-1",
+          pexelsImage: {
+            url: "url-1",
+            pexelsImageId: "p-1",
+            alt: "alt-1",
+          },
+        },
+      ];
+
+      mockPrisma.imageAnalysisJob.findMany.mockResolvedValue(mockJobs);
+      mockPrisma.imageAnalysisJob.update.mockResolvedValue({});
+
+      // Mock queueImageAnalysis or wait for completion
+      const queueSpy = jest
+        .spyOn(service, "queueImageAnalysis")
+        .mockResolvedValue("job-id");
+
+      const count = await service.requeueFallbackJobs();
+
+      expect(count).toBe(1);
+      expect(mockPrisma.imageAnalysisJob.findMany).toHaveBeenCalled();
+      expect(mockPrisma.imageAnalysisJob.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id: "job-1" },
+          data: expect.objectContaining({
+            jobStatus: "PENDING",
+            rawApiResponse: null,
+          }),
+        }),
+      );
+      expect(queueSpy).toHaveBeenCalledWith("img-1", "url-1", "p-1", "alt-1");
+    });
+
+    it("should return 0 if no fallback jobs found", async () => {
+      mockPrisma.imageAnalysisJob.findMany.mockResolvedValue([]);
+
+      const count = await service.requeueFallbackJobs();
+
+      expect(count).toBe(0);
+      expect(mockPrisma.imageAnalysisJob.findMany).toHaveBeenCalled();
     });
   });
 });
