@@ -11,24 +11,13 @@ generator client {
 }
 
 // 🔹 Enums
-enum JobStatus {
-  QUEUED
-  PROCESSING
-  COMPLETED
-  FAILED
-}
-
-enum SyncStatus {
-  PENDING
-  COMPLETED
-  FAILED
-}
-
-enum OrchestrationStatus {
-  PENDING
-  IN_PROGRESS
-  COMPLETED
-  FAILED
+enum PipelineStatus {
+  PENDING     // Created but not yet in queue
+  QUEUED      // Sent to BullMQ
+  PROCESSING  // Currently being handled by a worker
+  COMPLETED   // Success
+  FAILED      // Terminal failure
+  STALLED     // Timeout or heartbeat loss
 }
 
 enum ApiProvider {
@@ -54,7 +43,9 @@ model VisualIntentRequest {
   userId        String?
   user          User?               @relation(fields: [userId], references: [id], onDelete: SetNull)
   rawGeminiText String              @db.Text
-  status        OrchestrationStatus @default(PENDING)
+  status        PipelineStatus      @default(PENDING)
+  retryCount    Int                 @default(0)
+  errorMessage  String?             @db.Text
   deletedAt     DateTime? // Soft delete support
 
   scenes SceneIntent[]
@@ -76,7 +67,9 @@ model SceneIntent {
   intent         String              @db.Text
   requiredImpact Float               @default(5.0)
   composition    Json // { "negative_space": "left" | "right" | "center", "shot_type": "CU" | "MS" | "WS" }
-  status         OrchestrationStatus @default(PENDING)
+  status         PipelineStatus      @default(PENDING)
+  retryCount     Int                 @default(0)
+  errorMessage   String?             @db.Text
 
   descriptions VisualDescription[]
 
@@ -94,7 +87,9 @@ model VisualDescription {
   sceneIntent   SceneIntent @relation(fields: [sceneIntentId], references: [id], onDelete: Cascade)
 
   description String              @db.Text
-  status      OrchestrationStatus @default(PENDING)
+  status      PipelineStatus      @default(PENDING)
+  retryCount  Int                 @default(0)
+  errorMessage String?            @db.Text
 
   keywords VisualDescriptionKeyword[]
   tagMap   DescriptionTagMap[]
@@ -129,8 +124,8 @@ model PexelsSyncHistory {
   keywordId String
   keyword   VisualDescriptionKeyword @relation(fields: [keywordId], references: [id], onDelete: Cascade)
 
-  syncStatus   SyncStatus @default(PENDING)
-  syncAttempt  Int        @default(1)
+  syncStatus   PipelineStatus @default(PENDING)
+  syncAttempt  Int            @default(1)
   apiResponse  Json? // JSONB API response
   errorMessage String?
   syncedAt     DateTime?  @default(now())
@@ -173,11 +168,12 @@ model ImageAnalysisJob {
   pexelsImageId String      @unique
   pexelsImage   PexelsImage @relation(fields: [pexelsImageId], references: [id], onDelete: Cascade)
 
-  jobStatus      JobStatus   @default(QUEUED)
+  jobStatus      PipelineStatus @default(PENDING)
   provider       ApiProvider @default(DEEPSEEK)
   payload        Json? // JSONB request/config payload
   rawApiResponse Json? // JSONB raw output from the provider
-  retryCount     Int         @default(0)
+  errorMessage   String?        @db.Text
+  retryCount     Int            @default(0)
 
   startedAt   DateTime?
   completedAt DateTime?

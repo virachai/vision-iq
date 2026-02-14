@@ -26,6 +26,7 @@ interface EmbeddingGenerationJob {
 
 interface AutoSyncJob {
   keywords: string;
+  keywordId?: string;
 }
 
 @Injectable()
@@ -200,11 +201,11 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
   /**
    * Queue an automatic Pexels sync
    */
-  async queueAutoSync(keywords: string) {
+  async queueAutoSync(keywords: string, keywordId?: string) {
     try {
       const job = await this.autoSyncQueue.add(
         "sync",
-        { keywords },
+        { keywords, keywordId },
         {
           jobId: `autosync-${keywords.replace(/\s+/g, "-")}-${Date.now()}`,
           priority: 20,
@@ -237,6 +238,12 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
         );
         return;
       }
+
+      // 0. Update status to PROCESSING immediately
+      await this.prisma.imageAnalysisJob.update({
+        where: { pexelsImageId: data.imageId },
+        data: { jobStatus: "PROCESSING", startedAt: new Date() },
+      });
 
       // Call Gemini to analyze image
       const { result: analysis, rawResponse } =
@@ -273,14 +280,14 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
           jobStatus: "COMPLETED",
           // biome-ignore lint/suspicious/noExplicitAny: Prisma JSON type mapping
           // result: analysis as any, // field removed
-          rawApiResponse: analysis as any, // Storing analysis result in rawApiResponse for now
+          rawApiResponse: rawResponse as any, // Storing raw text response
         },
         create: {
           pexelsImageId: data.imageId,
           jobStatus: "COMPLETED",
           // biome-ignore lint/suspicious/noExplicitAny: Prisma JSON type mapping
           // result: analysis as any, // field removed
-          rawApiResponse: analysis as any,
+          rawApiResponse: rawResponse as any,
         },
       });
 
@@ -299,11 +306,7 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
         where: { pexelsImageId: data.imageId },
         update: {
           jobStatus: "FAILED",
-          // errorMessage: (error as Error).message, // No errorMessage field in ImageAnalysisJob? Schema says NO.
-          // Store error in rawApiResponse? Or just status?
-          // Schema has no errorMessage column on ImageAnalysisJob. It is on PexelsSyncHistory.
-          // We can log it or maybe store in payload/rawApiResponse if strictly needed.
-          // For now just update status.
+          errorMessage: (error as Error).message,
           retryCount: {
             increment: 1,
           },
@@ -311,7 +314,7 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
         create: {
           pexelsImageId: data.imageId,
           jobStatus: "FAILED",
-          // errorMessage: (error as Error).message,
+          errorMessage: (error as Error).message,
         },
       });
 
@@ -401,7 +404,14 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
   private async processAutoSync(data: AutoSyncJob): Promise<void> {
     this.logger.log(`Processing auto-sync for keywords: "${data.keywords}"`);
     try {
-      await this.pexelsSyncService.syncPexelsLibrary(data.keywords, 5);
+      // In-progress status handled within syncPexelsLibrary if keywordId exists
+      await this.pexelsSyncService.syncPexelsLibrary(
+        data.keywords,
+        5,
+        0.1,
+        undefined,
+        data.keywordId,
+      );
       this.logger.debug(`Auto-sync completed for: "${data.keywords}"`);
     } catch (error) {
       this.logger.error(

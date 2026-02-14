@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import { Test, type TestingModule } from "@nestjs/testing";
-import { PrismaClient } from "@repo/database";
+import type { PrismaClient } from "@repo/database";
 import { DeepSeekService } from "../deepseek-integration/deepseek.service";
 import { GeminiAnalysisService } from "../image-analysis/gemini-analysis.service";
 import { PexelsSyncService } from "../pexels-sync/pexels-sync.service";
@@ -27,6 +27,9 @@ describe("AlignmentService", () => {
           provide: DeepSeekService,
           useValue: {
             extractVisualIntent: jest.fn(),
+            expandSceneIntent: jest
+              .fn<() => Promise<SceneIntentDto[]>>()
+              .mockResolvedValue([]),
           },
         },
         {
@@ -68,25 +71,29 @@ describe("AlignmentService", () => {
               count: jest.fn(),
             },
             visualIntentRequest: {
-              create: jest.fn().mockResolvedValue({ id: "req-1" } as any),
+              create: (jest.fn() as any).mockResolvedValue({ id: "req-1" }),
               findUnique: jest.fn(),
               update: jest.fn(),
             },
             sceneIntent: {
-              create: jest
-                .fn()
-                .mockResolvedValue({
-                  id: "scene-1",
-                  intent: "mock-intent",
-                } as any),
+              create: (jest.fn() as any).mockResolvedValue({
+                id: "scene-1",
+                intent: "mock-intent",
+              }),
               findUnique: jest.fn(),
               update: jest.fn(),
             },
             visualDescription: {
+              create: (jest.fn() as any).mockResolvedValue({ id: "desc-1" }),
               findUnique: jest.fn(),
+              findMany: (jest.fn() as any).mockResolvedValue([]),
               update: jest.fn(),
             },
-          },
+            visualDescriptionKeyword: {
+              findMany: (jest.fn() as any).mockResolvedValue([]),
+              update: jest.fn(),
+            },
+          } as any,
         },
       ],
     }).compile();

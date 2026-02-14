@@ -48,6 +48,7 @@ export class AnalysisSchedulerService {
       const pendingJobs = await this.prisma.imageAnalysisJob.findMany({
         where: {
           jobStatus: "QUEUED",
+          retryCount: { lt: 10 }, // Max 10 re-queues
         },
         include: {
           pexelsImage: true,
@@ -106,7 +107,8 @@ export class AnalysisSchedulerService {
       // 1. Stalled VisualIntentRequests
       const stalledRequests = await this.prisma.visualIntentRequest.findMany({
         where: {
-          status: { in: ["PENDING", "IN_PROGRESS"] },
+          status: { in: ["PENDING", "PROCESSING"] },
+          retryCount: { lt: 3 }, // Ceiling for stalled resumes
           updatedAt: { lt: stalledThreshold },
         },
         select: { id: true },
@@ -119,7 +121,8 @@ export class AnalysisSchedulerService {
       // 2. Stalled SceneIntents
       const stalledScenes = await this.prisma.sceneIntent.findMany({
         where: {
-          status: { in: ["PENDING", "IN_PROGRESS"] },
+          status: { in: ["PENDING", "PROCESSING"] },
+          retryCount: { lt: 3 }, // Ceiling for stalled resumes
           updatedAt: { lt: stalledThreshold },
         },
         select: { id: true },
@@ -132,7 +135,8 @@ export class AnalysisSchedulerService {
       // 3. Stalled VisualDescriptions
       const stalledDescriptions = await this.prisma.visualDescription.findMany({
         where: {
-          status: { in: ["PENDING", "IN_PROGRESS"] },
+          status: { in: ["PENDING", "PROCESSING"] },
+          retryCount: { lt: 3 }, // Ceiling for stalled resumes
           updatedAt: { lt: stalledThreshold },
         },
         select: { id: true },

@@ -5,12 +5,14 @@
 The Narrative-to-Video Image Alignment system consists of five integrated modules working together to match raw story narratives with a library of 1,000,000+ Pexels images:
 
 ### 1. **DeepSeek Integration Module**
+
 - **Role**: Parse raw, conversational Gemini Live text into structured scene intents
 - **Input**: Unstructured narrative text
 - **Output**: Typed SceneIntent objects with `intent`, `required_impact` (1-10), and `preferred_composition`
 - **File**: `deepseek-integration/deepseek.service.ts`
 
 ### 2. **Image Analysis Module**
+
 - **Role**: Extract metadata and features from raw image URLs
 - **Input**: Image URL from Pexels
 - **Output**: `ImageMetadata` with impact_score, visual_weight, composition, mood_dna, metaphorical_tags
@@ -18,6 +20,7 @@ The Narrative-to-Video Image Alignment system consists of five integrated module
 - **File**: `image-analysis/gemini-analysis.service.ts`
 
 ### 3. **Semantic Matching Module**
+
 - **Role**: Find semantically aligned images for narrative scenes
 - **Input**: Scene intents + vector embeddings
 - **Output**: Ranked ImageMatch results with detailed scoring breakdown
@@ -25,14 +28,16 @@ The Narrative-to-Video Image Alignment system consists of five integrated module
 - **File**: `semantic-matching/semantic-matching.service.ts`
 
 ### 4. **Pexels Integration Module**
+
 - **Role**: Sync Pexels API with rate-limiting respecting 200 req/hour limit
 - **Input**: Search query (e.g., "nature", "portraits")
 - **Output**: Batches of PexelsImage records ready for analysis
 - **File**: `pexels-sync/pexels-integration.service.ts`
 
 ### 5. **Queue System (BullMQ)**
+
 - **Role**: Async job processing for image analysis and embedding generation
-- **Workers**: 
+- **Workers**:
   - Image Analysis: 5 concurrent jobs (calls Gemini Vision API)
   - Embedding Generation: 10 concurrent jobs (generates vector embeddings)
 - **Persistence**: Redis-backed queue with retry logic
@@ -47,34 +52,34 @@ The system uses a **weighted multi-factor ranking algorithm** to score image can
 ### Formula Definition
 
 ```
-final_score = 
-    0.5 × vector_similarity 
-  + 0.3 × impact_relevance 
-  + 0.15 × composition_match 
+final_score =
+    0.5 × vector_similarity
+  + 0.3 × impact_relevance
+  + 0.15 × composition_match
   + 0.05 × mood_consistency_score
 
 Where:
 
 1. vector_similarity ∈ [0, 1]
    = cosine(scene_embedding, image_embedding)
-   
+
    Description: Measures semantic alignment between narrative intent
    and image content using 1536-dimensional embeddings from OpenAI.
-   
+
    Weight: 0.5 (50%) - Dominant factor ensures semantic relevance
 
 
 2. impact_relevance ∈ [0, 1]
    = 1 - |required_impact - image_impact_score| / 10
    = max(0, 1 - impact_difference / 10)
-   
+
    Example: scene_required=8, image_impact=8 → score=1.0
    Example: scene_required=8, image_impact=6 → score=0.8
-   
+
    Description: Measures how prominently the subject appears in the image.
    Compares narrative requirement (cinematically important vs background)
    against actual image analysis (1-10 scale).
-   
+
    Weight: 0.3 (30%) - Second most important for visual hierarchy
 
 
@@ -84,20 +89,20 @@ Where:
      - Adjacent shot type: 0.25 (e.g., WS vs MS)
      - Angle match: 0.5 (low/eye/high exact match)
      - Baseline: +0.1 (any valid angle)
-   
+
    Example: exact shot + exact angle = 1.0
    Example: adjacent shot + exact angle = 0.75
    Example: no matches = 0.1
-   
+
    Description: Ensures visual composition aligns with narrative needs
    (wide landscapes vs close-ups, camera perspective).
-   
+
    Weight: 0.15 (15%) - Important for framing
 
 
 4. mood_consistency_score ∈ [0, 1]
    For anchor scene (i == 0): always 1.0
-   
+
    For subsequent scenes:
        score = 1.0
        if anchor.temp ≠ image.temp:
@@ -106,13 +111,13 @@ Where:
            color_distance = euclidean_RGB_distance(hex1, hex2)
            normalized_distance = min(1, color_distance / 300)
            score -= normalized_distance × 0.1
-       
+
        final_mood_score = max(0, score)
-   
+
    Description: Soft consistency penalty ensures visual continuity across
    scenes. First image's mood (temperature, primary color, vibe) serves
    as "visual anchor" for subsequent images, but doesn't block alternatives.
-   
+
    Weight: 0.05 (5%) - Soft constraint to allow narrative flexibility
 ```
 
@@ -121,6 +126,7 @@ Where:
 The system implements **soft visual anchoring** for scene sequences:
 
 1. **First Scene (index 0)**:
+
    - Mood consistency score = 1.0 (full weight)
    - No penalty for mood mismatches
    - All images ranked purely by semantic + impact + composition fit
@@ -160,6 +166,7 @@ FINAL SCORE = (0.5 × 0.87) + (0.3 × 1.0) + (0.15 × 1.0) + (0.05 × 1.0)
 ### Key Models
 
 **PexelsImage**
+
 ```
 - id: String (primary)
 - pexelsId: String (unique)
@@ -171,6 +178,7 @@ FINAL SCORE = (0.5 × 0.87) + (0.3 × 1.0) + (0.15 × 1.0) + (0.05 × 1.0)
 ```
 
 **ImageEmbedding**
+
 ```
 - id: String (primary)
 - imageId: String (FK to PexelsImage)
@@ -179,6 +187,7 @@ FINAL SCORE = (0.5 × 0.87) + (0.3 × 1.0) + (0.15 × 1.0) + (0.05 × 1.0)
 ```
 
 **ImageMetadata**
+
 ```
 - id: String (primary)
 - imageId: String (FK, unique)
@@ -200,10 +209,11 @@ FINAL SCORE = (0.5 × 0.87) + (0.3 × 1.0) + (0.15 × 1.0) + (0.05 × 1.0)
 ```
 
 **ImageAnalysisJob**
+
 ```
 - id: String (primary)
 - imageId: String (FK)
-- status: PENDING | IN_PROGRESS | COMPLETED | FAILED
+- status: PipelineStatus (PENDING | QUEUED | PROCESSING | COMPLETED | FAILED | STALLED)
 - retryCount: Int
 - maxRetries: Int (default 3)
 - errorMessage: String
@@ -211,6 +221,7 @@ FINAL SCORE = (0.5 × 0.87) + (0.3 × 1.0) + (0.15 × 1.0) + (0.05 × 1.0)
 ```
 
 **SceneIntent**
+
 ```
 - id: String (primary)
 - projectId: String (FK to narrative)
@@ -227,9 +238,11 @@ FINAL SCORE = (0.5 × 0.87) + (0.3 × 1.0) + (0.15 × 1.0) + (0.05 × 1.0)
 ## API Endpoints
 
 ### POST `/alignment/extract-visual-intent`
+
 Extract scene intents from raw Gemini text.
 
 **Request**:
+
 ```json
 {
   "raw_gemini_text": "A solitary figure walks through an endless desert..."
@@ -237,6 +250,7 @@ Extract scene intents from raw Gemini text.
 ```
 
 **Response**:
+
 ```json
 [
   {
@@ -252,9 +266,11 @@ Extract scene intents from raw Gemini text.
 ```
 
 ### POST `/alignment/find-images`
+
 Find semantically aligned images for scenes.
 
 **Request**:
+
 ```json
 {
   "scenes": [
@@ -270,6 +286,7 @@ Find semantically aligned images for scenes.
 ```
 
 **Response**:
+
 ```json
 [
   [
@@ -290,9 +307,11 @@ Find semantically aligned images for scenes.
 ```
 
 ### POST `/alignment/sync-pexels`
+
 Trigger Pexels library sync.
 
 **Request**:
+
 ```json
 {
   "search_query": "nature",
@@ -301,6 +320,7 @@ Trigger Pexels library sync.
 ```
 
 **Response**:
+
 ```json
 {
   "total_images": 1000,
@@ -311,9 +331,11 @@ Trigger Pexels library sync.
 ```
 
 ### GET `/alignment/stats`
+
 Get library and processing statistics.
 
 **Response**:
+
 ```json
 {
   "total_images": 50000,
@@ -362,17 +384,20 @@ Get library and processing statistics.
 ## Error Handling
 
 ### Batch Failure Model
+
 - If >10% of images in a batch fail analysis, entire sync fails
 - Explicit retry required (prevents partial ingestion)
 - Per-image errors logged but don't block batch progression
 
 ### Retry Logic
+
 - **ImageAnalysisJob**: Up to 3 retries with exponential backoff
 - **DeepSeek API**: Retry on 429 (rate limit) with 1s, 2s, 4s delays
 - **Gemini API**: Retry on 429/503 (rate limit/service unavailable)
 - **Pexels API**: Automatic rate-limit respecting (200 req/hour sliding window)
 
 ### Fallback Strategies
+
 - **Missing Metadata**: Default values provided (impact=5, mood=neutral)
 - **Failed Embeddings**: Image available in search but with reduced ranking
 - **API Exhaustion**: Return results from cache or limit scope
@@ -397,11 +422,13 @@ EMBEDDING_MODEL=text-embedding-3-small
 ## Testing
 
 Run tests:
+
 ```bash
 npm run test
 ```
 
 Key test coverage:
+
 - AlignmentService: Endpoint validation, error handling
 - DeepSeekService: JSON parsing, retry logic, composition normalization
 - SemanticMatchingService: Ranking formula correctness, visual anchor logic, color distance
@@ -414,19 +441,23 @@ Key test coverage:
 ### Scalability to 1M Images
 
 **pgvector HNSW Index**:
+
 - O(log n) search complexity for 1M embeddings
 - ~10-50ms query time depending on recall requirement
 - ~1GB RAM for 1M × 1536-dim vectors
 
 **Metadata Filtering**:
+
 - Composite index on (mood_dna->temp, impact_score) reduces candidate set
 - Typical query returns 500-5000 candidates before ranking
 
 **Ranking**:
+
 - O(1) per candidate (linear combination of 4 scores)
 - Top-K results: ~10-50ms for returning top 5 images
 
 **Async Processing**:
+
 - 5 concurrent Gemini analysis workers = ~240 images/hour
 - Full 1M library sync = ~5,000 hours of clock time (streamable over weeks)
 - 10 concurrent embedding workers = ~3,600 embeddings/hour

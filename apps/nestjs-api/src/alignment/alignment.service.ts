@@ -61,7 +61,7 @@ export class AlignmentService {
       const request = await this.prisma.visualIntentRequest.create({
         data: {
           rawGeminiText: dto.raw_gemini_text,
-          status: "IN_PROGRESS",
+          status: "PROCESSING",
         },
       });
 
@@ -83,7 +83,7 @@ export class AlignmentService {
             intent: sceneData.intent,
             requiredImpact: sceneData.required_impact,
             composition: sceneData.preferred_composition as any,
-            status: "IN_PROGRESS",
+            status: "PROCESSING",
           },
         });
 
@@ -103,7 +103,7 @@ export class AlignmentService {
               data: {
                 sceneIntentId: scene.id,
                 description: exp.description,
-                status: "IN_PROGRESS",
+                status: "PROCESSING",
                 keywords: {
                   create:
                     analysisData?.keywords?.map((k: string) => ({
@@ -259,7 +259,7 @@ export class AlignmentService {
           this.deepseekService
             .extractSearchKeywords(missingScene.intent)
             .then((keywords) => {
-              this.queueService.queueAutoSync(keywords);
+              this.queueService.queueAutoSync(keywords, undefined); // keywordId not available here as it's from FindAlignedImagesDto
               this.logger.log(
                 `Successfully queued auto-sync job for keywords: "${keywords}"`,
               );
@@ -446,7 +446,7 @@ export class AlignmentService {
               data: {
                 sceneIntentId: id,
                 description: exp.description,
-                status: "IN_PROGRESS",
+                status: "PROCESSING",
                 keywords: {
                   create:
                     analysisData?.keywords?.map((k: string) => ({
@@ -487,8 +487,9 @@ export class AlignmentService {
       const pendingJobs = await this.prisma.imageAnalysisJob.findMany({
         where: {
           jobStatus: "COMPLETED",
-          // isUsed: false, // removed
+          deepseekAnalysis: { is: null },
           rawApiResponse: { not: null },
+          retryCount: { lt: 5 }, // Hard ceiling for refinement retries
         },
         select: { id: true, pexelsImageId: true },
         orderBy: { createdAt: "asc" }, // Process oldest first
@@ -508,12 +509,16 @@ export class AlignmentService {
           await this.geminiAnalysisService.refineWithDeepSeek(job.id);
         } catch (error) {
           this.logger.error(
-            `Failed to auto-refine job ${job.id}`,
-            (error as Error).message,
+            `Failed to auto-refine job ${job.id}: ${(error as Error).message}`,
           );
-          // Increment retry count or mark as failed? For now, we leave it retryable naturally
-          // but we should probably avoid infinite loops if it consistently fails.
-          // Consider checking retryCount in the query above.
+          // Standard production-level error tracking
+          await this.prisma.imageAnalysisJob.update({
+            where: { id: job.id },
+            data: {
+              retryCount: { increment: 1 },
+              errorMessage: (error as Error).message,
+            },
+          });
         }
       }
     } catch (error) {
