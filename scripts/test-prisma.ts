@@ -1,4 +1,4 @@
-import { prisma } from "./packages/database/src/client";
+import { prisma } from "../packages/database/src/client";
 
 async function main() {
   console.log("Testing prisma instance...");
