@@ -20,6 +20,10 @@ export class AnalysisSchedulerService {
    */
   @Cron(CronExpression.EVERY_5_MINUTES)
   async handleUnusedKeywords() {
+    if (process.env.ENABLE_ANALYSIS_CRON === "false") {
+      this.logger.debug("Cron job handleUnusedKeywords skipped (disabled)");
+      return;
+    }
     this.logger.log("Running cron job: Checking for unused keywords to sync");
     try {
       const result = await this.alignmentService.autoSyncUnusedKeywords();
@@ -39,6 +43,10 @@ export class AnalysisSchedulerService {
    */
   @Cron(CronExpression.EVERY_5_MINUTES)
   async handlePendingJobs() {
+    if (process.env.ENABLE_ANALYSIS_CRON === "false") {
+      this.logger.debug("Cron job handlePendingJobs skipped (disabled)");
+      return;
+    }
     this.logger.log(
       "Running cron job: Checking for pending image analysis jobs",
     );
@@ -96,6 +104,12 @@ export class AnalysisSchedulerService {
    */
   @Cron(CronExpression.EVERY_10_MINUTES)
   async handleStalledOrchestration() {
+    if (process.env.ENABLE_ANALYSIS_CRON === "false") {
+      this.logger.debug(
+        "Cron job handleStalledOrchestration skipped (disabled)",
+      );
+      return;
+    }
     this.logger.log(
       "Running cron job: Checking for stalled orchestration steps",
     );

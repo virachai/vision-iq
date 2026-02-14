@@ -132,6 +132,10 @@ export class AlignmentService {
    */
   @Cron(CronExpression.EVERY_10_SECONDS)
   async processPendingDeepSeekAnalysis() {
+    if (process.env.ENABLE_ANALYSIS_CRON === "false") {
+      // Shush logger for this very frequent cron job
+      return;
+    }
     await this.refinementService.processPendingDeepSeekAnalysis();
   }
 
