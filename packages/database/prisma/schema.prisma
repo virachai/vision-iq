@@ -116,6 +116,7 @@ model VisualDescriptionKeyword {
   updatedAt DateTime @updatedAt
 
   @@index([visualDescriptionId])
+  @@index([keyword])
   @@map("vision_iq_visual_description_keywords")
 }
 
@@ -141,8 +142,8 @@ model PexelsSyncHistory {
 
 model PexelsImage {
   id            String            @id @default(uuid())
-  syncHistoryId String
-  syncHistory   PexelsSyncHistory @relation(fields: [syncHistoryId], references: [id], onDelete: Cascade)
+  syncHistoryId String?
+  syncHistory   PexelsSyncHistory? @relation(fields: [syncHistoryId], references: [id], onDelete: SetNull)
 
   pexelsImageId String  @unique
   url           String  @db.Text
