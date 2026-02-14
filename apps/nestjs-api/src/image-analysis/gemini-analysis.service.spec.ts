@@ -124,6 +124,79 @@ describe("GeminiAnalysisService", () => {
       expect(batchResult).toHaveLength(1);
       expect(batchResult[0].result).toBeDefined();
     });
+
+    it("should return zeroed vector when ENABLE_EMBEDDING is false", async () => {
+      process.env.ENABLE_EMBEDDING = "false";
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [
+          GeminiAnalysisService,
+          { provide: DeepSeekService, useValue: mockDeepSeekServiceValue },
+          { provide: PRISMA_SERVICE, useValue: mockPrisma },
+        ],
+      }).compile();
+      const disabledService = module.get<GeminiAnalysisService>(
+        GeminiAnalysisService,
+      );
+
+      const result = await disabledService.generateEmbedding("test text");
+      expect(result).toHaveLength(768);
+      expect(result.every((v) => v === 0)).toBe(true);
+    });
+  });
+
+  describe("generateEmbedding", () => {
+    it("should successfully generate embedding via REST API", async () => {
+      process.env.ENABLE_EMBEDDING = "true";
+      const mockValues = new Array(768).fill(0.1);
+      const mockEmbedContent = jest.fn().mockResolvedValue({
+        embedding: { values: mockValues },
+      });
+
+      (GoogleGenerativeAI as jest.Mock).mockImplementation(() => ({
+        getGenerativeModel: jest.fn().mockReturnValue({
+          embedContent: mockEmbedContent,
+        }),
+      }));
+
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [
+          GeminiAnalysisService,
+          { provide: DeepSeekService, useValue: mockDeepSeekServiceValue },
+          { provide: PRISMA_SERVICE, useValue: mockPrisma },
+        ],
+      }).compile();
+      const enabledService = module.get<GeminiAnalysisService>(
+        GeminiAnalysisService,
+      );
+
+      const result = await enabledService.generateEmbedding("test text");
+      expect(result).toEqual(mockValues);
+      expect(mockEmbedContent).toHaveBeenCalledWith("test text");
+    });
+
+    it("should return zeroed vector if REST API fails", async () => {
+      process.env.ENABLE_EMBEDDING = "true";
+      (GoogleGenerativeAI as jest.Mock).mockImplementation(() => ({
+        getGenerativeModel: jest.fn().mockReturnValue({
+          embedContent: jest.fn().mockRejectedValue(new Error("API Error")),
+        }),
+      }));
+
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [
+          GeminiAnalysisService,
+          { provide: DeepSeekService, useValue: mockDeepSeekServiceValue },
+          { provide: PRISMA_SERVICE, useValue: mockPrisma },
+        ],
+      }).compile();
+      const errorService = module.get<GeminiAnalysisService>(
+        GeminiAnalysisService,
+      );
+
+      const result = await errorService.generateEmbedding("test text");
+      expect(result).toHaveLength(768);
+      expect(result.every((v) => v === 0)).toBe(true);
+    });
   });
 
   describe("analyzeVisualIntent", () => {

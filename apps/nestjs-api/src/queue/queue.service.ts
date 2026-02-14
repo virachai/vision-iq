@@ -305,8 +305,10 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
         },
       });
 
-      // Queue embedding generation - RE-ENABLED
-      await this.queueEmbeddingGeneration(data.imageId, analysis);
+      // Queue embedding generation - RESPECT TOGGLE
+      if (this.geminiAnalysisService.isEmbeddingEnabled) {
+        await this.queueEmbeddingGeneration(data.imageId, analysis);
+      }
 
       this.logger.debug(`Image analysis completed: ${data.pexelsId}`);
     } catch (error) {
@@ -350,6 +352,13 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
   private async processEmbeddingGeneration(
     data: EmbeddingGenerationJob,
   ): Promise<void> {
+    if (!this.geminiAnalysisService.isEmbeddingEnabled) {
+      this.logger.debug(
+        `Skipping embedding generation for ${data.imageId}: Feature disabled`,
+      );
+      return;
+    }
+
     this.logger.log(`Generating embedding for image: ${data.imageId}`);
 
     try {
