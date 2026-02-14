@@ -5,6 +5,7 @@ import {
   type Part,
   type Session,
 } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Injectable, Logger, Inject } from "@nestjs/common";
 import { PrismaClient } from "@repo/database";
 import { PRISMA_SERVICE } from "../prisma/prisma.module";
@@ -33,6 +34,7 @@ interface GradeValidationResult {
 export class GeminiAnalysisService {
   private readonly logger = new Logger(GeminiAnalysisService.name);
   private readonly ai: GoogleGenAI;
+  private readonly restAi: GoogleGenerativeAI;
   private readonly modelName =
     "models/gemini-2.5-flash-native-audio-preview-12-2025";
   private readonly maxRetries = 3;
@@ -44,6 +46,7 @@ export class GeminiAnalysisService {
   ) {
     const apiKey = process.env.GEMINI_API_KEY || "";
     this.ai = new GoogleGenAI({ apiKey });
+    this.restAi = new GoogleGenerativeAI(apiKey);
     this.isEnabled = process.env.ENABLE_GEMINI === "true";
 
     if (!apiKey) {
@@ -482,6 +485,20 @@ Avoid conversational fillers or "I see...". Start directly with the analysis.
           `Live session attempt ${attempt}/${this.maxRetries} failed: ${lastError.message}`,
         );
 
+        // Fallback to REST on final attempt or if specifically requested via Rule 8
+        if (attempt === this.maxRetries) {
+          this.logger.log("Falling back to REST API for final attempt...");
+          try {
+            return await this.runRestSession(systemPrompt, userParts);
+          } catch (restError) {
+            this.logger.error(
+              `REST fallback failed: ${(restError as Error).message}`,
+            );
+            // Throw the original Live error if REST also fails
+            throw lastError;
+          }
+        }
+
         if (attempt < this.maxRetries) {
           const delay = attempt * 2000; // 2s, 4s backoff
           this.logger.debug(`Retrying in ${delay}ms...`);
@@ -491,6 +508,43 @@ Avoid conversational fillers or "I see...". Start directly with the analysis.
     }
 
     throw lastError;
+  }
+
+  /**
+   * Reliability Fallback: Use standard REST API instead of WebSocket Live
+   */
+  private async runRestSession(
+    systemPrompt: string,
+    userParts: Part[],
+  ): Promise<string> {
+    try {
+      // Rule 8: Use generateContent as fallback
+      const model = this.restAi.getGenerativeModel({
+        model: this.modelName.replace("models/", ""),
+        systemInstruction: systemPrompt,
+      });
+
+      const result = await model.generateContent({
+        contents: [{ role: "user", parts: userParts as any }],
+        generationConfig: {
+          temperature: 0.4,
+          topP: 0.85,
+          maxOutputTokens: 1200,
+        },
+      });
+
+      const response = await result.response;
+      const text = response.text();
+
+      if (!text) {
+        throw new Error("REST API returned empty response");
+      }
+
+      return text;
+    } catch (error) {
+      this.logger.error("REST session failed", (error as Error).message);
+      throw error;
+    }
   }
 
   /**
@@ -542,7 +596,7 @@ Avoid conversational fillers or "I see...". Start directly with the analysis.
         .connect({
           model: this.modelName,
           config: {
-            responseModalities: [Modality.AUDIO],
+            responseModalities: [Modality.TEXT],
             systemInstruction: {
               parts: [{ text: systemPrompt }],
             },
@@ -581,11 +635,19 @@ Avoid conversational fillers or "I see...". Start directly with the analysis.
               finish(new Error(`Gemini Live error: ${err.message}`));
             },
 
-            onclose: () => {
+            onclose: (event) => {
               this.logger.debug(
-                `Gemini Live session closed (turnCompleted=${turnCompleted}, chars=${fullText.length})`,
+                `Gemini Live session closed (turnCompleted=${turnCompleted}, chars=${fullText.length}, reason=${event.reason})`,
               );
-              // If the server closed before turn completed, the interval loop will handle timeout
+              if (!turnCompleted && !settled) {
+                finish(
+                  new Error(
+                    `Gemini Live session closed prematurely: ${
+                      event.reason || "Unknown reason"
+                    }`,
+                  ),
+                );
+              }
             },
           },
         })

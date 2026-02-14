@@ -3,6 +3,7 @@ import { GeminiAnalysisService } from "./gemini-analysis.service";
 import { GoogleGenAI, Modality } from "@google/genai";
 import { DeepSeekService } from "../deepseek-integration/deepseek.service";
 import { PRISMA_SERVICE } from "../prisma/prisma.module";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 jest.mock("@google/genai", () => {
   return {
@@ -12,6 +13,12 @@ jest.mock("@google/genai", () => {
       AUDIO: "AUDIO",
       IMAGE: "IMAGE",
     },
+  };
+});
+
+jest.mock("@google/generative-ai", () => {
+  return {
+    GoogleGenerativeAI: jest.fn(),
   };
 });
 
@@ -77,6 +84,16 @@ describe("GeminiAnalysisService", () => {
         },
       ],
     }).compile();
+
+    (GoogleGenerativeAI as jest.Mock).mockImplementation(() => ({
+      getGenerativeModel: jest.fn().mockReturnValue({
+        generateContent: jest.fn().mockResolvedValue({
+          response: {
+            text: () => "REST response",
+          },
+        }),
+      }),
+    }));
 
     service = module.get<GeminiAnalysisService>(GeminiAnalysisService);
   });
@@ -377,6 +394,34 @@ The wide shot emphasizes the vastness of the landscape. The low angle provides a
       expect(attempts).toBe((service as any).maxRetries);
       expect(result.rawResponse).toBe("Bad response");
       expect(result.result).toBeDefined();
+    });
+
+    it("should fallback to REST API if Live connection fails on final attempt", async () => {
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
+        headers: { get: () => "image/jpeg" },
+      });
+
+      mockConnect.mockRejectedValue(new Error("Connection failed"));
+      (service as any).sleep = jest.fn().mockResolvedValue(undefined);
+
+      const restoreGetGenerativeModel = (
+        service as any
+      ).restAi.getGenerativeModel.mockReturnValue({
+        generateContent: jest.fn().mockResolvedValue({
+          response: {
+            text: () => mockRawResponse,
+          },
+        }),
+      });
+
+      const { result } = await service.analyzeImage(
+        "https://example.com/image.jpg",
+      );
+
+      expect(mockConnect).toHaveBeenCalledTimes((service as any).maxRetries);
+      expect(result).toEqual(expectedResult);
     });
   });
 
