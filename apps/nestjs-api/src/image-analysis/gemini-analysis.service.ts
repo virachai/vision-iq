@@ -253,6 +253,7 @@ export class GeminiAnalysisService {
 
   /**
    * Analyze Visual Intent: Core Intent, Spatial Strategy, etc.
+   * Hybrid Flow: Gemini (Vision) -> DeepSeek (7-layer Analysis)
    * Saves directly to VisualIntentAnalysis table.
    */
   async analyzeVisualIntent(pexelsImageId: string): Promise<void> {
@@ -262,25 +263,36 @@ export class GeminiAnalysisService {
 
     if (!image) throw new Error(`PexelsImage ${pexelsImageId} not found`);
 
+    this.logger.log(`Analyzing Visual Intent for image ${pexelsImageId}...`);
+
     const { imageBase64, imageMime } = await this.fetchImageData(image.url);
 
     const userParts: Part[] = [
       {
-        text: "ANALYZE VISUAL INTENT. FORMAT: JSON. STRICT SCHEMA.",
+        text: "PROVIDE A RICH CINEMATIC DESCRIPTION OF THIS IMAGE. FOCUS ON INTENT AND CINEMATIC DIMENSIONS.",
       },
       {
         inlineData: { mimeType: imageMime, data: imageBase64 },
       },
     ];
 
-    const fullText = await this.runLiveSessionWithRetry(
-      this.getVisualIntentPrompt(),
+    // 1. Get rich description from Gemini (The "Vision" part)
+    const rawDescription = await this.runLiveSessionWithRetry(
+      this.getRichDescriptionPrompt(),
       userParts,
       60_000,
     );
 
-    const result = this.parseVisualIntentResponse(fullText);
+    this.logger.debug(
+      `Gemini description length: ${rawDescription.length} chars`,
+    );
 
+    // 2. Extract 7-layer visual intent using DeepSeek (The "Brain" part)
+    const result = await this.deepseekService.analyzeDetailedVisualIntent(
+      rawDescription,
+    );
+
+    // 3. Persist to VisualIntentAnalysis table
     await this.prisma.visualIntentAnalysis.upsert({
       where: { pexelsImageId },
       create: {
@@ -303,70 +315,27 @@ export class GeminiAnalysisService {
         cinematicLeverage: result.cinematicLeverage as any,
       },
     });
+
+    this.logger.log(
+      `Successfully analyzed Visual Intent for image ${pexelsImageId}`,
+    );
   }
 
-  private getVisualIntentPrompt(): string {
+  private getRichDescriptionPrompt(): string {
     return `
-SYSTEM: Visual Intent Analysis Engine.
-MODE: JSON ONLY.
-TASK: Analyze the image based on specific cinematic dimensions.
+SYSTEM: You are a world-class cinematic visual analyst and director of photography.
+TASK: Provide a high-density, descriptive analysis of the provided image.
+FOCUS:
+- Narrative and Emotional Intent: What story is being told? What is the core objective?
+- Spatial Strategy: Analyze shot types, negative space, and compositional balance.
+- Subject Treatment: How is the subject presented? Dominance, identity, posture.
+- Color and Contrast: Palette choices, contrast levels, and their psychological impact.
+- Metaphorical Elements: Identify symbols and their deeper meanings.
+- Cinematic Techniques: Lighting, camera angles, and implied textures or sounds.
 
-OUTPUT FORMAT (JSON):
-{
-  "coreIntent": {
-    "intent": "string (The core narrative loading)",
-    "visual_goal": "string (What the viewer should feel)"
-  },
-  "spatialStrategy": {
-    "shot_type": "string (WS, MS, CU, ECU)",
-    "negative_space": "string (usage of space)",
-    "balance": "string (symmetrical, asymmetrical, off-balance)"
-  },
-  "subjectTreatment": {
-    "identity": "string (concealed, revealed, partial)",
-    "dominance": "string (hero, submissive, overwhelmed)",
-    "eye_contact": "string (direct, none, averted)"
-  },
-  "colorPsychology": {
-    "palette": ["string", "string"],
-    "contrast": "string (low, medium, high)",
-    "mood": "string (emotional response to color)"
-  },
-  "emotionalArchitecture": {
-    "vibe": "string",
-    "rhythm": "string (static, chaotic, flowing)",
-    "intensity": "string (low, medium, high)"
-  },
-  "metaphoricalLayer": {
-    "objects": ["string=string (e.g., clothes=burden)"],
-    "meaning": "string (deeper interpretation)"
-  },
-  "cinematicLeverage": {
-    "angle": "string",
-    "lighting": "string",
-    "sound": "string (implied sound)"
-  }
-}
+MODE: Descriptive English prose. Rich, evocative, and detailed. 
+Avoid conversational fillers or "I see...". Start directly with the analysis.
 `;
-  }
-
-  private parseVisualIntentResponse(content: string): any {
-    try {
-      const jsonStart = content.indexOf("{");
-      const jsonEnd = content.lastIndexOf("}");
-      if (jsonStart === -1 || jsonEnd === -1) {
-        throw new Error("No JSON found in response");
-      }
-      const jsonStr = content.substring(jsonStart, jsonEnd + 1);
-      return JSON.parse(jsonStr);
-    } catch (error) {
-      this.logger.error(
-        "Failed to parse Visual Intent JSON",
-        (error as Error).message,
-      );
-      // Return empty structure or rethrow? Rethrowing is safer to avoid bad data.
-      throw error;
-    }
   }
 
   // ---------------------------------------------------------------------------

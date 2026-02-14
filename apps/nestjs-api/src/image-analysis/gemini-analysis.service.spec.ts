@@ -73,7 +73,7 @@ describe("GeminiAnalysisService", () => {
   });
 
   describe("analyzeVisualIntent", () => {
-    it("should successfully analyze and save visual intent", async () => {
+    it("should successfully analyze and save visual intent using hybrid Gemini-DeepSeek flow", async () => {
       global.fetch = jest.fn().mockResolvedValue({
         ok: true,
         arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
@@ -81,12 +81,15 @@ describe("GeminiAnalysisService", () => {
       });
 
       const prisma = (service as any).prisma;
+      const deepseek = (service as any).deepseekService;
+
       prisma.pexelsImage.findUnique.mockResolvedValue({
         id: "img-123",
         url: "http://test.com/img.jpg",
       });
 
-      const mockJsonResponse = JSON.stringify({
+      const mockRichDescription = "A rich cinematic description of the image.";
+      const mockResult = {
         coreIntent: { intent: "Test Intent", visual_goal: "Goal" },
         spatialStrategy: {
           shot_type: "WS",
@@ -114,7 +117,11 @@ describe("GeminiAnalysisService", () => {
           lighting: "dark",
           sound: "silence",
         },
-      });
+      };
+
+      deepseek.analyzeDetailedVisualIntent = jest
+        .fn()
+        .mockResolvedValue(mockResult);
 
       mockConnect.mockImplementation(({ callbacks }) => {
         setTimeout(() => {
@@ -122,7 +129,7 @@ describe("GeminiAnalysisService", () => {
           callbacks.onmessage({
             serverContent: {
               modelTurn: {
-                parts: [{ text: "Here is the JSON: " + mockJsonResponse }],
+                parts: [{ text: mockRichDescription }],
               },
             },
           });
@@ -138,6 +145,11 @@ describe("GeminiAnalysisService", () => {
       expect(prisma.pexelsImage.findUnique).toHaveBeenCalledWith({
         where: { id: "img-123" },
       });
+      // Verify DeepSeek was called with the description from Gemini
+      expect(deepseek.analyzeDetailedVisualIntent).toHaveBeenCalledWith(
+        mockRichDescription,
+      );
+
       expect(prisma.visualIntentAnalysis.upsert).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { pexelsImageId: "img-123" },

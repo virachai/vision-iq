@@ -262,6 +262,74 @@ Return ONLY the valid JSON, no markdown, no explanations.`;
   }
 
   /**
+   * Analyze high-depth visual intent across 7 cinematic layers.
+   * Based on a rich textual description of an image.
+   */
+  async analyzeDetailedVisualIntent(rawDescription: string): Promise<any> {
+    this.logger.debug(
+      `Analyzing detailed visual intent with DeepSeek (${rawDescription.length} chars)`,
+    );
+
+    const systemPrompt = `You are an expert cinematic director and visual strategist. 
+Your task is to analyze a rich visual description of an image and extract exactly 7 layers of cinematic intent into a structured JSON object.
+
+REQUIRED JSON STRUCTURE:
+{
+  "coreIntent": {
+    "intent": "string (The core narrative loading/objective)",
+    "visual_goal": "string (What the viewer should feel/understand)"
+  },
+  "spatialStrategy": {
+    "shot_type": "WS" | "MS" | "CU" | "ECU",
+    "negative_space": "string (how negative space is used to support the intent)",
+    "balance": "symmetrical" | "asymmetrical" | "off-balance"
+  },
+  "subjectTreatment": {
+    "identity": "concealed" | "revealed" | "partial",
+    "dominance": "hero" | "submissive" | "overwhelmed",
+    "eye_contact": "direct" | "none" | "averted"
+  },
+  "colorPsychology": {
+    "palette": ["string", "string"],
+    "contrast": "low" | "medium" | "high",
+    "mood": "string (emotional response triggered by colors)"
+  },
+  "emotionalArchitecture": {
+    "vibe": "string (the overarching atmosphere)",
+    "rhythm": "static" | "chaotic" | "flowing" | "still",
+    "intensity": "low" | "medium" | "high"
+  },
+  "metaphoricalLayer": {
+    "objects": ["string=string (symbolism, e.g., 'cracked glass=broken trust')"],
+    "meaning": "string (the deeper subtextual interpretation)"
+  },
+  "cinematicLeverage": {
+    "angle": "string (camera angle description)",
+    "lighting": "string (lighting style and direction)",
+    "sound": "string (implied sound or diegetic texture)"
+  }
+}
+
+Return ONLY the valid JSON, no markdown, no explanations.`;
+
+    const userPrompt = `Analyze this visual description and extract the 7 cinematic layers:\n\n${rawDescription}`;
+
+    try {
+      const response = await this.callDeepSeekAPI(systemPrompt, userPrompt);
+      const parsed = this.parseJsonResponse(response.content);
+      // parsed is returned as an array by parseJsonResponse if it's not one,
+      // but here we expect a single object.
+      return Array.isArray(parsed) ? parsed[0] : parsed;
+    } catch (error) {
+      this.logger.error(
+        "DeepSeek detailed intent analysis failed",
+        (error as Error).message,
+      );
+      throw error;
+    }
+  }
+
+  /**
    * Extract 2-3 searchable keywords from a long visual intent
    * Optimized for Pexels API search
    */
