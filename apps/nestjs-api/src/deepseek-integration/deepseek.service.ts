@@ -80,6 +80,10 @@ export class DeepSeekService {
     }
   }
 
+  get isDeepSeekEnabled(): boolean {
+    return this.isEnabled;
+  }
+
   /**
    * Parse raw Gemini Live text into structured scene intents
    * Single scene per call (as per requirements)

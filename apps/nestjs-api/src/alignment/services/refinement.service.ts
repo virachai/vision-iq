@@ -17,6 +17,12 @@ export class RefinementService {
   }
 
   async processPendingDeepSeekAnalysis(limit = 5) {
+    if (!this.geminiAnalysisService.isDeepSeekRefinementEnabled()) {
+      this.logger.debug(
+        "Skipping processPendingDeepSeekAnalysis: DeepSeek is disabled",
+      );
+      return;
+    }
     this.logger.debug(
       `Checking for pending DeepSeek analysis jobs (limit=${limit})...`,
     );

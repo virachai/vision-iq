@@ -59,6 +59,9 @@ describe("GeminiAnalysisService", () => {
     mockDeepSeekServiceValue = {
       parseGeminiRawResponse: jest.fn(),
       analyzeDetailedVisualIntent: jest.fn(),
+      get isDeepSeekEnabled() {
+        return true;
+      },
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -508,6 +511,109 @@ Small notes.
       expect(result.passed).toBe(true);
       expect(result.score).toBe(100);
       expect(result.failures).toHaveLength(0);
+    });
+  });
+
+  describe("DeepSeek Toggle Integration", () => {
+    it("should skip detailed visual intent analysis when DeepSeek is disabled", async () => {
+      // Mock fetch for image data
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
+        headers: { get: () => "image/jpeg" },
+      });
+
+      // Create a service instance where deepseek.isDeepSeekEnabled returns false
+      const disabledDeepSeekMock = {
+        get isDeepSeekEnabled() {
+          return false;
+        },
+        analyzeDetailedVisualIntent: jest.fn(),
+      };
+
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [
+          GeminiAnalysisService,
+          { provide: DeepSeekService, useValue: disabledDeepSeekMock },
+          { provide: PRISMA_SERVICE, useValue: mockPrisma },
+        ],
+      }).compile();
+
+      const toggleService = module.get<GeminiAnalysisService>(
+        GeminiAnalysisService,
+      );
+
+      mockPrisma.pexelsImage.findUnique.mockResolvedValue({
+        id: "img-456",
+        url: "http://test.com/img.jpg",
+      });
+
+      // Mock Gemini response
+      mockConnect.mockImplementation(({ callbacks }) => {
+        setTimeout(() => {
+          callbacks.onopen();
+          callbacks.onmessage({
+            serverContent: {
+              modelTurn: { parts: [{ text: "Some rich description" }] },
+            },
+          });
+          callbacks.onmessage({ serverContent: { turnComplete: true } });
+        }, 10);
+        return Promise.resolve(mockSession);
+      });
+
+      await toggleService.analyzeVisualIntent("img-456");
+
+      // Verify DeepSeek was NOT called
+      expect(
+        disabledDeepSeekMock.analyzeDetailedVisualIntent,
+      ).not.toHaveBeenCalled();
+      // Verify nothing was saved to DB (due to early return in analyzeVisualIntent)
+      expect(mockPrisma.visualIntentAnalysis.upsert).not.toHaveBeenCalled();
+    });
+
+    it("should skip refinement and mark job as COMPLETED when DeepSeek is disabled", async () => {
+      const disabledDeepSeekMock = {
+        get isDeepSeekEnabled() {
+          return false;
+        },
+        parseGeminiRawResponse: jest.fn(),
+      };
+
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [
+          GeminiAnalysisService,
+          { provide: DeepSeekService, useValue: disabledDeepSeekMock },
+          { provide: PRISMA_SERVICE, useValue: mockPrisma },
+        ],
+      }).compile();
+
+      const toggleService = module.get<GeminiAnalysisService>(
+        GeminiAnalysisService,
+      );
+
+      const mockJob = {
+        id: "job-789",
+        rawApiResponse: "some raw text",
+        pexelsImage: { id: "img-789" },
+      };
+
+      mockPrisma.imageAnalysisJob.findUnique.mockResolvedValue(mockJob);
+
+      await toggleService.refineWithDeepSeek("job-789");
+
+      // Verify DeepSeek was NOT called
+      expect(
+        disabledDeepSeekMock.parseGeminiRawResponse,
+      ).not.toHaveBeenCalled();
+      // Verify job was updated to COMPLETED with error message
+      expect(mockPrisma.imageAnalysisJob.update).toHaveBeenCalledWith({
+        where: { id: "job-789" },
+        data: expect.objectContaining({
+          jobStatus: "COMPLETED",
+          errorMessage: "Refinement skipped: DeepSeek disabled",
+        }),
+      });
     });
   });
 });

@@ -58,6 +58,13 @@ export class GeminiAnalysisService {
   }
 
   /**
+   * Check if DeepSeek refinement is enabled
+   */
+  isDeepSeekRefinementEnabled(): boolean {
+    return this.deepseekService.isDeepSeekEnabled;
+  }
+
+  /**
    * Analyze a single image via Gemini Live session (with retries)
    */
   async analyzeImage(
@@ -270,6 +277,21 @@ export class GeminiAnalysisService {
 
     this.logger.log(`Refining analysis for job ${jobId} using DeepSeek...`);
 
+    if (!this.deepseekService.isDeepSeekEnabled) {
+      this.logger.warn(
+        `DeepSeek refinement skipped for job ${jobId}: DeepSeek is disabled`,
+      );
+      await this.prisma.imageAnalysisJob.update({
+        where: { id: jobId },
+        data: {
+          jobStatus: "COMPLETED",
+          completedAt: new Date(),
+          errorMessage: "Refinement skipped: DeepSeek disabled",
+        },
+      });
+      return;
+    }
+
     try {
       const refinedResults = await this.deepseekService.parseGeminiRawResponse(
         job.rawApiResponse as any,
@@ -355,10 +377,20 @@ export class GeminiAnalysisService {
       `Gemini description length: ${rawDescription.length} chars`,
     );
 
-    // 2. Extract 7-layer visual intent using DeepSeek (The "Brain" part)
-    const result = await this.deepseekService.analyzeDetailedVisualIntent(
-      rawDescription,
-    );
+    let result: any = null;
+    if (this.deepseekService.isDeepSeekEnabled) {
+      // 2. Extract 7-layer visual intent using DeepSeek (The "Brain" part)
+      result = await this.deepseekService.analyzeDetailedVisualIntent(
+        rawDescription,
+      );
+    } else {
+      this.logger.warn(
+        `Detailed visual intent analysis skipped for image ${pexelsImageId}: DeepSeek disabled`,
+      );
+      // Fallback: minimal result structure so upsert doesn't fail if we decide to save partials,
+      // but for now let's just return to avoid saving incomplete analysis.
+      return;
+    }
 
     // 3. Persist to VisualIntentAnalysis table
     await this.prisma.visualIntentAnalysis.upsert({
