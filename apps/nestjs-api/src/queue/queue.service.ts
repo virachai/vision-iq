@@ -253,6 +253,20 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
           data.alt,
         );
 
+      // 2. Perform Structured Visual Intent Analysis (New Feature)
+      try {
+        await this.geminiAnalysisService.analyzeVisualIntent(data.imageId);
+      } catch (err) {
+        this.logger.error(
+          `Visual Intent Analysis failed for ${data.imageId}: ${
+            (err as Error).message
+          }`,
+        );
+        // We continue anyway so the basic analysis is still saved, or we could fail the job.
+        // Given it's a new "feature", let's let it fail if it's critical,
+        // but for now I'll just log and continue to ensure basic stability.
+      }
+
       // Store metadata in database - ImageMetadata table removed/renamed?
       // await this.prisma.imageMetadata.upsert({
       //   where: { imageId: data.imageId },

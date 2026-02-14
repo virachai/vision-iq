@@ -11,6 +11,23 @@ The **Alignment Module** is the brain of Vision-IQ. It translates abstract human
 2. **Visual Description**: A specific, camera-ready prompt derived from the intent.
    - _Example_: "Wide shot, rainy Tokyo street at night, neon reflections, one figure standing still with an umbrella, cinematic lighting."
 3. **Aligned Image**: A real image (from Pexels) that matches a Visual Description.
+4. **Visual Intent Analysis**: A deep cinematic analysis of an image across 7 dimensions (Core Intent, Spatial Strategy, etc.), used to guide creative production.
+
+---
+
+## 🎨 Visual Intent Analysis Dimensions
+
+Every analyzed image now includes a structured `VisualIntentAnalysis` record with:
+
+- **1. Core Intent**: The narrative soul and emotional goal of the shot.
+- **2. Spatial Strategy**: Compositional choices (Shot Type, Negative Space, Balance).
+- **3. Subject Treatment**: How characters are framed and treated (Dominance, Identity, Eye Contact).
+- **4. Color Psychology**: Explicit color palettes and their emotional impact.
+- **5. Emotional Architecture**: The "vibe" and rhythm (Still vs. Chaotic).
+- **6. Metaphorical Layer**: Symbolism and deeper meanings (e.g., "Clothes = Burden").
+- **7. Cinematic Leverage**: Technical points for production (Angle, Lighting, Implied Sound).
+
+This data is automatically generated in the background as images are ingested into the library.
 
 ---
 

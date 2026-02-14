@@ -152,8 +152,9 @@ model PexelsImage {
   avgColor      String?
   alt           String? @db.Text
 
-  analysisJobs ImageAnalysisJob[]
-  embedding    ImageEmbedding?
+  analysisJobs      ImageAnalysisJob[]
+  embedding         ImageEmbedding?
+  visualIntentAnalysis VisualIntentAnalysis?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -259,6 +260,40 @@ model DescriptionTagMap {
 }
 
 // 🔹 Vector Search (Specialized)
+
+model VisualIntentAnalysis {
+  id            String      @id @default(uuid())
+  pexelsImageId String      @unique
+  pexelsImage   PexelsImage @relation(fields: [pexelsImageId], references: [id], onDelete: Cascade)
+
+  // 1. Core Intent
+  coreIntent    Json? // { "intent": "String", "visual_goal": "String" }
+  
+  // 2. Spatial Strategy
+  spatialStrategy Json? // { "shot_type": "WS", "negative_space": "center", "balance": "asymmetrical" }
+
+  // 3. Subject Treatment
+  subjectTreatment Json? // { "identity": "concealed", "dominance": "submissive", "eye_contact": "none" }
+
+  // 4. Color Psychology
+  colorPsychology Json? // { "palette": ["warm_white", "beige"], "contrast": "medium", "mood": "oppressive_comfort" }
+
+  // 5. Emotional Architecture
+  emotionalArchitecture Json? // { "vibe": "chaotic", "rhythm": "still", "intensity": "medium" }
+  
+  // 6. Metaphorical Layer
+  metaphoricalLayer Json? // { "objects": ["clothes=burden"], "meaning": "loss_of_self" }
+
+  // 7. Cinematic Leverage
+  cinematicLeverage Json? // { "angle": "low", "lighting": "top_hard", "sound": "fabric_rustle" }
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([pexelsImageId])
+  @@map("vision_iq_visual_intent_analysis")
+}
+
 model ImageEmbedding {
   id      String      @id @default(uuid())
   imageId String      @unique

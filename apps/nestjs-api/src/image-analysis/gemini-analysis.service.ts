@@ -251,6 +251,124 @@ export class GeminiAnalysisService {
     }
   }
 
+  /**
+   * Analyze Visual Intent: Core Intent, Spatial Strategy, etc.
+   * Saves directly to VisualIntentAnalysis table.
+   */
+  async analyzeVisualIntent(pexelsImageId: string): Promise<void> {
+    const image = await this.prisma.pexelsImage.findUnique({
+      where: { id: pexelsImageId },
+    });
+
+    if (!image) throw new Error(`PexelsImage ${pexelsImageId} not found`);
+
+    const { imageBase64, imageMime } = await this.fetchImageData(image.url);
+
+    const userParts: Part[] = [
+      {
+        text: "ANALYZE VISUAL INTENT. FORMAT: JSON. STRICT SCHEMA.",
+      },
+      {
+        inlineData: { mimeType: imageMime, data: imageBase64 },
+      },
+    ];
+
+    const fullText = await this.runLiveSessionWithRetry(
+      this.getVisualIntentPrompt(),
+      userParts,
+      60_000,
+    );
+
+    const result = this.parseVisualIntentResponse(fullText);
+
+    await this.prisma.visualIntentAnalysis.upsert({
+      where: { pexelsImageId },
+      create: {
+        pexelsImageId,
+        coreIntent: result.coreIntent as any,
+        spatialStrategy: result.spatialStrategy as any,
+        subjectTreatment: result.subjectTreatment as any,
+        colorPsychology: result.colorPsychology as any,
+        emotionalArchitecture: result.emotionalArchitecture as any,
+        metaphoricalLayer: result.metaphoricalLayer as any,
+        cinematicLeverage: result.cinematicLeverage as any,
+      },
+      update: {
+        coreIntent: result.coreIntent as any,
+        spatialStrategy: result.spatialStrategy as any,
+        subjectTreatment: result.subjectTreatment as any,
+        colorPsychology: result.colorPsychology as any,
+        emotionalArchitecture: result.emotionalArchitecture as any,
+        metaphoricalLayer: result.metaphoricalLayer as any,
+        cinematicLeverage: result.cinematicLeverage as any,
+      },
+    });
+  }
+
+  private getVisualIntentPrompt(): string {
+    return `
+SYSTEM: Visual Intent Analysis Engine.
+MODE: JSON ONLY.
+TASK: Analyze the image based on specific cinematic dimensions.
+
+OUTPUT FORMAT (JSON):
+{
+  "coreIntent": {
+    "intent": "string (The core narrative loading)",
+    "visual_goal": "string (What the viewer should feel)"
+  },
+  "spatialStrategy": {
+    "shot_type": "string (WS, MS, CU, ECU)",
+    "negative_space": "string (usage of space)",
+    "balance": "string (symmetrical, asymmetrical, off-balance)"
+  },
+  "subjectTreatment": {
+    "identity": "string (concealed, revealed, partial)",
+    "dominance": "string (hero, submissive, overwhelmed)",
+    "eye_contact": "string (direct, none, averted)"
+  },
+  "colorPsychology": {
+    "palette": ["string", "string"],
+    "contrast": "string (low, medium, high)",
+    "mood": "string (emotional response to color)"
+  },
+  "emotionalArchitecture": {
+    "vibe": "string",
+    "rhythm": "string (static, chaotic, flowing)",
+    "intensity": "string (low, medium, high)"
+  },
+  "metaphoricalLayer": {
+    "objects": ["string=string (e.g., clothes=burden)"],
+    "meaning": "string (deeper interpretation)"
+  },
+  "cinematicLeverage": {
+    "angle": "string",
+    "lighting": "string",
+    "sound": "string (implied sound)"
+  }
+}
+`;
+  }
+
+  private parseVisualIntentResponse(content: string): any {
+    try {
+      const jsonStart = content.indexOf("{");
+      const jsonEnd = content.lastIndexOf("}");
+      if (jsonStart === -1 || jsonEnd === -1) {
+        throw new Error("No JSON found in response");
+      }
+      const jsonStr = content.substring(jsonStart, jsonEnd + 1);
+      return JSON.parse(jsonStr);
+    } catch (error) {
+      this.logger.error(
+        "Failed to parse Visual Intent JSON",
+        (error as Error).message,
+      );
+      // Return empty structure or rethrow? Rethrowing is safer to avoid bad data.
+      throw error;
+    }
+  }
+
   // ---------------------------------------------------------------------------
   // Live session runner with retry
   // ---------------------------------------------------------------------------

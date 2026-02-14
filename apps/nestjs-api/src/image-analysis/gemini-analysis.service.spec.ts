@@ -37,6 +37,22 @@ describe("GeminiAnalysisService", () => {
       },
     }));
 
+    const mockPrisma = {
+      pexelsImage: {
+        findUnique: jest.fn(),
+      },
+      visualIntentAnalysis: {
+        upsert: jest.fn(),
+      },
+      imageAnalysisJob: {
+        findUnique: jest.fn(),
+        update: jest.fn(),
+      },
+      deepSeekAnalysis: {
+        upsert: jest.fn(),
+      },
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         GeminiAnalysisService,
@@ -48,7 +64,7 @@ describe("GeminiAnalysisService", () => {
         },
         {
           provide: PRISMA_SERVICE,
-          useValue: mockSession, // Just a placeholder mock
+          useValue: mockPrisma,
         },
       ],
     }).compile();
@@ -56,7 +72,85 @@ describe("GeminiAnalysisService", () => {
     service = module.get<GeminiAnalysisService>(GeminiAnalysisService);
   });
 
+  describe("analyzeVisualIntent", () => {
+    it("should successfully analyze and save visual intent", async () => {
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
+        headers: { get: () => "image/jpeg" },
+      });
+
+      const prisma = (service as any).prisma;
+      prisma.pexelsImage.findUnique.mockResolvedValue({
+        id: "img-123",
+        url: "http://test.com/img.jpg",
+      });
+
+      const mockJsonResponse = JSON.stringify({
+        coreIntent: { intent: "Test Intent", visual_goal: "Goal" },
+        spatialStrategy: {
+          shot_type: "WS",
+          negative_space: "center",
+          balance: "sym",
+        },
+        subjectTreatment: {
+          identity: "hidden",
+          dominance: "weak",
+          eye_contact: "none",
+        },
+        colorPsychology: {
+          palette: ["red"],
+          contrast: "high",
+          mood: "intense",
+        },
+        emotionalArchitecture: {
+          vibe: "sad",
+          rhythm: "slow",
+          intensity: "low",
+        },
+        metaphoricalLayer: { objects: ["rose"], meaning: "love" },
+        cinematicLeverage: {
+          angle: "high",
+          lighting: "dark",
+          sound: "silence",
+        },
+      });
+
+      mockConnect.mockImplementation(({ callbacks }) => {
+        setTimeout(() => {
+          callbacks.onopen();
+          callbacks.onmessage({
+            serverContent: {
+              modelTurn: {
+                parts: [{ text: "Here is the JSON: " + mockJsonResponse }],
+              },
+            },
+          });
+          callbacks.onmessage({
+            serverContent: { turnComplete: true },
+          });
+        }, 10);
+        return Promise.resolve(mockSession);
+      });
+
+      await service.analyzeVisualIntent("img-123");
+
+      expect(prisma.pexelsImage.findUnique).toHaveBeenCalledWith({
+        where: { id: "img-123" },
+      });
+      expect(prisma.visualIntentAnalysis.upsert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { pexelsImageId: "img-123" },
+          create: expect.objectContaining({
+            coreIntent: expect.objectContaining({ intent: "Test Intent" }),
+          }),
+        }),
+      );
+    });
+  });
+
   describe("analyzeImage", () => {
+    // ... existing tests ...
     const mockRawResponse = `
 IMPACT: 8
 VISUAL_WEIGHT: 7

@@ -70,9 +70,11 @@ How images are enriched with metadata after being fetched.
 stateDiagram-v2
     [*] --> Pending: Image Fetched
     Pending --> Processing: Job Picked by Worker
-    Processing --> Analyzing: Gemini Vision Analysis
-    Analyzing --> Embedding: Generate Vector
-    Embedding --> Completed: Save to DB
+    Processing --> GeminiVisionWorker[Gemini Vision Worker]
+    GeminiVisionWorker --> CinematicMetadata[Cinematic Metadata & Visual Intent extraction]
+    CinematicMetadata --> StoreInDB[Store in DB (DeepSeek, ImageMetadata, VisualIntentAnalysis)]
+    StoreInDB --> EmbeddingQueue[Embedding Queue]
+    EmbeddingQueue --> Completed: Save to DB
 
     Processing --> Failed: Error
     Failed --> Pending: Retry (max 3)
@@ -83,18 +85,26 @@ stateDiagram-v2
 
 ```mermaid
 erDiagram
+    PexelsImage ||--|| VisualIntentAnalysis : has
+    PexelsImage ||--|| ImageEmbedding : has
+    PexelsImage ||--|{ ImageAnalysisJob : analyzed_by
+    ImageAnalysisJob ||--|| DeepSeekAnalysis : refines
     SceneIntent ||--|{ VisualDescription : expands_to
-    VisualDescription ||--|{ PexelsImageDescription : links
-    PexelsImage ||--|{ PexelsImageDescription : appears_in
-    PexelsImage ||--|| ImageMetadata : has
-    VisualDescription {
-        string text
-        json composition
-        float weight
+    VisualDescription ||--|{ VisualDescriptionKeyword : has
+    VisualDescriptionKeyword ||--|{ PexelsSyncHistory : syncs
+    PexelsSyncHistory ||--|{ PexelsImage : ingests
+
+    VisualIntentAnalysis {
+        json coreIntent
+        json spatialStrategy
+        json subjectTreatment
+        json colorPsychology
+        json emotionalArchitecture
+        json metaphoricalLayer
+        json cinematicLeverage
     }
-    PexelsImage {
-        int id
-        string url
-        string photographer
+    DeepSeekAnalysis {
+        json analysisResult
+        float confidenceScore
     }
 ```
