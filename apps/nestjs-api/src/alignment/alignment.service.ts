@@ -82,7 +82,10 @@ export class AlignmentService {
             sceneIndex: index,
             intent: sceneData.intent,
             requiredImpact: sceneData.required_impact,
-            composition: sceneData.preferred_composition as any,
+            composition: {
+              ...(sceneData.preferred_composition as any),
+              visual_intent: sceneData.visual_intent,
+            },
             status: "PROCESSING",
           },
         });
@@ -193,6 +196,12 @@ export class AlignmentService {
       this.logger.log(
         `Successfully processed ${scenes.length} scenes for request ${request.id}`,
       );
+
+      // Generate the requested "Structured Search Formula" for the user/logs
+      for (const scene of scenes) {
+        const formula = this.generateStructuredSearchFormula(scene);
+        this.logger.log(`Generated Search Formula: \n${formula}`);
+      }
 
       return scenes;
     } catch (error) {
@@ -559,5 +568,29 @@ export class AlignmentService {
       );
       throw error;
     }
+  }
+
+  /**
+   * Generate a human-readable "Structured Search Formula" as requested by the user
+   */
+  private generateStructuredSearchFormula(scene: SceneIntentDto): string {
+    const vi = scene.visual_intent;
+    if (!vi) return `INTENT: ${scene.intent}`;
+
+    return `
+CORE_INTENT: ${vi.emotional_layer?.intent_words.join(", ") || "n/a"}
+SPATIAL_STRATEGY: ${vi.spatial_strategy?.strategy_words.join(", ") || "n/a"}
+SUBJECT_TREATMENT: ${vi.subject_treatment?.treatment_words.join(", ") || "n/a"}
+COLOR_PROFILE: ${vi.color_mapping?.temperature_words.join(", ") || "n/a"}
+EMOTIONAL_TONE: ${vi.emotional_layer?.vibe || "n/a"}
+KEYWORD_STRING: ${[
+      scene.intent,
+      ...(vi.spatial_strategy?.strategy_words || []),
+      ...(vi.emotional_layer?.intent_words || []),
+      vi.color_mapping?.temperature_words.join(", "),
+    ]
+      .filter(Boolean)
+      .join(", ")}
+`.trim();
   }
 }

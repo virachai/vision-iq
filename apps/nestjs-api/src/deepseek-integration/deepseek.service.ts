@@ -20,6 +20,27 @@ interface ParsedScene {
   intent: string;
   required_impact: number;
   preferred_composition: Composition;
+  visual_intent?: {
+    emotional_layer?: {
+      intent_words: string[];
+      vibe: string;
+    };
+    spatial_strategy?: {
+      strategy_words: string[];
+      shot_type: string;
+      balance: string;
+    };
+    subject_treatment?: {
+      treatment_words: string[];
+      identity: string;
+      dominance: string;
+    };
+    color_mapping?: {
+      temperature_words: string[];
+      temperature: "warm" | "cold";
+      contrast: "low" | "medium" | "high";
+    };
+  };
 }
 
 interface ExpandedIntentItem {
@@ -61,6 +82,11 @@ For each scene in the text, extract:
 1. intent: A concrete visual description (e.g., "a lone figure standing in an endless field at sunset")
 2. required_impact: A score 1-10 where the subject prominence matters (1=background, 10=primary focus)
 3. preferred_composition: An object with negative_space (left/right/center), shot_type (CU/MS/WS), angle (low/eye/high)
+4. visual_intent: A structured object covering 4 distinct layers:
+   - emotional_layer: { intent_words: string[], vibe: string } // e.g., ["overwhelmed", "suffocation"], "oppressive"
+   - spatial_strategy: { strategy_words: string[], shot_type: string, balance: string } // e.g., ["negative space center", "wide shot"]
+   - subject_treatment: { treatment_words: string[], identity: string, dominance: string } // e.g., ["hidden face", "vulnerable posture"], "concealed", "overwhelmed"
+   - color_mapping: { temperature_words: string[], temperature: "warm" | "cold", contrast: "low" | "medium" | "high" }
 
 Return ONLY a valid JSON array of scenes, no markdown, no explanations.
 Example:
@@ -72,6 +98,12 @@ Example:
       "negative_space": "left",
       "shot_type": "WS",
       "angle": "eye"
+    },
+    "visual_intent": {
+      "emotional_layer": { "intent_words": ["vulnerable", "isolated"], "vibe": "lonely" },
+      "spatial_strategy": { "strategy_words": ["wide shot", "negative space left"], "shot_type": "WS", "balance": "asymmetrical" },
+      "subject_treatment": { "treatment_words": ["small posture", "vulnerable"], "identity": "partial", "dominance": "overwhelmed" },
+      "color_mapping": { "temperature_words": ["warm tone", "golden hour"], "temperature": "warm", "contrast": "medium" }
     }
   }
 ]`;
@@ -90,6 +122,7 @@ Example:
         preferred_composition: this.validateComposition(
           scene.preferred_composition,
         ),
+        visual_intent: scene.visual_intent,
       }));
 
       this.logger.debug(`Extracted ${scenes.length} scenes from gemini text`);

@@ -196,6 +196,15 @@ export class SemanticMatchingService {
               candidate.metadata.moodDna,
             );
 
+        // --- NEW: Visual Intent Depth Matching ---
+        let intentDepthScore = 1.0;
+        if (scene.visual_intent) {
+          intentDepthScore = this.calculateVisualIntentDepthScore(
+            scene.visual_intent,
+            candidate.metadata,
+          );
+        }
+
         // Final score calculation
         const finalScore =
           this.rankingWeights.vector_similarity_weight * vectorSimilarity +
@@ -205,11 +214,13 @@ export class SemanticMatchingService {
             moodConsistencyScore *
             moodConsistencyMultiplier;
 
+        const weightedFinalScore = finalScore * (0.8 + intentDepthScore * 0.2);
+
         return {
           image_id: candidate.id,
           pexels_id: candidate.pexelsId,
           url: candidate.url,
-          match_score: Math.min(1, finalScore), // Clamp to 0-1
+          match_score: Math.min(1, weightedFinalScore), // Clamp to 0-1
           vector_similarity: vectorSimilarity,
           impact_relevance: impactRelevance,
           composition_match: compositionMatch,
@@ -324,6 +335,10 @@ export class SemanticMatchingService {
    * Generate embedding for scene intent text
    * TODO: integrate with OpenAI embeddings or local model
    */
+  /**
+   * Generate embedding for scene intent text
+   * TODO: integrate with OpenAI embeddings or local model
+   */
   private async generateEmbeddingForScene(
     _scene: SceneIntentDto,
   ): Promise<number[]> {
@@ -332,5 +347,54 @@ export class SemanticMatchingService {
     // This is a temporary implementation for schema validation
     const embedding = new Array(1536).fill(0).map(() => Math.random());
     return embedding;
+  }
+
+  /**
+   * Calculate how well an image metadata matches the 4-layer visual intent
+   */
+  private calculateVisualIntentDepthScore(
+    intent: NonNullable<SceneIntentDto["visual_intent"]>,
+    metadata: any,
+  ): number {
+    let score = 0;
+    let counts = 0;
+
+    // 1. Emotional Layer (metaphorical tags match)
+    if (intent.emotional_layer?.intent_words && metadata.metaphoricalTags) {
+      const matches = intent.emotional_layer.intent_words.filter((w) =>
+        metadata.metaphoricalTags.some((t: string) =>
+          t.toLowerCase().includes(w.toLowerCase()),
+        ),
+      );
+      if (intent.emotional_layer.intent_words.length > 0) {
+        score += matches.length / intent.emotional_layer.intent_words.length;
+        counts++;
+      }
+    }
+
+    // 2. Color Mapping
+    if (intent.color_mapping && metadata.moodDna) {
+      if (intent.color_mapping.temperature === metadata.moodDna.temp) {
+        score += 1.0;
+      }
+      counts++;
+    }
+
+    // 3. Subject Treatment (identity/dominance)
+    // This often relies on cinematic_notes or specific fields if joined with VisualIntentAnalysis
+    // For now, we use a simple heuristic if the words appear in metadata strings
+    if (intent.subject_treatment?.treatment_words) {
+      const treatmentStr = JSON.stringify(metadata).toLowerCase();
+      const matches = intent.subject_treatment.treatment_words.filter((w) =>
+        treatmentStr.includes(w.toLowerCase()),
+      );
+      if (intent.subject_treatment.treatment_words.length > 0) {
+        score +=
+          matches.length / intent.subject_treatment.treatment_words.length;
+        counts++;
+      }
+    }
+
+    return counts > 0 ? score / counts : 1.0;
   }
 }

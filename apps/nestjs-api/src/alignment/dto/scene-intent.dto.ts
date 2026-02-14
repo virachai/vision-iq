@@ -5,6 +5,29 @@ export class SceneIntentDto {
   intent: string; // Raw description of what the scene should show
   required_impact: number; // 1.0 - 10.0: subject prominence
   preferred_composition: import("../../shared/pipeline-types").Composition;
+
+  // New structured layers for Visual Intent-Driven Search
+  visual_intent?: {
+    emotional_layer?: {
+      intent_words: string[]; // e.g., ["overwhelmed", "suffocation"]
+      vibe: string;
+    };
+    spatial_strategy?: {
+      strategy_words: string[]; // e.g., ["negative space center", "wide shot"]
+      shot_type: string;
+      balance: string;
+    };
+    subject_treatment?: {
+      treatment_words: string[]; // e.g., ["hidden face", "vulnerable posture"]
+      identity: string;
+      dominance: string;
+    };
+    color_mapping?: {
+      temperature_words: string[]; // e.g., ["harsh light", "warm tone"]
+      temperature: "warm" | "cold";
+      contrast: "low" | "medium" | "high";
+    };
+  };
 }
 
 export class ExtractVisualIntentDto {

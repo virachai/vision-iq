@@ -24,6 +24,8 @@ Vision-IQ continues to evolve as a high-performance **Narrative-to-Video Image A
 - Implemented the core logic for translating narrative intents into aligned images.
 - Integrated **Pexels Synchronization** directly into the alignment flow, allowing for real-time or background image fetching based on visual intents.
 - **Request Cleanup**: Added mechanisms to handle and clean up request states during the alignment process.
+- **Visual Intent Alignment**: Upgraded the system to support a 4-layer cinematic intent extraction (Emotional, Spatial, Psychological, Color) directly from narrative audio/text.
+- **Structured Search Formula**: Implemented automatic generation of "Search Formula" to optimize image bank (Pexels) and Vector Search queries.
 
 ### 2. Service Enhancements: Gemini & DeepSeek
 
@@ -40,12 +42,13 @@ Vision-IQ continues to evolve as a high-performance **Narrative-to-Video Image A
 
 ## 🛠️ Key Components Status
 
-| Component            | Status         | Notes                                           |
-| :------------------- | :------------- | :---------------------------------------------- |
-| **Alignment Module** | ✅ **Active**  | Core logic implemented. Pexels sync integrated. |
-| **Gemini Service**   | ✅ **Updated** | Unit tests added. Logic refined.                |
-| **Database**         | ✅ **Stable**  | Migrations fixed. Schema aligned with code.     |
-| **DeepSeek Service** | ✅ **Stable**  | Continuing to provide structured refinement.    |
+| Component             | Status         | Notes                                           |
+| :-------------------- | :------------- | :---------------------------------------------- |
+| **Alignment Module**  | ✅ **Active**  | Core logic implemented. Pexels sync integrated. |
+| **Visual Intent Sys** | ✅ **New**     | 4-layer cinematic mapping & formula generation. |
+| **Gemini Service**    | ✅ **Updated** | Unit tests added. Logic refined.                |
+| **Database**          | ✅ **Stable**  | Migrations fixed. Schema aligned with code.     |
+| **DeepSeek Service**  | ✅ **Stable**  | Structured extraction & intent expansion.       |
 
 ---
 
