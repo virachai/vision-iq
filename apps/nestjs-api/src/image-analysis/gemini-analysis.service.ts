@@ -5,7 +5,6 @@ import {
   type Part,
   type Session,
 } from "@google/genai";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Injectable, Logger, Inject } from "@nestjs/common";
 import { PrismaClient } from "@repo/database";
 import { PRISMA_SERVICE } from "../prisma/prisma.module";
@@ -30,11 +29,32 @@ interface GradeValidationResult {
   failures: string[];
 }
 
+//   private readonly isEnabled: boolean;
+
+//   constructor(
+//     private readonly deepseekService: DeepSeekService,
+//     @Inject(PRISMA_SERVICE) private readonly prisma: PrismaClient,
+//   ) {
+//     const apiKey = process.env.GEMINI_API_KEY || "";
+//     this.ai = new GoogleGenAI({ apiKey });
+//     this.restAi = new GoogleGenerativeAI(apiKey);
+//     this.isEnabled = process.env.ENABLE_GEMINI === "true";
+
+//     if (!apiKey) {
+//       this.logger.error("GEMINI_API_KEY not configured.");
+//     }
+
+//     if (this.isEnabled) {
+//       this.logger.log("Gemini analysis is ENABLED");
+//     } else {
+//       this.logger.warn("Gemini analysis is DISABLED via ENABLE_GEMINI flag");
+//     }
+//   }
+
 @Injectable()
 export class GeminiAnalysisService {
   private readonly logger = new Logger(GeminiAnalysisService.name);
   private readonly ai: GoogleGenAI;
-  private readonly restAi: GoogleGenerativeAI;
   private readonly modelName =
     "models/gemini-2.5-flash-native-audio-preview-12-2025";
   private readonly maxRetries = 3;
@@ -46,7 +66,6 @@ export class GeminiAnalysisService {
   ) {
     const apiKey = process.env.GEMINI_API_KEY || "";
     this.ai = new GoogleGenAI({ apiKey });
-    this.restAi = new GoogleGenerativeAI(apiKey);
     this.isEnabled = process.env.ENABLE_GEMINI === "true";
 
     if (!apiKey) {
@@ -61,13 +80,6 @@ export class GeminiAnalysisService {
   }
 
   /**
-   * Check if DeepSeek refinement is enabled
-   */
-  isDeepSeekRefinementEnabled(): boolean {
-    return this.deepseekService.isDeepSeekEnabled;
-  }
-
-  /**
    * Analyze a single image via Gemini Live session (with retries)
    */
   async analyzeImage(
@@ -75,13 +87,6 @@ export class GeminiAnalysisService {
     level: GradeLevel = "none",
     alt?: string,
   ): Promise<{ result: GeminiAnalysisResult; rawResponse: string }> {
-    if (!this.isEnabled) {
-      this.logger.debug("Skipping analyzeImage: Gemini disabled");
-      return {
-        result: normalizeGeminiResult({} as any),
-        rawResponse: "Gemini disabled - Fallback returned",
-      };
-    }
     const { imageBase64, imageMime } = await this.fetchImageData(imageUrl);
 
     const userParts: Part[] = [
@@ -108,43 +113,6 @@ export class GeminiAnalysisService {
     return this.parseGeminiResponse(fullText);
   }
 
-  /**
-   * Generate embedding for text using Gemini text-embedding-004
-   */
-  async generateEmbedding(text: string): Promise<number[]> {
-    if (!this.isEnabled) {
-      // Return random vector if disabled
-      return new Array(768).fill(0).map(() => Math.random());
-    }
-
-    try {
-      // Using @google/genai SDK pattern
-      const response = await (this.ai as any).models.embedContent({
-        model: "models/text-embedding-004",
-        contents: [
-          {
-            parts: [{ text }],
-          },
-        ],
-      });
-
-      const values =
-        response.embeddings?.[0]?.values || response.embedding?.values;
-
-      if (!values) {
-        throw new Error("No embedding returned from Gemini");
-      }
-
-      return values;
-    } catch (error) {
-      this.logger.error(
-        "Failed to generate embedding",
-        (error as Error).message,
-      );
-      throw error;
-    }
-  }
-
   // ... (analyzeImages definition skipped for brevity, will touch if needed but focussing on single analysis first as per queue usage)
 
   // ...
@@ -158,14 +126,6 @@ export class GeminiAnalysisService {
     items: BatchAnalysisItem[],
   ): Promise<BatchAnalysisResult[]> {
     if (items.length === 0) return [];
-
-    if (!this.isEnabled) {
-      this.logger.debug("Skipping analyzeImages: Gemini disabled");
-      return items.map((item) => ({
-        id: item.id,
-        result: normalizeGeminiResult({} as any),
-      }));
-    }
 
     if (items.length === 1) {
       try {
@@ -265,10 +225,6 @@ export class GeminiAnalysisService {
    * Parses rawResponse text into structured metadata and updates DB
    */
   async refineWithDeepSeek(jobId: string): Promise<void> {
-    if (!this.isEnabled) {
-      this.logger.debug("Skipping refineWithDeepSeek: Gemini disabled");
-      return;
-    }
     const job = await this.prisma.imageAnalysisJob.findUnique({
       where: { id: jobId },
       include: { pexelsImage: true },
@@ -279,21 +235,6 @@ export class GeminiAnalysisService {
       throw new Error(`No raw response to refine for job ${jobId}`);
 
     this.logger.log(`Refining analysis for job ${jobId} using DeepSeek...`);
-
-    if (!this.deepseekService.isDeepSeekEnabled) {
-      this.logger.warn(
-        `DeepSeek refinement skipped for job ${jobId}: DeepSeek is disabled`,
-      );
-      await this.prisma.imageAnalysisJob.update({
-        where: { id: jobId },
-        data: {
-          jobStatus: "COMPLETED",
-          completedAt: new Date(),
-          errorMessage: "Refinement skipped: DeepSeek disabled",
-        },
-      });
-      return;
-    }
 
     try {
       const refinedResults = await this.deepseekService.parseGeminiRawResponse(
@@ -346,10 +287,6 @@ export class GeminiAnalysisService {
    * Saves directly to VisualIntentAnalysis table.
    */
   async analyzeVisualIntent(pexelsImageId: string): Promise<void> {
-    if (!this.isEnabled) {
-      this.logger.debug("Skipping analyzeVisualIntent: Gemini disabled");
-      return;
-    }
     const image = await this.prisma.pexelsImage.findUnique({
       where: { id: pexelsImageId },
     });
@@ -380,20 +317,10 @@ export class GeminiAnalysisService {
       `Gemini description length: ${rawDescription.length} chars`,
     );
 
-    let result: any = null;
-    if (this.deepseekService.isDeepSeekEnabled) {
-      // 2. Extract 7-layer visual intent using DeepSeek (The "Brain" part)
-      result = await this.deepseekService.analyzeDetailedVisualIntent(
-        rawDescription,
-      );
-    } else {
-      this.logger.warn(
-        `Detailed visual intent analysis skipped for image ${pexelsImageId}: DeepSeek disabled`,
-      );
-      // Fallback: minimal result structure so upsert doesn't fail if we decide to save partials,
-      // but for now let's just return to avoid saving incomplete analysis.
-      return;
-    }
+    // 2. Extract 7-layer visual intent using DeepSeek (The "Brain" part)
+    const result = await this.deepseekService.analyzeDetailedVisualIntent(
+      rawDescription,
+    );
 
     // 3. Persist to VisualIntentAnalysis table
     await this.prisma.visualIntentAnalysis.upsert({
@@ -485,20 +412,6 @@ Avoid conversational fillers or "I see...". Start directly with the analysis.
           `Live session attempt ${attempt}/${this.maxRetries} failed: ${lastError.message}`,
         );
 
-        // Fallback to REST on final attempt or if specifically requested via Rule 8
-        if (attempt === this.maxRetries) {
-          this.logger.log("Falling back to REST API for final attempt...");
-          try {
-            return await this.runRestSession(systemPrompt, userParts);
-          } catch (restError) {
-            this.logger.error(
-              `REST fallback failed: ${(restError as Error).message}`,
-            );
-            // Throw the original Live error if REST also fails
-            throw lastError;
-          }
-        }
-
         if (attempt < this.maxRetries) {
           const delay = attempt * 2000; // 2s, 4s backoff
           this.logger.debug(`Retrying in ${delay}ms...`);
@@ -508,43 +421,6 @@ Avoid conversational fillers or "I see...". Start directly with the analysis.
     }
 
     throw lastError;
-  }
-
-  /**
-   * Reliability Fallback: Use standard REST API instead of WebSocket Live
-   */
-  private async runRestSession(
-    systemPrompt: string,
-    userParts: Part[],
-  ): Promise<string> {
-    try {
-      // Rule 8: Use generateContent as fallback
-      const model = this.restAi.getGenerativeModel({
-        model: this.modelName.replace("models/", ""),
-        systemInstruction: systemPrompt,
-      });
-
-      const result = await model.generateContent({
-        contents: [{ role: "user", parts: userParts as any }],
-        generationConfig: {
-          temperature: 0.4,
-          topP: 0.85,
-          maxOutputTokens: 1200,
-        },
-      });
-
-      const response = await result.response;
-      const text = response.text();
-
-      if (!text) {
-        throw new Error("REST API returned empty response");
-      }
-
-      return text;
-    } catch (error) {
-      this.logger.error("REST session failed", (error as Error).message);
-      throw error;
-    }
   }
 
   /**
@@ -596,7 +472,7 @@ Avoid conversational fillers or "I see...". Start directly with the analysis.
         .connect({
           model: this.modelName,
           config: {
-            responseModalities: [Modality.TEXT],
+            responseModalities: [Modality.AUDIO],
             systemInstruction: {
               parts: [{ text: systemPrompt }],
             },
@@ -635,19 +511,11 @@ Avoid conversational fillers or "I see...". Start directly with the analysis.
               finish(new Error(`Gemini Live error: ${err.message}`));
             },
 
-            onclose: (event) => {
+            onclose: () => {
               this.logger.debug(
-                `Gemini Live session closed (turnCompleted=${turnCompleted}, chars=${fullText.length}, reason=${event.reason})`,
+                `Gemini Live session closed (turnCompleted=${turnCompleted}, chars=${fullText.length})`,
               );
-              if (!turnCompleted && !settled) {
-                finish(
-                  new Error(
-                    `Gemini Live session closed prematurely: ${
-                      event.reason || "Unknown reason"
-                    }`,
-                  ),
-                );
-              }
+              // If the server closed before turn completed, the interval loop will handle timeout
             },
           },
         })
@@ -1117,5 +985,22 @@ CINEMATIC_NOTES:
 
   private sleep(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  /**
+   * Check if DeepSeek refinement is enabled
+   */
+  isDeepSeekRefinementEnabled(): boolean {
+    return this.deepseekService.isDeepSeekEnabled;
+  }
+
+  /**
+   * Generate embedding for text using Gemini text-embedding-004
+   */
+  async generateEmbedding(text: string): Promise<number[]> {
+    if (!this.isEnabled) {
+      // Return random vector if disabled
+      return new Array(768).fill(0).map(() => Math.random());
+    }
   }
 }
