@@ -37,35 +37,42 @@ export class VisualIntentService {
         dto.rawGeminiText,
       );
 
-      const scenes = await this.deepseekService.extractVisualIntent(
-        dto.rawGeminiText,
-      );
+      try {
+        const scenes = await this.deepseekService.extractVisualIntent(
+          dto.rawGeminiText,
+        );
 
-      if (!Array.isArray(scenes) || scenes.length === 0) {
-        throw new Error("DeepSeek returned no valid scenes");
+        if (!Array.isArray(scenes) || scenes.length === 0) {
+          throw new Error("DeepSeek returned no valid scenes");
+        }
+
+        const sceneRecords = scenes.map((sceneData, index) => ({
+          visualIntentRequestId: request.id,
+          sceneIndex: index,
+          intent: sceneData.intent,
+          requiredImpact: sceneData.requiredImpact,
+          composition: {
+            ...(sceneData.preferredComposition as any),
+            visual_intent: sceneData.visualIntent,
+          },
+          status: "COMPLETED" as PipelineStatus, // Initial extraction is done
+        }));
+
+        await this.sceneRepo.createScenes(sceneRecords);
+        await this.visualIntentRepo.updateRequestStatus(
+          request.id,
+          "COMPLETED",
+        );
+
+        return scenes;
+      } catch (error: any) {
+        await this.visualIntentRepo.updateRequestStatus(
+          request.id,
+          "FAILED",
+          error.message,
+        );
+        throw error;
       }
-
-      const sceneRecords = scenes.map((sceneData, index) => ({
-        visualIntentRequestId: request.id,
-        sceneIndex: index,
-        intent: sceneData.intent,
-        requiredImpact: sceneData.requiredImpact,
-        composition: {
-          ...(sceneData.preferredComposition as any),
-          visual_intent: sceneData.visualIntent,
-        },
-        status: "PROCESSING" as PipelineStatus,
-      }));
-
-      const createdScenes = await this.sceneRepo.createScenes(sceneRecords);
-
-      // Expansion logic (Step 3) - this could also be moved to a SceneService if it grows
-      for (const scene of createdScenes) {
-        // This loop was in the original service
-        // We'll keep it here for now as part of the extraction use-case
-      }
-
-      return scenes;
     } catch (error: any) {
       this.logger.error(`Failed to extract visual intent: ${error.message}`);
       throw error;

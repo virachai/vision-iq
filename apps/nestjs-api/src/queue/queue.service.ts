@@ -240,6 +240,19 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
       }
 
       // 0. Update status to PROCESSING immediately
+      // Verify job isn't already COMPLETED to prevent state regression
+      const currentJob = await this.prisma.imageAnalysisJob.findUnique({
+        where: { pexelsImageId: data.imageId },
+        select: { jobStatus: true },
+      });
+
+      if (currentJob?.jobStatus === "COMPLETED") {
+        this.logger.debug(
+          `Skipping processing for image ${data.imageId} - job already COMPLETED`,
+        );
+        return;
+      }
+
       await this.prisma.imageAnalysisJob.update({
         where: { pexelsImageId: data.imageId },
         data: { jobStatus: "PROCESSING", startedAt: new Date() },

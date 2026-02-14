@@ -35,6 +35,15 @@ export class SceneRepository {
     status: PipelineStatus,
     errorMessage?: string,
   ) {
+    const current = await this.prisma.sceneIntent.findUnique({
+      where: { id },
+      select: { status: true },
+    });
+
+    if (current?.status === "COMPLETED") {
+      return null;
+    }
+
     return this.prisma.sceneIntent.update({
       where: { id },
       data: {
@@ -78,6 +87,16 @@ export class SceneRepository {
   }
 
   async updateKeywordUsed(id: string, isUsed: boolean) {
+    const current = await this.prisma.visualDescriptionKeyword.findUnique({
+      where: { id },
+      select: { isUsed: true },
+    });
+
+    if (current?.isUsed && isUsed) {
+      // Already true, no-op
+      return null;
+    }
+
     return this.prisma.visualDescriptionKeyword.update({
       where: { id },
       data: { isUsed },
@@ -115,6 +134,47 @@ export class SceneRepository {
       data: {
         retryCount: { increment: 1 },
         errorMessage: errorMessage,
+      },
+    });
+  }
+
+  async updateDescriptionStatus(
+    id: string,
+    status: PipelineStatus,
+    errorMessage?: string,
+  ) {
+    const current = await this.prisma.visualDescription.findUnique({
+      where: { id },
+      select: { status: true },
+    });
+
+    if (current?.status === "COMPLETED") {
+      return null;
+    }
+
+    return this.prisma.visualDescription.update({
+      where: { id },
+      data: {
+        status,
+        errorMessage,
+      },
+    });
+  }
+
+  async incrementSceneRetryCount(id: string) {
+    return this.prisma.sceneIntent.update({
+      where: { id },
+      data: {
+        retryCount: { increment: 1 },
+      },
+    });
+  }
+
+  async incrementDescriptionRetryCount(id: string) {
+    return this.prisma.visualDescription.update({
+      where: { id },
+      data: {
+        retryCount: { increment: 1 },
       },
     });
   }

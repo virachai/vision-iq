@@ -67,7 +67,7 @@ export class PexelsSyncService {
         try {
           const jobIds = await this.ingestionBatch(
             batch.images,
-            syncHistoryId!, // This might be undefined if keywordId was missing, but ingestionBatch handles it?
+            syncHistoryId,
             descriptionId,
             keywordId,
           );
@@ -169,7 +169,7 @@ export class PexelsSyncService {
    */
   private async ingestionBatch(
     images: Array<any>,
-    syncHistoryId: string,
+    syncHistoryId: string | undefined,
     descriptionId?: string,
     keywordId?: string,
   ): Promise<string[]> {
@@ -181,7 +181,7 @@ export class PexelsSyncService {
           const pexelsImage = await tx.pexelsImage.upsert({
             where: { pexelsImageId: image.pexels_id },
             update: {
-              syncHistoryId: syncHistoryId,
+              ...(syncHistoryId ? { syncHistoryId } : {}),
             },
             create: {
               syncHistoryId: syncHistoryId || "manual-sync-placeholder",
@@ -209,6 +209,7 @@ export class PexelsSyncService {
           });
 
           const hasAnalysis =
+            existingJob?.jobStatus === "COMPLETED" ||
             existingJob?.deepseekAnalysis ||
             existingJob?.pexelsImage?.visualIntentAnalysis;
 

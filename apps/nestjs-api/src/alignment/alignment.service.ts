@@ -102,6 +102,7 @@ export class AlignmentService {
 
     try {
       if (entityType === "request") {
+        await this.visualIntentRepo.incrementRequestRetryCount(id);
         const request = await this.visualIntentRepo.findRequestById(id);
         if (request) {
           return this.extractVisualIntent({
@@ -110,14 +111,21 @@ export class AlignmentService {
           });
         }
       } else if (entityType === "scene") {
+        await this.sceneRepo.incrementSceneRetryCount(id);
         const scene = await this.sceneRepo.findSceneById(id);
         if (scene) {
-          this.logger.warn(
-            `Resume logic for scene ${id} delegated to repositories (placeholder)`,
+          this.logger.log(
+            `Resuming scene ${id}: Triggering sync for descriptions`,
           );
-          // Note: Full logic for scene expansion could be moved to a SceneService if needed
+          // Mark as processed so it doesn't get stuck
+          await this.sceneRepo.updateSceneStatus(id, "COMPLETED");
+
+          for (const desc of scene.descriptions) {
+            await this.syncPexelsByDescriptionId(desc.id);
+          }
         }
       } else if (entityType === "description") {
+        await this.sceneRepo.incrementDescriptionRetryCount(id);
         return this.syncPexelsByDescriptionId(id);
       }
     } catch (error: any) {

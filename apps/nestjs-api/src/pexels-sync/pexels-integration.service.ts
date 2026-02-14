@@ -92,14 +92,16 @@ export class PexelsIntegrationService {
     let totalBatches = 0;
 
     try {
-      // First request to get total results
+      // Pexels API maximum per_page limit is 80
+      const finalPerPage = Math.min(batchSize, 80);
+
       const firstResponse = await this.getPexelsPage(
         search_query,
         page,
-        batchSize,
+        finalPerPage,
       );
       totalResults = firstResponse.total_results;
-      totalBatches = Math.ceil(totalResults / batchSize);
+      totalBatches = Math.ceil(totalResults / finalPerPage);
 
       this.logger.log(
         `Starting sync of ${totalResults} images from Pexels (${totalBatches} batches)`,
@@ -114,21 +116,21 @@ export class PexelsIntegrationService {
 
         // Yield current batch
         const batch = this.toBatch(
-          allPhotos.slice(0, batchSize),
+          allPhotos.slice(0, finalPerPage),
           batchNumber,
           totalBatches,
         );
         yield batch;
 
-        allPhotos = allPhotos.slice(batchSize);
+        allPhotos = allPhotos.slice(finalPerPage);
 
         // If we've processed all available photos and there's another page
-        if (allPhotos.length < batchSize && currentResponse.next_page) {
+        if (allPhotos.length < finalPerPage && currentResponse.next_page) {
           page++;
           currentResponse = await this.getPexelsPage(
             search_query,
             page,
-            batchSize,
+            finalPerPage,
           );
           allPhotos = allPhotos.concat(currentResponse.photos);
         } else if (allPhotos.length === 0) {

@@ -49,23 +49,38 @@ export class KeywordSyncService {
       `Triggering manual sync for ${description.keywords.length} keywords of description ${descriptionId}`,
     );
 
-    const syncResults = await Promise.all(
-      description.keywords.map((kw) =>
-        this.pexelsSyncService
-          .syncPexelsLibrary(kw.keyword, 1000, 0.1, descriptionId, kw.id)
-          .then(async (res) => {
-            await this.sceneRepo.updateKeywordUsed(kw.id, true);
-            return res;
-          }),
-      ),
-    );
+    try {
+      const syncResults = await Promise.all(
+        description.keywords.map((kw) =>
+          this.pexelsSyncService
+            .syncPexelsLibrary(kw.keyword, 80, 0.1, descriptionId, kw.id)
+            .then(async (res) => {
+              this.logger.log(
+                `Keyword "${kw.keyword}" (ID: ${kw.id}) sync completed. Marking as used.`,
+              );
+              await this.sceneRepo.updateKeywordUsed(kw.id, true);
+              return res;
+            }),
+        ),
+      );
 
-    return {
-      total_images: syncResults.reduce((acc, r) => acc + r.total_images, 0),
-      total_batches: syncResults.reduce((acc, r) => acc + r.total_batches, 0),
-      job_ids: syncResults.flatMap((r) => r.job_ids),
-      status: "completed",
-    };
+      // After all keywords processed for this description, mark it as completed
+      await this.sceneRepo.updateDescriptionStatus(descriptionId, "COMPLETED");
+
+      return {
+        total_images: syncResults.reduce((acc, r) => acc + r.total_images, 0),
+        total_batches: syncResults.reduce((acc, r) => acc + r.total_batches, 0),
+        job_ids: syncResults.flatMap((r) => r.job_ids),
+        status: "completed",
+      };
+    } catch (error: any) {
+      await this.sceneRepo.updateDescriptionStatus(
+        descriptionId,
+        "FAILED",
+        error.message,
+      );
+      throw error;
+    }
   }
 
   async autoSyncUnusedKeywords(): Promise<{

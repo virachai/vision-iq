@@ -30,6 +30,16 @@ export class VisualIntentRepository {
     status: PipelineStatus,
     errorMessage?: string,
   ) {
+    // Check current status before update to avoid state regression or redundant updates
+    const current = await this.prisma.visualIntentRequest.findUnique({
+      where: { id },
+      select: { status: true },
+    });
+
+    if (current?.status === "COMPLETED") {
+      return null;
+    }
+
     return this.prisma.visualIntentRequest.update({
       where: { id },
       data: {
@@ -60,5 +70,14 @@ export class VisualIntentRepository {
   // Helper check for the specific model existence if needed, or just let types handle it
   isPexelsImageModelAvailable(): boolean {
     return !!this.prisma.pexelsImage;
+  }
+
+  async incrementRequestRetryCount(id: string) {
+    return this.prisma.visualIntentRequest.update({
+      where: { id },
+      data: {
+        retryCount: { increment: 1 },
+      },
+    });
   }
 }
