@@ -42,11 +42,18 @@ describe("Visual Intent Alignment (System Verification)", () => {
         },
         {
           provide: VisualIntentRepository,
-          useValue: {},
+          useValue: {
+            getStats: jest.fn(),
+            incrementRequestRetryCount: jest.fn(),
+            updateRequestStatus: jest.fn(),
+          },
         },
         {
           provide: SceneRepository,
-          useValue: {},
+          useValue: {
+            createScenes: jest.fn(),
+            updateSceneStatus: jest.fn(),
+          },
         },
       ],
     }).compile();

@@ -55,12 +55,16 @@ describe("AlignmentService", () => {
           useValue: {
             findRequestById: jest.fn(),
             getStats: jest.fn(),
+            incrementRequestRetryCount: jest.fn(),
           },
         },
         {
           provide: SceneRepository,
           useValue: {
             findSceneById: jest.fn(),
+            incrementSceneRetryCount: jest.fn(),
+            incrementDescriptionRetryCount: jest.fn(),
+            updateSceneStatus: jest.fn(),
           },
         },
       ],

@@ -19,13 +19,13 @@ describe("VisualIntentService", () => {
           provide: VisualIntentRepository,
           useValue: {
             createRequest: jest.fn(),
-            updateStatus: jest.fn(),
+            updateRequestStatus: jest.fn(),
           },
         },
         {
           provide: SceneRepository,
           useValue: {
-            createScene: jest.fn(),
+            createScenes: jest.fn(),
           },
         },
         {
