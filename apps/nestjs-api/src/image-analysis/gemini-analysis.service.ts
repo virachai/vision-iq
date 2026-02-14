@@ -126,7 +126,7 @@ export class GeminiAnalysisService {
     const fullText = await this.runLiveSessionWithRetry(
       this.getSingleAnalysisPrompt(),
       userParts,
-      60_000,
+      45_000,
       level,
     );
 
@@ -205,7 +205,7 @@ export class GeminiAnalysisService {
     });
 
     try {
-      const timeoutMs = 60_000 + validIndices.length * 15_000;
+      const timeoutMs = 45_000 + validIndices.length * 15_000;
 
       const fullText = await this.runLiveSessionWithRetry(
         this.getBatchAnalysisPrompt(),
@@ -361,7 +361,7 @@ export class GeminiAnalysisService {
     const rawDescription = await this.runLiveSessionWithRetry(
       this.getRichDescriptionPrompt(),
       userParts,
-      60_000,
+      45_000,
     );
 
     this.logger.debug(

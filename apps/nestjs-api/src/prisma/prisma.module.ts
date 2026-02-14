@@ -18,6 +18,10 @@ export const PRISMA_SERVICE = "PRISMA_SERVICE";
           ssl: {
             rejectUnauthorized: false, // For development with Supabase self-signed certs
           },
+          // Optimization: Performance and Concurrency
+          max: 20, // Increase pool size for higher worker concurrency
+          connectionTimeoutMillis: 5000, // Fail fast on connection issues
+          idleTimeoutMillis: 10000, // Close idle connections faster
         });
       },
     },

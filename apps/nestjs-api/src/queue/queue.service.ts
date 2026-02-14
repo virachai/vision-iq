@@ -102,7 +102,9 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
       },
       {
         connection: this.parseRedisUrl(this.redisUrl),
-        concurrency: 5, // Process 5 images in parallel
+        concurrency: 15, // Increased from 5 to support higher throughput
+        lockDuration: 120000, // 2 minutes to prevent premature lock expiry
+        lockRenewTime: 30000, // 30 seconds
       },
     );
 
@@ -333,26 +335,26 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
         data: { jobStatus: "PROCESSING", startedAt: new Date() },
       });
 
-      // Call Gemini to analyze image
-      const { result: analysis, rawResponse } =
-        await this.geminiAnalysisService.analyzeImage(
+      // 1. & 2. Perform Analysis and Visual Intent Analysis in Parallel
+      const [analysisResult, intentResult] = await Promise.allSettled([
+        this.geminiAnalysisService.analyzeImage(
           data.imageUrl,
           "none",
           data.alt,
-        );
+        ),
+        this.geminiAnalysisService.analyzeVisualIntent(data.imageId),
+      ]);
 
-      // 2. Perform Structured Visual Intent Analysis (New Feature)
-      try {
-        await this.geminiAnalysisService.analyzeVisualIntent(data.imageId);
-      } catch (err) {
+      if (analysisResult.status === "rejected") {
+        throw analysisResult.reason;
+      }
+
+      const { result: analysis, rawResponse } = analysisResult.value;
+
+      if (intentResult.status === "rejected") {
         this.logger.error(
-          `Visual Intent Analysis failed for ${data.imageId}: ${
-            (err as Error).message
-          }`,
+          `Visual Intent Analysis failed for ${data.imageId}: ${intentResult.reason.message}`,
         );
-        // We continue anyway so the basic analysis is still saved, or we could fail the job.
-        // Given it's a new "feature", let's let it fail if it's critical,
-        // but for now I'll just log and continue to ensure basic stability.
       }
 
       // Store metadata in database - ImageMetadata table removed/renamed?
