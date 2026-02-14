@@ -142,8 +142,8 @@ describe("AlignmentService", () => {
       const mockScenes: SceneIntentDto[] = [
         {
           intent: "A lone figure standing in an empty field",
-          required_impact: 8,
-          preferred_composition: {
+          requiredImpact: 8,
+          preferredComposition: {
             negative_space: "left",
             shot_type: "WS",
             angle: "eye",
@@ -158,7 +158,7 @@ describe("AlignmentService", () => {
         .mockResolvedValue(mockScenes);
 
       const result = await service.extractVisualIntent({
-        raw_gemini_text: "A man stands alone in a vast cornfield at sunset",
+        rawGeminiText: "A man stands alone in a vast cornfield at sunset",
       });
 
       expect(result).toEqual(mockScenes);
@@ -169,7 +169,7 @@ describe("AlignmentService", () => {
       jest.spyOn(deepSeekService, "extractVisualIntent").mockResolvedValue([]);
 
       await expect(
-        service.extractVisualIntent({ raw_gemini_text: "Some text" }),
+        service.extractVisualIntent({ rawGeminiText: "Some text" }),
       ).rejects.toThrow("DeepSeek returned no valid scenes");
     });
   });
@@ -179,8 +179,8 @@ describe("AlignmentService", () => {
       const mockScenes: SceneIntentDto[] = [
         {
           intent: "A lone figure",
-          required_impact: 8,
-          preferred_composition: {
+          requiredImpact: 8,
+          preferredComposition: {
             negative_space: "left",
             shot_type: "WS",
             angle: "eye",
@@ -193,14 +193,14 @@ describe("AlignmentService", () => {
       const mockMatches = [
         [
           {
-            image_id: "img-1",
-            pexels_id: "pexels-123",
+            imageId: "img-1",
+            pexelsId: "pexels-123",
             url: "https://example.com/image.jpg",
-            match_score: 0.92,
-            vector_similarity: 0.85,
-            impact_relevance: 0.9,
-            composition_match: 0.8,
-            mood_consistency_score: 1.0,
+            matchScore: 0.92,
+            vectorSimilarity: 0.85,
+            impactRelevance: 0.9,
+            compositionMatch: 0.8,
+            moodConsistencyScore: 1.0,
             metadata: {},
           },
         ],
@@ -212,7 +212,7 @@ describe("AlignmentService", () => {
 
       const result = await service.findAlignedImages({
         scenes: mockScenes,
-        top_k: 5,
+        topK: 5,
       });
 
       expect(result).toEqual(mockMatches);

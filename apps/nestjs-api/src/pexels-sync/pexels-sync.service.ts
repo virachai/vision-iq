@@ -177,70 +177,75 @@ export class PexelsSyncService {
 
     for (const image of images) {
       try {
-        const pexelsImage = await this.prisma.pexelsImage.upsert({
-          where: { pexelsImageId: image.pexels_id },
-          update: {
-            syncHistoryId: syncHistoryId,
-          },
-          create: {
-            syncHistoryId: syncHistoryId || "manual-sync-placeholder", // This might still fail if pexelsImage requires it
-            pexelsImageId: image.pexels_id,
-            url: image.url,
-            photographer: image.photographer,
-            width: image.width,
-            height: image.height,
-            avgColor: image.avg_color,
-            alt: image.alt,
-          },
-        });
+        const result = await this.prisma.$transaction(async (tx) => {
+          const pexelsImage = await tx.pexelsImage.upsert({
+            where: { pexelsImageId: image.pexels_id },
+            update: {
+              syncHistoryId: syncHistoryId,
+            },
+            create: {
+              syncHistoryId: syncHistoryId || "manual-sync-placeholder",
+              pexelsImageId: image.pexels_id,
+              url: image.url,
+              photographer: image.photographer,
+              width: image.width,
+              height: image.height,
+              avgColor: image.avg_color,
+              alt: image.alt,
+            },
+          });
 
-        // Check if image already has analysis data
-        const existingJob = await this.prisma.imageAnalysisJob.findUnique({
-          where: { pexelsImageId: pexelsImage.id },
-          include: {
-            deepseekAnalysis: true,
-            pexelsImage: {
-              include: {
-                visualIntentAnalysis: true,
+          // Check if image already has analysis data
+          const existingJob = await tx.imageAnalysisJob.findUnique({
+            where: { pexelsImageId: pexelsImage.id },
+            include: {
+              deepseekAnalysis: true,
+              pexelsImage: {
+                include: {
+                  visualIntentAnalysis: true,
+                },
               },
             },
-          },
+          });
+
+          const hasAnalysis =
+            existingJob?.deepseekAnalysis ||
+            existingJob?.pexelsImage?.visualIntentAnalysis;
+
+          if (hasAnalysis) {
+            this.logger.log(
+              `Skipping analysis for ${image.pexels_id} - already analyzed`,
+            );
+            return { shouldQueue: false, pexelsImage };
+          }
+
+          // Create or reset analysis job
+          await tx.imageAnalysisJob.upsert({
+            where: { pexelsImageId: pexelsImage.id },
+            update: {
+              jobStatus: "QUEUED",
+              retryCount: 0,
+            },
+            create: {
+              pexelsImageId: pexelsImage.id,
+              jobStatus: "QUEUED",
+              provider: "DEEPSEEK",
+              retryCount: 0,
+            },
+          });
+
+          return { shouldQueue: true, pexelsImage };
         });
 
-        const hasAnalysis =
-          existingJob?.deepseekAnalysis ||
-          existingJob?.pexelsImage?.visualIntentAnalysis;
-
-        if (hasAnalysis) {
-          this.logger.log(
-            `Skipping analysis for ${image.pexels_id} - already analyzed`,
+        if (result && result.shouldQueue) {
+          const queueJobId = await this.queueService.queueImageAnalysis(
+            result.pexelsImage.id,
+            image.url,
+            image.pexels_id,
+            image.alt,
           );
-          continue; // Skip to next image
+          jobIds.push(queueJobId);
         }
-
-        // Create or reset analysis job
-        await this.prisma.imageAnalysisJob.upsert({
-          where: { pexelsImageId: pexelsImage.id },
-          update: {
-            jobStatus: "QUEUED",
-            retryCount: 0,
-          },
-          create: {
-            pexelsImageId: pexelsImage.id,
-            jobStatus: "QUEUED",
-            provider: "DEEPSEEK",
-            retryCount: 0,
-          },
-        });
-
-        const queueJobId = await this.queueService.queueImageAnalysis(
-          pexelsImage.id,
-          image.url,
-          image.pexels_id,
-          image.alt,
-        );
-
-        jobIds.push(queueJobId);
       } catch (imageError) {
         this.logger.warn(
           `Failed to ingest image ${image.pexels_id}: ${

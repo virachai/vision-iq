@@ -7,6 +7,12 @@ import { SemanticMatchingModule } from "../semantic-matching/semantic-matching.m
 import { AlignmentController } from "./alignment.controller";
 import { AlignmentService } from "./alignment.service";
 import { CleanupService } from "./cleanup.service";
+import { VisualIntentRepository } from "./repositories/visual-intent.repository";
+import { SceneRepository } from "./repositories/scene.repository";
+import { VisualIntentService } from "./services/visual-intent.service";
+import { SceneAlignmentService } from "./services/scene-alignment.service";
+import { KeywordSyncService } from "./services/keyword-sync.service";
+import { RefinementService } from "./services/refinement.service";
 
 @Module({
   imports: [
@@ -17,7 +23,23 @@ import { CleanupService } from "./cleanup.service";
     ImageAnalysisModule,
   ],
   controllers: [AlignmentController],
-  providers: [AlignmentService, CleanupService],
-  exports: [AlignmentService, CleanupService],
+  providers: [
+    AlignmentService,
+    CleanupService,
+    VisualIntentRepository,
+    SceneRepository,
+    VisualIntentService,
+    SceneAlignmentService,
+    KeywordSyncService,
+    RefinementService,
+  ],
+  exports: [
+    AlignmentService,
+    CleanupService,
+    VisualIntentService,
+    SceneAlignmentService,
+    KeywordSyncService,
+    RefinementService,
+  ],
 })
 export class AlignmentModule {}

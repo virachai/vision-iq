@@ -1,33 +1,12 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-datasource db {
-  provider = "postgresql"
-}
-
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/client"
 }
 
-// 🔹 Enums
-enum PipelineStatus {
-  PENDING     // Created but not yet in queue
-  QUEUED      // Sent to BullMQ
-  PROCESSING  // Currently being handled by a worker
-  COMPLETED   // Success
-  FAILED      // Terminal failure
-  STALLED     // Timeout or heartbeat loss
+datasource db {
+  provider = "postgresql"
 }
 
-enum ApiProvider {
-  PEXELS
-  DEEPSEEK
-  OPENAI
-  GEMINI
-}
-
-// 🔹 Core Tables
 model User {
   id            String                @id @default(uuid())
   name          String?
@@ -39,19 +18,17 @@ model User {
 }
 
 model VisualIntentRequest {
-  id            String              @id @default(uuid())
+  id            String         @id @default(uuid())
   userId        String?
-  user          User?               @relation(fields: [userId], references: [id], onDelete: SetNull)
-  rawGeminiText String              @db.Text
-  status        PipelineStatus      @default(PENDING)
-  retryCount    Int                 @default(0)
-  errorMessage  String?             @db.Text
-  deletedAt     DateTime? // Soft delete support
-
-  scenes SceneIntent[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  rawGeminiText String
+  status        PipelineStatus @default(PENDING)
+  retryCount    Int            @default(0)
+  errorMessage  String?
+  deletedAt     DateTime?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  scenes        SceneIntent[]
+  user          User?          @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@index([status])
@@ -61,20 +38,17 @@ model VisualIntentRequest {
 model SceneIntent {
   id                    String              @id @default(uuid())
   visualIntentRequestId String
-  visualIntentRequest   VisualIntentRequest @relation(fields: [visualIntentRequestId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  sceneIndex     Int
-  intent         String              @db.Text
-  requiredImpact Float               @default(5.0)
-  composition    Json // { "negative_space": "left" | "right" | "center", "shot_type": "CU" | "MS" | "WS" }
-  status         PipelineStatus      @default(PENDING)
-  retryCount     Int                 @default(0)
-  errorMessage   String?             @db.Text
-
-  descriptions VisualDescription[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  sceneIndex            Int
+  intent                String
+  requiredImpact        Float               @default(5.0)
+  composition           Json
+  status                PipelineStatus      @default(PENDING)
+  retryCount            Int                 @default(0)
+  errorMessage          String?
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+  visualIntentRequest   VisualIntentRequest @relation(fields: [visualIntentRequestId], references: [id], onDelete: Cascade)
+  descriptions          VisualDescription[]
 
   @@index([visualIntentRequestId])
   @@index([visualIntentRequestId, createdAt])
@@ -82,20 +56,17 @@ model SceneIntent {
 }
 
 model VisualDescription {
-  id            String      @id @default(uuid())
+  id            String                     @id @default(uuid())
   sceneIntentId String
-  sceneIntent   SceneIntent @relation(fields: [sceneIntentId], references: [id], onDelete: Cascade)
-
-  description String              @db.Text
-  status      PipelineStatus      @default(PENDING)
-  retryCount  Int                 @default(0)
-  errorMessage String?            @db.Text
-
-  keywords VisualDescriptionKeyword[]
-  tagMap   DescriptionTagMap[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  description   String
+  status        PipelineStatus             @default(PENDING)
+  retryCount    Int                        @default(0)
+  errorMessage  String?
+  createdAt     DateTime                   @default(now())
+  updatedAt     DateTime                   @updatedAt
+  tagMap        DescriptionTagMap[]
+  keywords      VisualDescriptionKeyword[]
+  sceneIntent   SceneIntent                @relation(fields: [sceneIntentId], references: [id], onDelete: Cascade)
 
   @@index([sceneIntentId])
   @@index([sceneIntentId, createdAt])
@@ -103,62 +74,52 @@ model VisualDescription {
 }
 
 model VisualDescriptionKeyword {
-  id                  String            @id @default(uuid())
+  id                  String              @id @default(uuid())
   visualDescriptionId String
-  visualDescription   VisualDescription @relation(fields: [visualDescriptionId], references: [id], onDelete: Cascade)
-
-  keyword String
-  isUsed  Boolean @default(false)
-
-  syncHistory PexelsSyncHistory[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  keyword             String
+  isUsed              Boolean             @default(false)
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  syncHistory         PexelsSyncHistory[]
+  visualDescription   VisualDescription   @relation(fields: [visualDescriptionId], references: [id], onDelete: Cascade)
 
   @@index([visualDescriptionId])
-  @@index([keyword])
   @@map("vision_iq_visual_description_keywords")
 }
 
 model PexelsSyncHistory {
-  id        String                   @id @default(uuid())
-  keywordId String
-  keyword   VisualDescriptionKeyword @relation(fields: [keywordId], references: [id], onDelete: Cascade)
-
-  syncStatus   PipelineStatus @default(PENDING)
-  syncAttempt  Int            @default(1)
-  apiResponse  Json? // JSONB API response
+  id           String                   @id @default(uuid())
+  keywordId    String
+  syncStatus   PipelineStatus           @default(PENDING)
+  syncAttempt  Int                      @default(1)
+  apiResponse  Json?
   errorMessage String?
-  syncedAt     DateTime?  @default(now())
-
-  images PexelsImage[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  syncedAt     DateTime?                @default(now())
+  createdAt    DateTime                 @default(now())
+  updatedAt    DateTime                 @updatedAt
+  images       PexelsImage[]
+  keyword      VisualDescriptionKeyword @relation(fields: [keywordId], references: [id], onDelete: Cascade)
 
   @@index([keywordId])
   @@map("vision_iq_pexels_sync_history")
 }
 
 model PexelsImage {
-  id            String            @id @default(uuid())
-  syncHistoryId String?
-  syncHistory   PexelsSyncHistory? @relation(fields: [syncHistoryId], references: [id], onDelete: SetNull)
-
-  pexelsImageId String  @unique
-  url           String  @db.Text
-  photographer  String?
-  width         Int?
-  height        Int?
-  avgColor      String?
-  alt           String? @db.Text
-
-  analysisJobs      ImageAnalysisJob[]
-  embedding         ImageEmbedding?
+  id                   String                @id @default(uuid())
+  syncHistoryId        String
+  pexelsImageId        String                @unique
+  url                  String
+  photographer         String?
+  width                Int?
+  height               Int?
+  avgColor             String?
+  alt                  String?
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  analysisJobs         ImageAnalysisJob?
+  embedding            ImageEmbedding?
+  syncHistory          PexelsSyncHistory     @relation(fields: [syncHistoryId], references: [id], onDelete: Cascade)
   visualIntentAnalysis VisualIntentAnalysis?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
   @@index([syncHistoryId])
   @@index([pexelsImageId])
@@ -166,26 +127,22 @@ model PexelsImage {
 }
 
 model ImageAnalysisJob {
-  id            String      @id @default(uuid())
-  pexelsImageId String      @unique
-  pexelsImage   PexelsImage @relation(fields: [pexelsImageId], references: [id], onDelete: Cascade)
-
-  jobStatus      PipelineStatus @default(PENDING)
-  provider       ApiProvider @default(DEEPSEEK)
-  payload        Json? // JSONB request/config payload
-  rawApiResponse Json? // JSONB raw output from the provider
-  errorMessage   String?        @db.Text
-  retryCount     Int            @default(0)
-
-  startedAt   DateTime?
-  completedAt DateTime?
-
-  deepseekAnalysis DeepSeekAnalysis?
-  apiLogs          ApiLog[]
+  id               String            @id @default(uuid())
+  pexelsImageId    String            @unique
+  jobStatus        PipelineStatus    @default(PENDING)
+  provider         ApiProvider       @default(DEEPSEEK)
+  payload          Json?
+  rawApiResponse   Json?
+  errorMessage     String?
+  retryCount       Int               @default(0)
+  startedAt        DateTime?
+  completedAt      DateTime?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
   events           AnalysisEvent[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  apiLogs          ApiLog[]
+  deepseekAnalysis DeepSeekAnalysis?
+  pexelsImage      PexelsImage       @relation(fields: [pexelsImageId], references: [id], onDelete: Cascade)
 
   @@index([pexelsImageId])
   @@index([jobStatus, provider])
@@ -193,50 +150,43 @@ model ImageAnalysisJob {
 }
 
 model DeepSeekAnalysis {
-  id            String           @id @default(uuid())
-  analysisJobId String           @unique
-  analysisJob   ImageAnalysisJob @relation(fields: [analysisJobId], references: [id], onDelete: Cascade)
-
-  modelVersion    String @default("deepseek-v3")
-  tokensUsed      Int    @default(0)
-  analysisResult  Json // JSONB data: { impactScore, composition, moodDna, etc. }
-  confidenceScore Float  @default(1.0)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              String           @id @default(uuid())
+  analysisJobId   String           @unique
+  modelVersion    String           @default("deepseek-v3")
+  tokensUsed      Int              @default(0)
+  analysisResult  Json
+  confidenceScore Float            @default(1.0)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  analysisJob     ImageAnalysisJob @relation(fields: [analysisJobId], references: [id], onDelete: Cascade)
 
   @@index([analysisJobId])
   @@map("vision_iq_deepseek_analysis")
 }
 
-// 🔹 Supporting & Performance Tables
 model ApiLog {
-  id    String            @id @default(uuid())
-  jobId String?
-  job   ImageAnalysisJob? @relation(fields: [jobId], references: [id], onDelete: SetNull)
-
+  id              String            @id @default(uuid())
+  jobId           String?
   provider        ApiProvider
   endpoint        String
   requestPayload  Json?
   responsePayload Json?
   statusCode      Int?
   durationMs      Int?
-
-  createdAt DateTime @default(now())
+  createdAt       DateTime          @default(now())
+  job             ImageAnalysisJob? @relation(fields: [jobId], references: [id])
 
   @@index([jobId])
   @@map("vision_iq_api_logs")
 }
 
 model AnalysisEvent {
-  id    String           @id @default(uuid())
-  jobId String
-  job   ImageAnalysisJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
-
+  id        String           @id @default(uuid())
+  jobId     String
   eventName String
   eventData Json?
-
-  createdAt DateTime @default(now())
+  createdAt DateTime         @default(now())
+  job       ImageAnalysisJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
   @@index([jobId])
   @@map("vision_iq_analysis_events")
@@ -252,60 +202,65 @@ model Tag {
 
 model DescriptionTagMap {
   descriptionId String
-  description   VisualDescription @relation(fields: [descriptionId], references: [id], onDelete: Cascade)
   tagId         String
+  description   VisualDescription @relation(fields: [descriptionId], references: [id], onDelete: Cascade)
   tag           Tag               @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@id([descriptionId, tagId])
   @@map("vision_iq_description_tag_map")
 }
 
-// 🔹 Vector Search (Specialized)
-
 model VisualIntentAnalysis {
-  id            String      @id @default(uuid())
-  pexelsImageId String      @unique
-  pexelsImage   PexelsImage @relation(fields: [pexelsImageId], references: [id], onDelete: Cascade)
-
-  // 1. Core Intent
-  coreIntent    Json? // { "intent": "String", "visual_goal": "String" }
-  
-  // 2. Spatial Strategy
-  spatialStrategy Json? // { "shot_type": "WS", "negative_space": "center", "balance": "asymmetrical" }
-
-  // 3. Subject Treatment
-  subjectTreatment Json? // { "identity": "concealed", "dominance": "submissive", "eye_contact": "none" }
-
-  // 4. Color Psychology
-  colorPsychology Json? // { "palette": ["warm_white", "beige"], "contrast": "medium", "mood": "oppressive_comfort" }
-
-  // 5. Emotional Architecture
-  emotionalArchitecture Json? // { "vibe": "chaotic", "rhythm": "still", "intensity": "medium" }
-  
-  // 6. Metaphorical Layer
-  metaphoricalLayer Json? // { "objects": ["clothes=burden"], "meaning": "loss_of_self" }
-
-  // 7. Cinematic Leverage
-  cinematicLeverage Json? // { "angle": "low", "lighting": "top_hard", "sound": "fabric_rustle" }
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                    String      @id @default(uuid())
+  pexelsImageId         String      @unique
+  coreIntent            Json?
+  spatialStrategy       Json?
+  subjectTreatment      Json?
+  colorPsychology       Json?
+  emotionalArchitecture Json?
+  metaphoricalLayer     Json?
+  cinematicLeverage     Json?
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+  pexelsImage           PexelsImage @relation(fields: [pexelsImageId], references: [id], onDelete: Cascade)
 
   @@index([pexelsImageId])
   @@map("vision_iq_visual_intent_analysis")
 }
 
 model ImageEmbedding {
-  id      String      @id @default(uuid())
-  imageId String      @unique
-  image   PexelsImage @relation(fields: [imageId], references: [id], onDelete: Cascade)
-
-  // 1536-dimensional embedding for semantic search
-  // embedding Unsupported("vector(1536)")
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        String      @id @default(uuid())
+  imageId   String      @unique
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  image     PexelsImage @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  
+  // 768-dimensional embedding for Gemini text-embedding-004
+  embedding Unsupported("vector(768)")
+  // embedding Float[]
 
   @@index([imageId])
   @@map("vision_iq_image_embeddings")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model ping {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+}
+
+enum PipelineStatus {
+  PENDING
+  QUEUED
+  PROCESSING
+  COMPLETED
+  FAILED
+  STALLED
+}
+
+enum ApiProvider {
+  PEXELS
+  DEEPSEEK
+  OPENAI
+  GEMINI
 }

@@ -305,8 +305,8 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
         },
       });
 
-      // Queue embedding generation - DISABLED per user request
-      // await this.queueEmbeddingGeneration(data.imageId, analysis);
+      // Queue embedding generation - RE-ENABLED
+      await this.queueEmbeddingGeneration(data.imageId, analysis);
 
       this.logger.debug(`Image analysis completed: ${data.pexelsId}`);
     } catch (error) {
@@ -396,20 +396,13 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
    * TODO: Replace with actual embedding API call
    */
   // biome-ignore lint/suspicious/noExplicitAny: Embeddings are number arrays but return type is flexible here
-  private async generateEmbedding(metadata: any): Promise<any> {
-    // Placeholder: return random 1536-dim vector
-    // In production, combine metadata fields and call OpenAI embeddings API
+  private async generateEmbedding(metadata: any): Promise<number[]> {
+    // Construct rich description for embedding
     const description = `${metadata.mood_dna?.vibe || ""} ${
       metadata.composition?.shot_type || ""
     } ${metadata.metaphorical_tags?.join(" ") || ""}`;
 
-    // TODO: Call embedding API with description
-    // For now, generate deterministic random based on description
-    const embedding = new Array(1536).fill(0).map((_, i) => {
-      return Math.sin(i + description.length) * 0.5 + 0.5;
-    });
-
-    return embedding;
+    return this.geminiAnalysisService.generateEmbedding(description);
   }
 
   /**

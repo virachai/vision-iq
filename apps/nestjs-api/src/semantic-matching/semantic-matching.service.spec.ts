@@ -3,6 +3,7 @@ import { Test, type TestingModule } from "@nestjs/testing";
 import type { SceneIntentDto } from "../alignment/dto/scene-intent.dto";
 import { SemanticMatchingService } from "./semantic-matching.service";
 import { PG_POOL } from "../prisma/prisma.module";
+import { GeminiAnalysisService } from "../image-analysis/gemini-analysis.service";
 
 describe("SemanticMatchingService", () => {
   let service: SemanticMatchingService;
@@ -16,6 +17,14 @@ describe("SemanticMatchingService", () => {
           provide: PG_POOL,
           useValue: {
             query: jest.fn(),
+          },
+        },
+        {
+          provide: GeminiAnalysisService,
+          useValue: {
+            generateEmbedding: jest
+              .fn()
+              .mockResolvedValue(Array.from({ length: 768 }, () => 0.1)),
           },
         },
       ],
@@ -56,8 +65,8 @@ describe("SemanticMatchingService", () => {
 
       const mockScene: SceneIntentDto = {
         intent: "A lone figure in a field",
-        required_impact: 8,
-        preferred_composition: {
+        requiredImpact: 8,
+        preferredComposition: {
           negative_space: "left",
           shot_type: "WS",
           angle: "eye",
@@ -79,10 +88,10 @@ describe("SemanticMatchingService", () => {
 
       // Verify ranking weights are applied correctly
       // Formula: (0.5 \u00d7 vector_sim) + (0.3 \u00d7 impact_rel) + (0.15 \u00d7 comp_match) + (0.05 \u00d7 mood_cons)
-      expect(match.match_score).toBeGreaterThan(0.8); // Should be high
-      expect(match.vector_similarity).toBe(0.9);
-      expect(match.impact_relevance).toBe(1.0); // Perfect match
-      expect(match.composition_match).toBeGreaterThan(0.5); // Matches shot type and angle
+      expect(match.matchScore).toBeGreaterThan(0.8); // Should be high
+      expect(match.vectorSimilarity).toBe(0.9);
+      expect(match.impactRelevance).toBe(1.0); // Perfect match
+      expect(match.compositionMatch).toBeGreaterThan(0.5); // Matches shot type and angle
     });
 
     it("should apply soft mood consistency penalty for non-anchor scenes", async () => {
@@ -121,8 +130,8 @@ describe("SemanticMatchingService", () => {
 
       const scene1: SceneIntentDto = {
         intent: "Anchor scene",
-        required_impact: 5,
-        preferred_composition: {
+        requiredImpact: 5,
+        preferredComposition: {
           negative_space: "center",
           shot_type: "MS",
           angle: "eye",
@@ -133,8 +142,8 @@ describe("SemanticMatchingService", () => {
 
       const scene2: SceneIntentDto = {
         intent: "Second scene",
-        required_impact: 5,
-        preferred_composition: {
+        requiredImpact: 5,
+        preferredComposition: {
           negative_space: "center",
           shot_type: "MS",
           angle: "eye",
@@ -159,8 +168,8 @@ describe("SemanticMatchingService", () => {
       const results = await service.findAlignedImages([scene1, scene2], 5, 1.0);
 
       // Check scene 2 (index 1)
-      expect(results[1][0].mood_consistency_score).toBeLessThan(1.0); // Penalty applied
-      expect(results[1][0].mood_consistency_score).toBeGreaterThanOrEqual(0.7); // But not extreme
+      expect(results[1][0].moodConsistencyScore).toBeLessThan(1.0); // Penalty applied
+      expect(results[1][0].moodConsistencyScore).toBeGreaterThanOrEqual(0.7); // But not extreme
     });
 
     it("should not penalize mood for first scene (anchor)", async () => {
@@ -193,8 +202,8 @@ describe("SemanticMatchingService", () => {
 
       const mockScene: SceneIntentDto = {
         intent: "A person in a room",
-        required_impact: 5,
-        preferred_composition: {
+        requiredImpact: 5,
+        preferredComposition: {
           negative_space: "center",
           shot_type: "MS",
           angle: "eye",
@@ -210,7 +219,7 @@ describe("SemanticMatchingService", () => {
       const results = await service.findAlignedImages([mockScene], 5, 1.0);
 
       // First scene should have full mood consistency score
-      expect(results[0][0].mood_consistency_score).toBe(1.0);
+      expect(results[0][0].moodConsistencyScore).toBe(1.0);
     });
 
     it("should handle composition mismatch with partial credit", async () => {
@@ -243,8 +252,8 @@ describe("SemanticMatchingService", () => {
 
       const mockScene: SceneIntentDto = {
         intent: "Wide landscape",
-        required_impact: 5,
-        preferred_composition: {
+        requiredImpact: 5,
+        preferredComposition: {
           negative_space: "center",
           shot_type: "WS", // Wider than image
           angle: "eye",
@@ -260,8 +269,8 @@ describe("SemanticMatchingService", () => {
       const results = await service.findAlignedImages([mockScene], 5, 1.0);
 
       // Should give partial credit for adjacent shot type
-      expect(results[0][0].composition_match).toBeGreaterThan(0.2);
-      expect(results[0][0].composition_match).toBeLessThan(1.0);
+      expect(results[0][0].compositionMatch).toBeGreaterThan(0.2);
+      expect(results[0][0].compositionMatch).toBeLessThan(1.0);
     });
 
     it("should rank images by final score", async () => {
@@ -318,8 +327,8 @@ describe("SemanticMatchingService", () => {
 
       const mockScene: SceneIntentDto = {
         intent: "A figure",
-        required_impact: 8,
-        preferred_composition: {
+        requiredImpact: 8,
+        preferredComposition: {
           negative_space: "left",
           shot_type: "WS",
           angle: "eye",
@@ -335,9 +344,9 @@ describe("SemanticMatchingService", () => {
       const results = await service.findAlignedImages([mockScene], 5, 1.0);
 
       // First result should be better than second
-      expect(results[0][0].pexels_id).toBe("pexels-1");
-      expect(results[0][0].match_score).toBeGreaterThan(
-        results[0][1].match_score,
+      expect(results[0][0].pexelsId).toBe("pexels-1");
+      expect(results[0][0].matchScore).toBeGreaterThan(
+        results[0][1].matchScore,
       );
     });
   });
@@ -373,8 +382,8 @@ describe("SemanticMatchingService", () => {
 
       const mockScene: SceneIntentDto = {
         intent: "Test",
-        required_impact: 5,
-        preferred_composition: {
+        requiredImpact: 5,
+        preferredComposition: {
           negative_space: "center",
           shot_type: "MS",
           angle: "eye",

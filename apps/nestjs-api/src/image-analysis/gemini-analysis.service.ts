@@ -98,6 +98,43 @@ export class GeminiAnalysisService {
     return this.parseGeminiResponse(fullText);
   }
 
+  /**
+   * Generate embedding for text using Gemini text-embedding-004
+   */
+  async generateEmbedding(text: string): Promise<number[]> {
+    if (!this.isEnabled) {
+      // Return random vector if disabled
+      return new Array(768).fill(0).map(() => Math.random());
+    }
+
+    try {
+      // Using @google/genai SDK pattern
+      const response = await (this.ai as any).models.embedContent({
+        model: "models/text-embedding-004",
+        contents: [
+          {
+            parts: [{ text }],
+          },
+        ],
+      });
+
+      const values =
+        response.embeddings?.[0]?.values || response.embedding?.values;
+
+      if (!values) {
+        throw new Error("No embedding returned from Gemini");
+      }
+
+      return values;
+    } catch (error) {
+      this.logger.error(
+        "Failed to generate embedding",
+        (error as Error).message,
+      );
+      throw error;
+    }
+  }
+
   // ... (analyzeImages definition skipped for brevity, will touch if needed but focussing on single analysis first as per queue usage)
 
   // ...

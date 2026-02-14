@@ -7,6 +7,7 @@ import type {
   ImageMatch,
   SceneIntentDto,
 } from "./dto/scene-intent.dto";
+import { SyncPexelsDto, TestAnalysisDto } from "./dto/alignment-actions.dto";
 
 @Controller("alignment")
 export class AlignmentController {
@@ -31,8 +32,8 @@ export class AlignmentController {
    * Direct test for Gemini Image Analysis
    */
   @Post("test-analysis")
-  async testAnalysis(@Body() body: { imageUrl: string }) {
-    return this.alignmentService.testImageAnalysis(body.imageUrl);
+  async testAnalysis(@Body() dto: TestAnalysisDto) {
+    return this.alignmentService.testImageAnalysis(dto.imageUrl);
   }
 
   /**
@@ -61,11 +62,11 @@ export class AlignmentController {
    * Body: { search_query?: string, batch_size?: number }
    */
   @Post("sync-pexels")
-  async syncPexels(
-    @Body() body: { search_query?: string; batch_size?: number } = {},
-  ) {
-    const { search_query = "nature", batch_size = 50 } = body;
-    return this.alignmentService.syncPexelsLibrary(search_query, batch_size);
+  async syncPexels(@Body() dto: SyncPexelsDto) {
+    return this.alignmentService.syncPexelsLibrary(
+      dto.searchQuery,
+      dto.batchSize,
+    );
   }
 
   /**

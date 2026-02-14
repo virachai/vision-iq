@@ -54,6 +54,7 @@ const envSchema = z.object({
   REDIS_URL: z.string().url().optional().default("redis://localhost:6379"),
   BATCH_FAILURE_THRESHOLD: z.string().optional().default("0.1"),
   EMBEDDING_MODEL: z.string().optional().default("text-embedding-3-small"),
+  ENABLE_AUTH: z.string().optional().default("false"),
 });
 
 const _env = envSchema.safeParse(process.env);

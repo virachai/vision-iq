@@ -90,8 +90,8 @@ export class DeepSeekService {
       return [
         {
           intent: rawGeminiText.substring(0, 100),
-          required_impact: 5,
-          preferred_composition: this.validateComposition({}),
+          requiredImpact: 5,
+          preferredComposition: this.validateComposition({}),
         },
       ];
     }
@@ -138,11 +138,11 @@ Example:
       // Validate and convert to DTOs
       const scenes = parsed.map((scene) => ({
         intent: scene.intent || "",
-        required_impact: Math.min(10, Math.max(1, scene.required_impact || 5)),
-        preferred_composition: this.validateComposition(
+        requiredImpact: Math.min(10, Math.max(1, scene.required_impact || 5)),
+        preferredComposition: this.validateComposition(
           scene.preferred_composition,
         ),
-        visual_intent: scene.visual_intent,
+        visualIntent: scene.visual_intent,
       }));
 
       this.logger.debug(`Extracted ${scenes.length} scenes from gemini text`);

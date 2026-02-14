@@ -7,6 +7,7 @@ import type {
   RankingBreakdown,
   SceneIntentDto,
 } from "../alignment/dto/scene-intent.dto";
+import { GeminiAnalysisService } from "../image-analysis/gemini-analysis.service";
 
 interface VectorSearchResult {
   id: string;
@@ -27,13 +28,16 @@ interface VectorSearchResult {
 export class SemanticMatchingService {
   private readonly logger = new Logger(SemanticMatchingService.name);
   private readonly rankingWeights: RankingBreakdown = {
-    vector_similarity_weight: 0.5,
-    impact_relevance_weight: 0.3,
-    composition_match_weight: 0.15,
-    mood_consistency_weight: 0.05,
+    vectorSimilarityWeight: 0.5,
+    impactRelevanceWeight: 0.3,
+    compositionMatchWeight: 0.15,
+    moodConsistencyWeight: 0.05,
   };
 
-  constructor(@Inject(PG_POOL) private readonly pool: Pool) {
+  constructor(
+    @Inject(PG_POOL) private readonly pool: Pool,
+    private readonly geminiAnalysisService: GeminiAnalysisService,
+  ) {
     console.log(
       "SemanticMatchingService initialized. Injected pg pool:",
       !!this.pool,
@@ -119,26 +123,27 @@ export class SemanticMatchingService {
           pi."pexelsId",
           pi.url,
           pi.photographer,
-          1 - (ie.embedding <=> $1::vector) as similarity,
+          1 - (ie.embedding::vector <=> $1::vector) as similarity,
           json_build_object(
-            'impactScore', da."impactScore",
-            'visualWeight', da."visualWeight",
-            'composition', da.composition,
-            'moodDna', da."moodDna",
-            'metaphoricalTags', da."metaphoricalTags"
+            'impactScore', (da."analysisResult"->>'impactScore')::numeric,
+            'visualWeight', (da."analysisResult"->>'visualWeight')::numeric,
+            'composition', da."analysisResult"->'composition',
+            'moodDna', da."analysisResult"->'moodDna',
+            'metaphoricalTags', da."analysisResult"->'metaphoricalTags'
           ) as metadata
         FROM public."vision_iq_image_embeddings" ie
         JOIN public."vision_iq_pexels_images" pi ON ie."imageId" = pi.id
-        JOIN public."vision_iq_deepseek_analysis" da ON da."imageId" = pi.id
+        JOIN public."vision_iq_image_analysis_jobs" job ON job."pexelsImageId" = pi.id
+        JOIN public."vision_iq_deepseek_analysis" da ON da."analysisJobId" = job.id
         WHERE 
-          da."impactScore" >= $2 
-          AND (1 - (ie.embedding <=> $1::vector)) > 0.3
+          (da."analysisResult"->>'impactScore')::numeric >= $2 
+          AND (1 - (ie.embedding::vector <=> $1::vector)) > 0.3
         ORDER BY similarity DESC
         LIMIT $3
       `;
 
       // Minimum impact score based on scene requirement (allow ±2)
-      const minImpactScore = Math.max(1, scene.required_impact - 2);
+      const minImpactScore = Math.max(1, scene.requiredImpact - 2);
 
       // Execute raw query
       const { rows: results } = await this.pool.query<VectorSearchResult>(
@@ -178,13 +183,13 @@ export class SemanticMatchingService {
 
         // Impact relevance: 1 - |required_impact - image_impact| / 10
         const impactDifference = Math.abs(
-          scene.required_impact - candidate.metadata.impactScore,
+          scene.requiredImpact - candidate.metadata.impactScore,
         );
         const impactRelevance = Math.max(0, 1 - impactDifference / 10);
 
         // Composition match: check shot_type and angle
         const compositionMatch = this.getCompositionMatch(
-          scene.preferred_composition,
+          scene.preferredComposition,
           candidate.metadata.composition,
         );
 
@@ -198,37 +203,37 @@ export class SemanticMatchingService {
 
         // --- NEW: Visual Intent Depth Matching ---
         let intentDepthScore = 1.0;
-        if (scene.visual_intent) {
+        if (scene.visualIntent) {
           intentDepthScore = this.calculateVisualIntentDepthScore(
-            scene.visual_intent,
+            scene.visualIntent,
             candidate.metadata,
           );
         }
 
         // Final score calculation
         const finalScore =
-          this.rankingWeights.vector_similarity_weight * vectorSimilarity +
-          this.rankingWeights.impact_relevance_weight * impactRelevance +
-          this.rankingWeights.composition_match_weight * compositionMatch +
-          this.rankingWeights.mood_consistency_weight *
+          this.rankingWeights.vectorSimilarityWeight * vectorSimilarity +
+          this.rankingWeights.impactRelevanceWeight * impactRelevance +
+          this.rankingWeights.compositionMatchWeight * compositionMatch +
+          this.rankingWeights.moodConsistencyWeight *
             moodConsistencyScore *
             moodConsistencyMultiplier;
 
         const weightedFinalScore = finalScore * (0.8 + intentDepthScore * 0.2);
 
         return {
-          image_id: candidate.id,
-          pexels_id: candidate.pexelsId,
+          imageId: candidate.id,
+          pexelsId: candidate.pexelsId,
           url: candidate.url,
-          match_score: Math.min(1, weightedFinalScore), // Clamp to 0-1
-          vector_similarity: vectorSimilarity,
-          impact_relevance: impactRelevance,
-          composition_match: compositionMatch,
-          mood_consistency_score: moodConsistencyScore,
+          matchScore: Math.min(1, weightedFinalScore), // Clamp to 0-1
+          vectorSimilarity: vectorSimilarity,
+          impactRelevance: impactRelevance,
+          compositionMatch: compositionMatch,
+          moodConsistencyScore: moodConsistencyScore,
           metadata: candidate.metadata,
         };
       })
-      .sort((a, b) => b.match_score - a.match_score)
+      .sort((a, b) => b.matchScore - a.matchScore)
       .slice(0, 5); // Return top 5 after ranking
 
     return matches;
@@ -335,25 +340,30 @@ export class SemanticMatchingService {
    * Generate embedding for scene intent text
    * TODO: integrate with OpenAI embeddings or local model
    */
-  /**
-   * Generate embedding for scene intent text
-   * TODO: integrate with OpenAI embeddings or local model
-   */
   private async generateEmbeddingForScene(
-    _scene: SceneIntentDto,
+    scene: SceneIntentDto,
   ): Promise<number[]> {
-    // Placeholder: return random 1536-dim vector
-    // In production, call OpenAI text-embedding-3-small or similar
-    // This is a temporary implementation for schema validation
-    const embedding = new Array(1536).fill(0).map(() => Math.random());
-    return embedding;
+    // Strategy: Construct a rich descriptive string from the scene intent
+    let textToEmbed = scene.intent;
+
+    if (scene.visualIntent) {
+      const vi = scene.visualIntent;
+      if (vi.emotional_layer?.intent_words) {
+        textToEmbed += ` ${vi.emotional_layer.intent_words.join(" ")}`;
+      }
+      if (vi.spatial_strategy?.strategy_words) {
+        textToEmbed += ` ${vi.spatial_strategy.strategy_words.join(" ")}`;
+      }
+    }
+    // Using Gemini text-embedding-004
+    return this.geminiAnalysisService.generateEmbedding(textToEmbed);
   }
 
   /**
    * Calculate how well an image metadata matches the 4-layer visual intent
    */
   private calculateVisualIntentDepthScore(
-    intent: NonNullable<SceneIntentDto["visual_intent"]>,
+    intent: NonNullable<SceneIntentDto["visualIntent"]>,
     metadata: any,
   ): number {
     let score = 0;

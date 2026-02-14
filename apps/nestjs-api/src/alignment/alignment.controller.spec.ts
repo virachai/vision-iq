@@ -44,7 +44,7 @@ describe("AlignmentController", () => {
 
   describe("extractVisualIntent", () => {
     it("should delegate to service.extractVisualIntent", async () => {
-      const dto = { raw_gemini_text: "test text" };
+      const dto = { rawGeminiText: "test text" };
       const expectedResult = [{ intent: "scene 1" }];
       mockAlignmentService.extractVisualIntent.mockResolvedValue(
         expectedResult,
@@ -59,7 +59,7 @@ describe("AlignmentController", () => {
   describe("findAlignedImages", () => {
     it("should delegate to service.findAlignedImages", async () => {
       const dto = { scenes: [] };
-      const expectedResult = [[{ image_id: "1" }]];
+      const expectedResult = [[{ imageId: "1" }]];
       mockAlignmentService.findAlignedImages.mockResolvedValue(expectedResult);
 
       const result = await controller.findAlignedImages(dto);
@@ -75,7 +75,7 @@ describe("AlignmentController", () => {
     });
 
     it("should delegate to service.syncPexelsLibrary with provided values", async () => {
-      await controller.syncPexels({ search_query: "cats", batch_size: 10 });
+      await controller.syncPexels({ searchQuery: "cats", batchSize: 10 });
       expect(service.syncPexelsLibrary).toHaveBeenCalledWith("cats", 10);
     });
   });
