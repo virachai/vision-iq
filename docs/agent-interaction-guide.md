@@ -53,7 +53,75 @@ Pass the `SceneIntentDto[]` you just got.
 
 ---
 
-## 🛡️ Feature Flags & Fallbacks (Important!)
+## � API Specification & Curl Examples
+
+### 1. Extract Visual Intent
+
+Use this to transform narrative text into structured cinematic intents.
+
+**Endpoint**: `POST /alignment/extract-visual-intent`
+
+**Payload**:
+
+```json
+{
+  "raw_gemini_text": "A rainy night in New York, a detective stands under a streetlamp, smoke rising from his cigarette.",
+  "auto_match": true
+}
+```
+
+**Curl Example**:
+
+```bash
+curl -X POST http://localhost:3006/alignment/extract-visual-intent \
+     -H "Content-Type: application/json" \
+     -d '{
+       "raw_gemini_text": "A rainy night in New York, a detective stands under a streetlamp, smoke rising from his cigarette.",
+       "auto_match": true
+     }'
+```
+
+### 2. Find Aligned Images
+
+Use this if you already have `SceneIntent` objects from the step above and want to find matches in the library.
+
+**Endpoint**: `POST /alignment/find-images`
+
+**Payload**:
+
+```json
+{
+  "scenes": [
+    {
+      "intent": "Detective under streetlight",
+      "required_impact": 8,
+      "preferred_composition": { "shot_type": "MS", "negative_space": "right" }
+    }
+  ],
+  "top_k": 3
+}
+```
+
+**Curl Example**:
+
+```bash
+curl -X POST http://localhost:3006/alignment/find-images \
+     -H "Content-Type: application/json" \
+     -d '{
+       "scenes": [
+         {
+           "intent": "Detective under streetlight",
+           "required_impact": 8,
+           "preferred_composition": { "shot_type": "MS", "negative_space": "right" }
+         }
+       ],
+       "top_k": 3
+     }'
+```
+
+---
+
+## �🛡️ Feature Flags & Fallbacks (Important!)
 
 We use feature flags to control costs and service availability. **Always check the `.env` flags if you get unexpected "generic" results.**
 
