@@ -18,7 +18,7 @@ export class CleanupService {
     try {
       // 1. Find all Scenes associated with this Request
       const scenes = await this.prisma.sceneIntent.findMany({
-        where: { requestId },
+        where: { visualIntentRequestId: requestId },
         select: { id: true },
       });
 
@@ -40,7 +40,7 @@ export class CleanupService {
 
           // 4. Delete PexelsSyncHistory (Safe cleanup)
           await this.prisma.pexelsSyncHistory.deleteMany({
-            where: { descriptionId: { in: descriptionIds } },
+            where: { keyword: { visualDescriptionId: { in: descriptionIds } } },
           });
 
           this.logger.debug(
@@ -82,7 +82,7 @@ export class CleanupService {
 
     const result = await this.prisma.pexelsSyncHistory.deleteMany({
       where: {
-        status: "pending",
+        syncStatus: "PENDING",
         createdAt: { lt: thresholdDate },
       },
     });

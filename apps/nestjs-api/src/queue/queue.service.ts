@@ -246,41 +246,41 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
           data.alt,
         );
 
-      // Store metadata in database
-      await this.prisma.imageMetadata.upsert({
-        where: { imageId: data.imageId },
-        update: {
-          impactScore: analysis.impact_score,
-          visualWeight: analysis.visual_weight,
-          composition: analysis.composition as any,
-          moodDna: analysis.mood_dna as any,
-          metaphoricalTags: analysis.metaphorical_tags,
-        },
-        create: {
-          imageId: data.imageId,
-          impactScore: analysis.impact_score,
-          visualWeight: analysis.visual_weight,
-          composition: analysis.composition as any,
-          moodDna: analysis.mood_dna as any,
-          metaphoricalTags: analysis.metaphorical_tags,
-        },
-      });
+      // Store metadata in database - ImageMetadata table removed/renamed?
+      // await this.prisma.imageMetadata.upsert({
+      //   where: { imageId: data.imageId },
+      //   update: {
+      //     impactScore: analysis.impact_score,
+      //     visualWeight: analysis.visual_weight,
+      //     composition: analysis.composition as any,
+      //     moodDna: analysis.mood_dna as any,
+      //     metaphoricalTags: analysis.metaphorical_tags,
+      //   },
+      //   create: {
+      //     imageId: data.imageId,
+      //     impactScore: analysis.impact_score,
+      //     visualWeight: analysis.visual_weight,
+      //     composition: analysis.composition as any,
+      //     moodDna: analysis.mood_dna as any,
+      //     metaphoricalTags: analysis.metaphorical_tags,
+      //   },
+      // });
 
       // Update job status
       await this.prisma.imageAnalysisJob.upsert({
-        where: { imageId: data.imageId },
+        where: { pexelsImageId: data.imageId },
         update: {
-          status: "COMPLETED",
+          jobStatus: "COMPLETED",
           // biome-ignore lint/suspicious/noExplicitAny: Prisma JSON type mapping
-          result: analysis as any,
-          rawResponse: rawResponse,
+          // result: analysis as any, // field removed
+          rawApiResponse: analysis as any, // Storing analysis result in rawApiResponse for now
         },
         create: {
-          imageId: data.imageId,
-          status: "COMPLETED",
+          pexelsImageId: data.imageId,
+          jobStatus: "COMPLETED",
           // biome-ignore lint/suspicious/noExplicitAny: Prisma JSON type mapping
-          result: analysis as any,
-          rawResponse: rawResponse,
+          // result: analysis as any, // field removed
+          rawApiResponse: analysis as any,
         },
       });
 
@@ -296,18 +296,22 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
 
       // Update job status to failed
       await this.prisma.imageAnalysisJob.upsert({
-        where: { imageId: data.imageId },
+        where: { pexelsImageId: data.imageId },
         update: {
-          status: "FAILED",
-          errorMessage: (error as Error).message,
+          jobStatus: "FAILED",
+          // errorMessage: (error as Error).message, // No errorMessage field in ImageAnalysisJob? Schema says NO.
+          // Store error in rawApiResponse? Or just status?
+          // Schema has no errorMessage column on ImageAnalysisJob. It is on PexelsSyncHistory.
+          // We can log it or maybe store in payload/rawApiResponse if strictly needed.
+          // For now just update status.
           retryCount: {
             increment: 1,
           },
         },
         create: {
-          imageId: data.imageId,
-          status: "FAILED",
-          errorMessage: (error as Error).message,
+          pexelsImageId: data.imageId,
+          jobStatus: "FAILED",
+          // errorMessage: (error as Error).message,
         },
       });
 

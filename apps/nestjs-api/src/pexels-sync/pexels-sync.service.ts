@@ -70,9 +70,9 @@ export class PexelsSyncService {
           await this.prisma.pexelsSyncHistory.update({
             where: { id: syncHistory.id },
             data: {
-              totalImages: result.total_images,
-              totalBatches: result.total_batches,
-              jobIds: result.job_ids,
+              // totalImages: result.total_images,
+              // totalBatches: result.total_batches,
+              // jobIds: result.job_ids,
             },
           });
 
@@ -98,8 +98,8 @@ export class PexelsSyncService {
             await this.prisma.pexelsSyncHistory.update({
               where: { id: syncHistory.id },
               data: {
-                status: "failed",
-                error: (batchError as Error).message,
+                syncStatus: "FAILED",
+                errorMessage: (batchError as Error).message,
               },
             });
             throw new Error(

@@ -47,10 +47,10 @@ export class AnalysisSchedulerService {
       // 1. Find jobs that are in PENDING status
       const pendingJobs = await this.prisma.imageAnalysisJob.findMany({
         where: {
-          status: "PENDING",
+          jobStatus: "QUEUED",
         },
         include: {
-          image: true,
+          pexelsImage: true,
         },
         take: 50, // Process in batches
       });
@@ -69,18 +69,18 @@ export class AnalysisSchedulerService {
           // 2. Re-queue the job
           // BullMQ will handle deduplication if jobId is set (which it is in queueService)
           await this.queueService.queueImageAnalysis(
-            job.imageId,
-            job.image.url,
-            job.image.pexelsId,
-            job.image.alt,
+            job.pexelsImageId,
+            job.pexelsImage.url,
+            job.pexelsImage.pexelsImageId,
+            job.pexelsImage.alt,
           );
 
           this.logger.debug(
-            `Successfully re-queued analysis for image ${job.image.pexelsId}`,
+            `Successfully re-queued analysis for image ${job.pexelsImage.pexelsImageId}`,
           );
         } catch (queueError: any) {
           this.logger.error(
-            `Failed to re-queue job for image ${job.imageId}: ${queueError.message}`,
+            `Failed to re-queue job for image ${job.pexelsImageId}: ${queueError.message}`,
           );
         }
       }

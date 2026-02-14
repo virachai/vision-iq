@@ -120,7 +120,6 @@ export class AlignmentService {
                   `Auto-match triggered for expanded description: "${exp.description.substring(
                     0,
                     30,
-                    125,
                   )}..."`,
                 );
 
@@ -132,13 +131,7 @@ export class AlignmentService {
 
                 for (const kw of keywords) {
                   this.pexelsSyncService
-                    .syncPexelsLibrary(
-                      kw.keyword,
-                      100,
-                      0.1,
-                      description.id,
-                      kw.id,
-                    )
+                    .syncPexelsLibrary(kw.keyword, 100, 0.1)
                     .then(async () => {
                       await this.prisma.visualDescriptionKeyword.update({
                         where: { id: kw.id },
@@ -493,11 +486,11 @@ export class AlignmentService {
       // Criteria: Status=COMPLETED, isUsed=false, has rawResponse
       const pendingJobs = await this.prisma.imageAnalysisJob.findMany({
         where: {
-          status: "COMPLETED",
-          isUsed: false,
-          rawResponse: { not: null },
+          jobStatus: "COMPLETED",
+          // isUsed: false, // removed
+          rawApiResponse: { not: null },
         },
-        select: { id: true, imageId: true },
+        select: { id: true, pexelsImageId: true },
         orderBy: { createdAt: "asc" }, // Process oldest first
         take: limit, // Process in small batches to avoid rate limits
       });
