@@ -10,6 +10,12 @@ import { AlignmentService } from "./alignment.service";
 import { PRISMA_SERVICE } from "../prisma/prisma.module";
 import type { ImageMatch, SceneIntentDto } from "./dto/scene-intent.dto";
 
+type CreateMockVisualDescriptionFindMany =
+  PrismaClient["visualDescription"]["findMany"];
+
+type CreateMockVisualDescriptionKeywordFindMany =
+  PrismaClient["visualDescriptionKeyword"]["findMany"];
+
 describe("AlignmentService", () => {
   let service: AlignmentService;
   let deepSeekService: DeepSeekService;
@@ -18,6 +24,16 @@ describe("AlignmentService", () => {
   let _queueService: QueueService;
   let _geminiAnalysisService: GeminiAnalysisService;
   let prismaClient: PrismaClient;
+
+  type CreateMockVisualIntentRequest = jest.MockedFunction<
+    () => Promise<{ id: string }>
+  >;
+  type CreateMockSceneIntent = () => Promise<{ id: string; intent: string }>;
+  type CreateMockVisualDescription = () => Promise<{ id: string }>;
+  // type CreateMockVisualDescriptionFindMany = () => Promise<VisualDescription[]>;
+  // type CreateMockVisualDescriptionKeywordFindMany = () => Promise<
+  //   VisualDescriptionKeyword[]
+  // >;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -71,12 +87,16 @@ describe("AlignmentService", () => {
               count: jest.fn(),
             },
             visualIntentRequest: {
-              create: (jest.fn() as any).mockResolvedValue({ id: "req-1" }),
+              create: jest
+                .fn<CreateMockVisualIntentRequest>()
+                .mockResolvedValue({
+                  id: "req-1",
+                }),
               findUnique: jest.fn(),
               update: jest.fn(),
             },
             sceneIntent: {
-              create: (jest.fn() as any).mockResolvedValue({
+              create: jest.fn<CreateMockSceneIntent>().mockResolvedValue({
                 id: "scene-1",
                 intent: "mock-intent",
               }),
@@ -84,16 +104,22 @@ describe("AlignmentService", () => {
               update: jest.fn(),
             },
             visualDescription: {
-              create: (jest.fn() as any).mockResolvedValue({ id: "desc-1" }),
+              create: jest
+                .fn<CreateMockVisualDescription>()
+                .mockResolvedValue({ id: "desc-1" }),
               findUnique: jest.fn(),
-              findMany: (jest.fn() as any).mockResolvedValue([]),
+              findMany: jest
+                .fn<CreateMockVisualDescriptionFindMany>()
+                .mockResolvedValue([]),
               update: jest.fn(),
             },
             visualDescriptionKeyword: {
-              findMany: (jest.fn() as any).mockResolvedValue([]),
+              findMany: jest
+                .fn<CreateMockVisualDescriptionKeywordFindMany>()
+                .mockResolvedValue([]),
               update: jest.fn(),
             },
-          } as any,
+          } as unknown as PrismaClient,
         },
       ],
     }).compile();

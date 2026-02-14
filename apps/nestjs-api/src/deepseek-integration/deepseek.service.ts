@@ -22,6 +22,15 @@ interface ParsedScene {
   preferred_composition: Composition;
 }
 
+interface ExpandedIntentItem {
+  description?: string;
+  analysis?: {
+    keywords?: string[] | string;
+    mood_score?: number;
+    [key: string]: unknown;
+  };
+}
+
 @Injectable()
 export class DeepSeekService {
   private readonly logger = new Logger(DeepSeekService.name);
@@ -103,7 +112,7 @@ Example:
   async expandSceneIntent(
     intent: string,
     count = 3,
-  ): Promise<{ description: string; analysis: any }[]> {
+  ): Promise<{ description: string; analysis: unknown }[]> {
     this.logger.debug(
       `Expanding intent: "${intent}" into ${count} descriptions`,
     );
@@ -125,7 +134,9 @@ Example:
 
     try {
       const response = await this.callDeepSeekAPI(systemPrompt, userPrompt);
-      const parsed = this.parseJsonResponse(response.content) as any[];
+      const parsed = this.parseJsonResponse(
+        response.content,
+      ) as ExpandedIntentItem[];
 
       return parsed.map((item) => {
         const analysis = item.analysis || {};
