@@ -56,11 +56,11 @@ export class SceneIntentDto {
 }
 
 export class ExtractVisualIntentDto {
-  @Expose({ name: "raw_gemini_text" })
+  // @Expose()
   @IsString()
   rawGeminiText: string; // Conversational text from Gemini Live
 
-  @Expose({ name: "auto_match" })
+  // @Expose()
   @IsOptional()
   @IsBoolean()
   autoMatch?: boolean; // Automatically trigger image matching/syncing

@@ -17,6 +17,16 @@ async function bootstrap() {
       transform: true,
       whitelist: true,
       forbidNonWhitelisted: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+        exposeDefaultValues: true,
+      },
+      // Enable detailed validation errors for debugging
+      disableErrorMessages: false,
+      validationError: {
+        target: false,
+        value: true,
+      },
     }),
   );
 

@@ -1,10 +1,12 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "../generated/client"
+  provider        = "prisma-client-js"
+  output          = "../generated/client"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
-  provider = "postgresql"
+  provider   = "postgresql"
+  extensions = [pgvector(map: "vector")]
 }
 
 model User {
@@ -234,8 +236,8 @@ model ImageEmbedding {
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   image     PexelsImage @relation(fields: [imageId], references: [id], onDelete: Cascade)
-  // embedding Unsupported("vector(768)")
-  embedding Float[]
+  embedding Unsupported("vector(768)")
+  // embedding Float[]
 
   @@index([imageId])
   @@map("vision_iq_image_embeddings")

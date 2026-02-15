@@ -7,10 +7,10 @@ import { RefinementService } from "./services/refinement.service";
 import { VisualIntentRepository } from "./repositories/visual-intent.repository";
 import { SceneRepository } from "./repositories/scene.repository";
 import type { SyncResult } from "../shared/pipeline-types";
-import type {
+import {
   ExtractVisualIntentDto,
   FindAlignedImagesDto,
-  ImageMatch,
+  type ImageMatch,
   SceneIntentDto,
 } from "./dto/scene-intent.dto";
 

@@ -80,7 +80,7 @@ describe("AlignmentController (e2e)", () => {
 
       return request(app.getHttpServer())
         .post("/alignment/extract-visual-intent")
-        .send({ raw_gemini_text: "A man stands alone in a field" })
+        .send({ rawGeminiText: "A man stands alone in a field" })
         .expect(201)
         .expect((res) => {
           expect(res.body).toEqual(mockScenes);

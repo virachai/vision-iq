@@ -1,10 +1,10 @@
 import { Body, Controller, Get, Param, Post } from "@nestjs/common";
 import { AlignmentService } from "./alignment.service";
 import { CleanupService } from "./cleanup.service";
-import type {
+import {
   ExtractVisualIntentDto,
   FindAlignedImagesDto,
-  ImageMatch,
+  type ImageMatch,
   SceneIntentDto,
 } from "./dto/scene-intent.dto";
 import { SyncPexelsDto, TestAnalysisDto } from "./dto/alignment-actions.dto";
