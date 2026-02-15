@@ -1,17 +1,20 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger, Inject } from "@nestjs/common";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { PrismaClient } from "@repo/database";
 import { QueueService } from "./queue.service";
 import { AlignmentService } from "../alignment/alignment.service";
+import { PexelsSyncService } from "../pexels-sync/pexels-sync.service";
+import { PRISMA_SERVICE } from "../prisma/prisma.module";
 
 @Injectable()
 export class AnalysisSchedulerService {
   private readonly logger = new Logger(AnalysisSchedulerService.name);
 
   constructor(
-    private readonly prisma: PrismaClient,
+    @Inject(PRISMA_SERVICE) private readonly prisma: PrismaClient,
     private readonly queueService: QueueService,
     private readonly alignmentService: AlignmentService,
+    private readonly pexelsSyncService: PexelsSyncService,
   ) {}
 
   /**
@@ -172,6 +175,91 @@ export class AnalysisSchedulerService {
     } catch (error: any) {
       this.logger.error(
         "Error in handleStalledOrchestration cron:",
+        error.message,
+      );
+    }
+  }
+
+  /**
+   * Cron job that runs every 10 minutes to recover PexelsSyncHistory
+   * records stuck in PROCESSING state for more than 15 minutes.
+   * Resumes sync from the last successfully processed page.
+   */
+  @Cron(CronExpression.EVERY_10_MINUTES)
+  async handleStalledSyncHistory() {
+    if (process.env.ENABLE_ANALYSIS_CRON === "false") {
+      this.logger.debug("Cron job handleStalledSyncHistory skipped (disabled)");
+      return;
+    }
+    this.logger.log(
+      "Running cron job: Checking for stalled PexelsSyncHistory records",
+    );
+
+    const stalledThreshold = new Date();
+    stalledThreshold.setMinutes(stalledThreshold.getMinutes() - 15);
+
+    try {
+      const stalledHistories = await this.prisma.pexelsSyncHistory.findMany({
+        where: {
+          syncStatus: "PROCESSING",
+          updatedAt: { lt: stalledThreshold },
+          syncAttempt: { lt: 3 }, // Max 3 recovery attempts
+        },
+        include: {
+          keyword: true,
+        },
+      });
+
+      if (stalledHistories.length === 0) {
+        this.logger.debug("No stalled sync histories found");
+        return;
+      }
+
+      this.logger.log(
+        `Found ${stalledHistories.length} stalled sync histories. Resuming...`,
+      );
+
+      for (const history of stalledHistories) {
+        try {
+          // Increment attempt count before resuming
+          await this.prisma.pexelsSyncHistory.update({
+            where: { id: history.id },
+            data: { syncAttempt: { increment: 1 } },
+          });
+
+          this.logger.log(
+            `Resuming sync ${history.id} for keyword "${
+              history.keyword.keyword
+            }" from page ${history.lastPageSynced + 1} (attempt ${
+              history.syncAttempt + 1
+            })`,
+          );
+
+          // Resume from last successfully synced page
+          // Fire-and-forget to not block the cron loop
+          this.pexelsSyncService
+            .syncPexelsLibrary(
+              history.keyword.keyword,
+              80,
+              0.1,
+              undefined,
+              history.keywordId,
+              history.id, // resumeSyncHistoryId
+            )
+            .catch((err) => {
+              this.logger.error(
+                `Recovery sync failed for history ${history.id}: ${err.message}`,
+              );
+            });
+        } catch (error: any) {
+          this.logger.error(
+            `Failed to resume sync history ${history.id}: ${error.message}`,
+          );
+        }
+      }
+    } catch (error: any) {
+      this.logger.error(
+        "Error in handleStalledSyncHistory cron:",
         error.message,
       );
     }

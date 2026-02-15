@@ -81,12 +81,13 @@ export class PexelsIntegrationService {
   async *syncPexelsLibrary(
     searchQuery: string,
     batchSize = 50,
+    startPage = 1,
   ): AsyncGenerator<SyncBatch> {
     if (!this.isEnabled) {
       this.logger.debug("Skipping syncPexelsLibrary: Pexels disabled");
       return;
     }
-    let page = 1;
+    let page = startPage;
     let totalResults = 0;
     let batchNumber = 0;
     let totalBatches = 0;

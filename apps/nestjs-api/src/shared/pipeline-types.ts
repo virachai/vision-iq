@@ -63,7 +63,7 @@ export interface SyncResult {
   total_images: number;
   total_batches: number;
   job_ids: string[];
-  status: "queued" | "in_progress" | "completed" | "failed";
+  status: "queued" | "in_progress" | "completed" | "failed" | "partial";
   errors?: string[];
 }
 

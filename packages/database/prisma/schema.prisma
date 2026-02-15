@@ -9,6 +9,7 @@ datasource db {
   extensions = [pgvector(map: "vector")]
 }
 
+
 model User {
   id            String                @id @default(uuid())
   name          String?
@@ -90,19 +91,23 @@ model VisualDescriptionKeyword {
 }
 
 model PexelsSyncHistory {
-  id           String                   @id @default(uuid())
-  keywordId    String
-  syncStatus   PipelineStatus           @default(PENDING)
-  syncAttempt  Int                      @default(1)
-  apiResponse  Json?
-  errorMessage String?
-  syncedAt     DateTime?                @default(now())
-  createdAt    DateTime                 @default(now())
-  updatedAt    DateTime                 @updatedAt
-  images       PexelsImage[]
-  keyword      VisualDescriptionKeyword @relation(fields: [keywordId], references: [id], onDelete: Cascade)
+  id             String                   @id @default(uuid())
+  keywordId      String
+  syncStatus     PipelineStatus           @default(PENDING)
+  syncAttempt    Int                      @default(1)
+  lastPageSynced Int                      @default(0)
+  totalPages     Int                      @default(0)
+  totalImages    Int                      @default(0)
+  apiResponse    Json?
+  errorMessage   String?
+  syncedAt       DateTime?                @default(now())
+  createdAt      DateTime                 @default(now())
+  updatedAt      DateTime                 @updatedAt
+  images         PexelsImage[]
+  keyword        VisualDescriptionKeyword @relation(fields: [keywordId], references: [id], onDelete: Cascade)
 
   @@index([keywordId])
+  @@index([syncStatus])
   @@map("vision_iq_pexels_sync_history")
 }
 

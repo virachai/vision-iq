@@ -20,7 +20,8 @@ export class PexelsSyncService {
   ) {}
 
   /**
-   * Sync Pexels library in batches
+   * Sync Pexels library in batches.
+   * Supports resuming from a previously stalled sync via `resumeSyncHistoryId`.
    */
   async syncPexelsLibrary(
     searchQuery = "nature",
@@ -28,6 +29,7 @@ export class PexelsSyncService {
     failureThreshold = 0.1,
     descriptionId?: string,
     keywordId?: string,
+    resumeSyncHistoryId?: string,
   ): Promise<SyncResult> {
     const result: SyncResult = {
       total_images: 0,
@@ -37,14 +39,35 @@ export class PexelsSyncService {
       errors: [],
     };
 
-    // If keywordId is not provided, we might need a fallback or skip history creation
-    // For now, we only create history if keywordId is provided to avoid FK violation
     let syncHistoryId: string | undefined;
-    if (keywordId) {
+    let startPage = 1;
+
+    // Resume path: reuse existing sync history and start from last page
+    if (resumeSyncHistoryId) {
+      const existing = await this.prisma.pexelsSyncHistory.findUnique({
+        where: { id: resumeSyncHistoryId },
+      });
+      if (existing) {
+        syncHistoryId = existing.id;
+        startPage = (existing.lastPageSynced ?? 0) + 1;
+        keywordId = keywordId || existing.keywordId;
+        this.logger.log(
+          `Resuming sync ${syncHistoryId} from page ${startPage} (attempt ${existing.syncAttempt})`,
+        );
+        // Update status back to PROCESSING for this resume attempt
+        await this.prisma.pexelsSyncHistory.update({
+          where: { id: syncHistoryId },
+          data: { syncStatus: "PROCESSING", errorMessage: null },
+        });
+      }
+    }
+
+    // New sync path: create fresh sync history
+    if (!syncHistoryId && keywordId) {
       const syncHistory = await this.prisma.pexelsSyncHistory.create({
         data: {
           keywordId: keywordId,
-          syncStatus: "PROCESSING", // Start as processing
+          syncStatus: "PROCESSING",
           syncAttempt: 1,
         },
       });
@@ -55,12 +78,13 @@ export class PexelsSyncService {
       this.logger.log(
         `Starting Pexels sync (ID: ${
           syncHistoryId || "no-history"
-        }): query="${searchQuery}", batchSize=${batchSize}`,
+        }): query="${searchQuery}", batchSize=${batchSize}, startPage=${startPage}`,
       );
 
       for await (const batch of this.pexelsIntegrationService.syncPexelsLibrary(
         searchQuery,
         batchSize,
+        startPage,
       )) {
         result.total_batches = batch.total_batches;
 
@@ -74,14 +98,14 @@ export class PexelsSyncService {
           result.job_ids.push(...jobIds);
           result.total_images += batch.images.length;
 
+          // Track page-level progress after each successful batch
           if (syncHistoryId) {
-            // Update history with progress
             await this.prisma.pexelsSyncHistory.update({
               where: { id: syncHistoryId },
               data: {
-                // totalImages: result.total_images,
-                // totalBatches: result.total_batches,
-                // jobIds: result.job_ids,
+                lastPageSynced: batch.batch_number,
+                totalPages: batch.total_batches,
+                totalImages: { increment: batch.images.length },
               },
             });
           }
@@ -134,11 +158,11 @@ export class PexelsSyncService {
           },
         });
 
-        // ALSO: Mark the keyword as used
+        // Mark the keyword as used
         if (keywordId) {
           await this.prisma.visualDescriptionKeyword.update({
             where: { id: keywordId },
-            data: { isUsed: true }, // Keep isUsed for search tracking
+            data: { isUsed: true },
           });
         }
       }
@@ -149,15 +173,23 @@ export class PexelsSyncService {
       result.errors?.push((error as Error).message);
       this.logger.error("Pexels sync failed", (error as Error).message);
 
-      // Final update for error status
+      // Guaranteed: update error status even on unexpected errors
       if (syncHistoryId) {
-        await this.prisma.pexelsSyncHistory.update({
-          where: { id: syncHistoryId },
-          data: {
-            syncStatus: "FAILED",
-            errorMessage: (error as Error).message,
-          },
-        });
+        try {
+          await this.prisma.pexelsSyncHistory.update({
+            where: { id: syncHistoryId },
+            data: {
+              syncStatus: "FAILED",
+              errorMessage: (error as Error).message,
+            },
+          });
+        } catch (updateError) {
+          this.logger.error(
+            `Failed to update sync history status to FAILED: ${
+              (updateError as Error).message
+            }`,
+          );
+        }
       }
 
       throw error;

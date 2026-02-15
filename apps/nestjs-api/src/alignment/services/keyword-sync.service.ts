@@ -49,38 +49,65 @@ export class KeywordSyncService {
       `Triggering manual sync for ${description.keywords.length} keywords of description ${descriptionId}`,
     );
 
-    try {
-      const syncResults = await Promise.all(
-        description.keywords.map((kw) =>
-          this.pexelsSyncService
-            .syncPexelsLibrary(kw.keyword, 80, 0.1, descriptionId, kw.id)
-            .then(async (res) => {
-              this.logger.log(
-                `Keyword "${kw.keyword}" (ID: ${kw.id}) sync completed. Marking as used.`,
-              );
-              await this.sceneRepo.updateKeywordUsed(kw.id, true);
-              return res;
-            }),
-        ),
+    // Use Promise.allSettled instead of Promise.all to prevent
+    // one keyword failure from abandoning cleanup of other keywords.
+    const settledResults = await Promise.allSettled(
+      description.keywords.map((kw) =>
+        this.pexelsSyncService
+          .syncPexelsLibrary(kw.keyword, 80, 0.1, descriptionId, kw.id)
+          .then(async (res) => {
+            this.logger.log(
+              `Keyword "${kw.keyword}" (ID: ${kw.id}) sync completed. Marking as used.`,
+            );
+            await this.sceneRepo.updateKeywordUsed(kw.id, true);
+            return res;
+          }),
+      ),
+    );
+
+    const fulfilled = settledResults.filter(
+      (r): r is PromiseFulfilledResult<SyncResult> => r.status === "fulfilled",
+    );
+    const rejected = settledResults.filter(
+      (r): r is PromiseRejectedResult => r.status === "rejected",
+    );
+
+    if (rejected.length > 0) {
+      this.logger.warn(
+        `${rejected.length}/${settledResults.length} keyword syncs failed for description ${descriptionId}`,
       );
+      for (const r of rejected) {
+        this.logger.error(
+          `  Keyword sync error: ${r.reason?.message || r.reason}`,
+        );
+      }
+    }
 
-      // After all keywords processed for this description, mark it as completed
+    // Mark description status based on results:
+    // - All succeeded → COMPLETED
+    // - All failed → FAILED
+    // - Partial → COMPLETED (some keywords worked, failed ones will be retried by cron)
+    if (fulfilled.length > 0) {
       await this.sceneRepo.updateDescriptionStatus(descriptionId, "COMPLETED");
-
-      return {
-        total_images: syncResults.reduce((acc, r) => acc + r.total_images, 0),
-        total_batches: syncResults.reduce((acc, r) => acc + r.total_batches, 0),
-        job_ids: syncResults.flatMap((r) => r.job_ids),
-        status: "completed",
-      };
-    } catch (error: any) {
+    } else {
+      // All keywords failed
+      const firstError =
+        rejected[0]?.reason?.message || "All keyword syncs failed";
       await this.sceneRepo.updateDescriptionStatus(
         descriptionId,
         "FAILED",
-        error.message,
+        firstError,
       );
-      throw error;
     }
+
+    const syncResults = fulfilled.map((r) => r.value);
+
+    return {
+      total_images: syncResults.reduce((acc, r) => acc + r.total_images, 0),
+      total_batches: syncResults.reduce((acc, r) => acc + r.total_batches, 0),
+      job_ids: syncResults.flatMap((r) => r.job_ids),
+      status: rejected.length === 0 ? "completed" : "partial",
+    };
   }
 
   async autoSyncUnusedKeywords(): Promise<{
