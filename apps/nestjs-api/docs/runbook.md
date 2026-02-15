@@ -18,7 +18,7 @@ The service uses `@repo/env` for configuration. Create a `.env` file in the mono
 | Variable                   | Description                    | Default                  |
 | -------------------------- | ------------------------------ | ------------------------ |
 | `PORT`                     | API Port                       | `3006`                   |
-| `DATABASE_URL`             | PostgreSQL Connection String   | -                        |
+| `POSTGRES_URL`             | PostgreSQL Connection String   | -                        |
 | `REDIS_URL`                | Redis Connection String        | `redis://localhost:6379` |
 | `PEXELS_API_KEY`           | API Key for Pexels Integration | -                        |
 | `GEMINI_API_KEY`           | API Key for Gemini Analysis    | -                        |

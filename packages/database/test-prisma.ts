@@ -3,15 +3,15 @@ import { prisma } from "./src/client";
 
 async function main() {
   console.log(
-    "DATABASE_URL:",
-    process.env.DATABASE_URL ? "Defined" : "UNDEFINED",
+    "POSTGRES_URL:",
+    process.env.POSTGRES_URL ? "Defined" : "UNDEFINED",
   );
-  if (!process.env.DATABASE_URL) {
+  if (!process.env.POSTGRES_URL) {
     console.log("Loading .env from root...");
     require("dotenv").config({ path: "../../.env" });
     console.log(
-      "DATABASE_URL after load:",
-      process.env.DATABASE_URL ? "Defined" : "Still UNDEFINED",
+      "POSTGRES_URL after load:",
+      process.env.POSTGRES_URL ? "Defined" : "Still UNDEFINED",
     );
   }
   console.log("Testing prisma instance from packages/database...");

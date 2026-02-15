@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import { Test, type TestingModule } from "@nestjs/testing";
 import type { SceneIntentDto } from "../alignment/dto/scene-intent.dto";
 import { SemanticMatchingService } from "./semantic-matching.service";
+import { ClusteringService } from "./clustering.service";
 import { PG_POOL } from "../prisma/prisma.module";
 import { GeminiAnalysisService } from "../image-analysis/gemini-analysis.service";
 
@@ -25,6 +26,17 @@ describe("SemanticMatchingService", () => {
             generateEmbedding: jest
               .fn()
               .mockResolvedValue(Array.from({ length: 768 }, () => 0.1)),
+          },
+        },
+        {
+          provide: ClusteringService,
+          useValue: {
+            groupCandidatesByMood: jest
+              .fn()
+              .mockImplementation((matches) => [matches]),
+            selectBestCluster: jest
+              .fn()
+              .mockImplementation((clusters) => clusters[0] || []),
           },
         },
       ],

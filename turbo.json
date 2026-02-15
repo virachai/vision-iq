@@ -23,7 +23,9 @@
         "BLOG_PORT",
         "NEXTJS_DASHBOARD_PORT",
         "PRISMA_WEB_PORT",
-        "STOREFRONT_PORT"
+        "STOREFRONT_PORT",
+        "NEXT_PUBLIC_API_URL",
+        "GEMINI_API_KEY"
       ]
     },
     "test": {
@@ -57,7 +59,9 @@
         "BLOG_PORT",
         "NEXTJS_DASHBOARD_PORT",
         "PRISMA_WEB_PORT",
-        "STOREFRONT_PORT"
+        "STOREFRONT_PORT",
+        "NEXT_PUBLIC_API_URL",
+        "GEMINI_API_KEY"
       ]
     }
   }

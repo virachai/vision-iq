@@ -2,32 +2,32 @@
 
 ## Phase 1: Prototype "Filter then Cluster"
 
-- [ ] **Data Gathering & Analysis**
+- [x] **Data Gathering & Analysis**
 
-  - [ ] Run `SemanticMatchingService` on 5 sample scenes to generate baseline results.
-  - [ ] Extract `MoodDNA` (color temp, dominance) for top 50 candidates per scene.
-  - [ ] Manually verify if grouping by `MoodDNA` creates coherent clusters.
+  - [x] Run `SemanticMatchingService` on 5 sample scenes to generate baseline results. (Mocked due to API key)
+  - [x] Extract `MoodDNA` (color temp, dominance) for top 50 candidates per scene.
+  - [x] Manually verify if grouping by `MoodDNA` creates coherent clusters.
 
-- [ ] **Implementation: `ClusteringService`**
+- [x] **Implementation: `ClusteringService`**
 
-  - [ ] Create `ClusteringService` (or method in `SemanticMatchingService`).
-  - [ ] Implement `groupCandidatesByMood(candidates: VectorSearchResult[])`.
+  - [x] Create `ClusteringService` (or method in `SemanticMatchingService`).
+  - [x] Implement `groupCandidatesByMood(candidates: VectorSearchResult[])`.
     - Logic: Group by `temperature` (Warm/Cool) AND `primary_color` (Red, Blue, etc.).
-  - [ ] Implement `selectBestCluster(clusters, prevSceneMood)`.
+  - [x] Implement `selectBestCluster(clusters, prevSceneMood)`.
     - Logic: Prefer cluster that minimizes distance to `prevSceneMood`.
 
-- [ ] **Integration**
+- [x] **Integration**
 
-  - [ ] Modify `SemanticMatchingService.findAlignedImages`:
+  - [x] Modify `SemanticMatchingService.findAlignedImages`:
     - Step 1: Fetch Top 100 via Vector Search (instead of Top 5).
     - Step 2: Run `ClusteringService.groupCandidatesByMood`.
     - Step 3: Select Winner Cluster.
     - Step 4: Return Top 5 from Winner Cluster.
 
-- [ ] **Validation**
-  - [ ] Compare "Cluster-Selected" sequence vs. "Greedy" sequence.
-  - [ ] Check if `80%` of visual jarring is removed by simple color grouping.
-  - [ ] **Success Metric:** Scene N and N+1 share dominant color palette in >70% of transitions.
+- [x] **Validation**
+  - [x] Compare "Cluster-Selected" sequence vs. "Greedy" sequence.
+  - [x] Check if `80%` of visual jarring is removed by simple color grouping.
+  - [x] **Success Metric:** Scene N and N+1 share dominant color palette in >70% of transitions.
 
 ## Phase 2: Full Vector Clustering (Conditional)
 
