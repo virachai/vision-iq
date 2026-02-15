@@ -79,7 +79,7 @@ export class PexelsIntegrationService {
    * Respects rate limiting (200 requests/hour)
    */
   async *syncPexelsLibrary(
-    search_query: string,
+    searchQuery: string,
     batchSize = 50,
   ): AsyncGenerator<SyncBatch> {
     if (!this.isEnabled) {
@@ -96,7 +96,7 @@ export class PexelsIntegrationService {
       const finalPerPage = Math.min(batchSize, 80);
 
       const firstResponse = await this.getPexelsPage(
-        search_query,
+        searchQuery,
         page,
         finalPerPage,
       );
@@ -128,7 +128,7 @@ export class PexelsIntegrationService {
         if (allPhotos.length < finalPerPage && currentResponse.next_page) {
           page++;
           currentResponse = await this.getPexelsPage(
-            search_query,
+            searchQuery,
             page,
             finalPerPage,
           );

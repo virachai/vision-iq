@@ -526,8 +526,8 @@ curl -X POST http://localhost:3006/alignment/extract-visual-intent \
 curl -X POST http://localhost:3006/alignment/sync-pexels \
   -H "Content-Type: application/json" \
   -d '{
-    "search_query": "desert landscape",
-    "batch_size": 50
+    "searchQuery": "desert landscape",
+    "batchSize": 50
   }'
 
 # Get statistics

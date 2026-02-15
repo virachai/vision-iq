@@ -63,12 +63,12 @@ export class AlignmentService {
    * Manual trigger for full library sync
    */
   async syncPexelsLibrary(
-    search_query = "nature",
+    searchQuery = "nature",
     batchSize = 50,
     failureThreshold = 0.1,
   ): Promise<SyncResult> {
     return this.keywordSyncService.syncPexelsLibrary(
-      search_query,
+      searchQuery,
       batchSize,
       failureThreshold,
     );

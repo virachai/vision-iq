@@ -292,12 +292,12 @@
 //    * Delegates to PexelsSyncService
 //    */
 //   async syncPexelsLibrary(
-//     search_query = "nature",
+//     searchQuery = "nature",
 //     batchSize = 50,
 //     failureThreshold = 0.1,
 //   ): Promise<SyncResult> {
 //     return this.pexelsSyncService.syncPexelsLibrary(
-//       search_query,
+//       searchQuery,
 //       batchSize,
 //       failureThreshold,
 //     );

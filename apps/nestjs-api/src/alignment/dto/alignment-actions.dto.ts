@@ -9,12 +9,12 @@ import {
 } from "class-validator";
 
 export class SyncPexelsDto {
-  @Expose({ name: "search_query" })
+  @Expose({ name: "searchQuery" })
   @IsOptional()
   @IsString()
   searchQuery?: string = "nature";
 
-  @Expose({ name: "batch_size" })
+  @Expose({ name: "batchSize" })
   @IsOptional()
   @IsNumber()
   @Min(1)

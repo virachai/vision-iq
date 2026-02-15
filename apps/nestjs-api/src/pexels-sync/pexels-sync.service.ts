@@ -23,7 +23,7 @@ export class PexelsSyncService {
    * Sync Pexels library in batches
    */
   async syncPexelsLibrary(
-    search_query = "nature",
+    searchQuery = "nature",
     batchSize = 50,
     failureThreshold = 0.1,
     descriptionId?: string,
@@ -55,11 +55,11 @@ export class PexelsSyncService {
       this.logger.log(
         `Starting Pexels sync (ID: ${
           syncHistoryId || "no-history"
-        }): query="${search_query}", batchSize=${batchSize}`,
+        }): query="${searchQuery}", batchSize=${batchSize}`,
       );
 
       for await (const batch of this.pexelsIntegrationService.syncPexelsLibrary(
-        search_query,
+        searchQuery,
         batchSize,
       )) {
         result.total_batches = batch.total_batches;

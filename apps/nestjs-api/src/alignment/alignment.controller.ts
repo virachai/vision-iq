@@ -59,7 +59,7 @@ export class AlignmentController {
   /**
    * POST /alignment/sync-pexels
    * Trigger Pexels library sync
-   * Body: { search_query?: string, batch_size?: number }
+   * Body: { searchQuery?: string, batchSize?: number }
    */
   @Post("sync-pexels")
   async syncPexels(@Body() dto: SyncPexelsDto) {

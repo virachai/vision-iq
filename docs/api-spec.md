@@ -160,8 +160,8 @@ Trigger Pexels library sync with a search query.
 
 ```typescript
 {
-  search_query?: string;   // Default: "nature"
-  batch_size?: number;     // Default: 50
+  searchQuery?: string;   // Default: "nature"
+  batchSize?: number;     // Default: 50
 }
 ```
 

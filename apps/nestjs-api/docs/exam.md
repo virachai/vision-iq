@@ -16,7 +16,7 @@ Extract scene visual intents from raw Gemini Live text.
 curl -X POST http://localhost:3006/alignment/extract-visual-intent \
      -H "Content-Type: application/json" \
      -d '{
-       "raw_gemini_text": "I want a scene with a lone tree in a field at sunset, followed by a close up of the bark."
+       "rawGeminiText": "I want a scene with a lone tree in a field at sunset, followed by a close up of the bark."
      }'
 ```
 
@@ -65,8 +65,8 @@ Trigger Pexels library sync to populate the database and run batch image analysi
 curl -X POST http://localhost:3006/alignment/sync-pexels \
      -H "Content-Type: application/json" \
      -d '{
-       "search_query": "nature",
-       "batch_size": 3
+       "searchQuery": "nature",
+       "batchSize": 3
      }'
 ```
 

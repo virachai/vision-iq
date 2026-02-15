@@ -314,8 +314,8 @@ Trigger Pexels library sync.
 
 ```json
 {
-  "search_query": "nature",
-  "batch_size": 50
+  "searchQuery": "nature",
+  "batchSize": 50
 }
 ```
 
