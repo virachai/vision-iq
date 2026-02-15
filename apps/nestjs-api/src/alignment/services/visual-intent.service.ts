@@ -2,6 +2,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import { DeepSeekService } from "../../deepseek-integration/deepseek.service";
 import { GeminiAnalysisService } from "../../image-analysis/gemini-analysis.service";
 import { VisualIntentRepository } from "../repositories/visual-intent.repository";
+import { KeywordSyncService } from "./keyword-sync.service";
 import { SceneRepository } from "../repositories/scene.repository";
 import {
   ExtractVisualIntentDto,
@@ -18,6 +19,7 @@ export class VisualIntentService {
     private readonly geminiAnalysisService: GeminiAnalysisService,
     private readonly visualIntentRepo: VisualIntentRepository,
     private readonly sceneRepo: SceneRepository,
+    private readonly keywordSyncService: KeywordSyncService,
   ) {}
 
   async testImageAnalysis(imageUrl: string) {
@@ -55,10 +57,23 @@ export class VisualIntentService {
             ...(sceneData.preferredComposition as any),
             visual_intent: sceneData.visualIntent,
           },
-          status: "COMPLETED" as PipelineStatus, // Initial extraction is done
+          status: "PROCESSING" as PipelineStatus,
         }));
 
-        await this.sceneRepo.createScenes(sceneRecords);
+        const createdScenes = await this.sceneRepo.createScenes(sceneRecords);
+
+        // 3. EXPANSION: Transform each raw intent into multiple detailed descriptions
+        for (let i = 0; i < createdScenes.length; i++) {
+          const scene = createdScenes[i];
+          const sceneData = scenes[i]; // DeepSeek DTO has the intent
+
+          await this.expandAndSyncScene(
+            scene.id,
+            sceneData.intent,
+            dto.autoMatch,
+          );
+        }
+
         await this.visualIntentRepo.updateRequestStatus(
           request.id,
           "COMPLETED",
@@ -76,6 +91,59 @@ export class VisualIntentService {
     } catch (error: any) {
       this.logger.error(`Failed to extract visual intent: ${error.message}`);
       throw error;
+    }
+  }
+
+  /**
+   * Expand a single scene into many detailed descriptions and trigger auto-sync
+   */
+  async expandAndSyncScene(
+    sceneId: string,
+    intent: string,
+    autoMatch = false,
+  ): Promise<void> {
+    this.logger.debug(
+      `Expanding scene ${sceneId}: "${intent.substring(0, 30)}..."`,
+    );
+
+    try {
+      const expanded = await this.deepseekService.expandSceneIntent(intent);
+
+      for (const exp of expanded) {
+        const analysisData = exp.analysis as any;
+        const description = await this.sceneRepo.createDescription({
+          sceneIntentId: sceneId,
+          description: exp.description,
+          status: "PROCESSING" as PipelineStatus,
+          keywords: analysisData?.keywords || [],
+        });
+
+        if (autoMatch) {
+          this.logger.log(
+            `Auto-match triggered for expanded description: ${description.id}`,
+          );
+          // Fire and forget sync (orchestrated by KeywordSyncService)
+          this.keywordSyncService
+            .syncPexelsByDescriptionId(description.id)
+            .catch((err) => {
+              this.logger.error(
+                `Background sync failed for description ${description.id}: ${err.message}`,
+              );
+            });
+        } else {
+          // If no auto-match, expansion for this description is COMPLETED
+          await this.sceneRepo.updateDescriptionStatus(
+            description.id,
+            "COMPLETED",
+          );
+        }
+      }
+
+      // Mark scene as completed after expansion is triggered/done
+      await this.sceneRepo.updateSceneStatus(sceneId, "COMPLETED");
+    } catch (error: any) {
+      this.logger.error(`Failed to expand scene ${sceneId}: ${error.message}`);
+      await this.sceneRepo.updateSceneStatus(sceneId, "FAILED", error.message);
     }
   }
 }

@@ -114,10 +114,19 @@ export class AlignmentService {
         await this.sceneRepo.incrementSceneRetryCount(id);
         const scene = await this.sceneRepo.findSceneById(id);
         if (scene) {
+          if (scene.descriptions.length === 0) {
+            this.logger.log(`Resuming scene ${id}: Triggering expansion`);
+            return this.visualIntentService.expandAndSyncScene(
+              scene.id,
+              scene.intent,
+              true, // Default to autoMatch=true when resuming
+            );
+          }
+
           this.logger.log(
             `Resuming scene ${id}: Triggering sync for descriptions`,
           );
-          // Mark as processed so it doesn't get stuck
+          // Mark as processed if it has descriptions
           await this.sceneRepo.updateSceneStatus(id, "COMPLETED");
 
           for (const desc of scene.descriptions) {
