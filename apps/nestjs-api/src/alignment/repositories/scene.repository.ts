@@ -59,13 +59,18 @@ export class SceneRepository {
     status: PipelineStatus;
     keywords?: string[];
   }) {
+    // Unique keywords only (normalized to lower case)
+    const uniqueKeywords = Array.from(
+      new Set((data.keywords || []).map((k) => k.trim().toLowerCase())),
+    ).filter((k) => k.length > 0);
+
     return this.prisma.visualDescription.create({
       data: {
         sceneIntentId: data.sceneIntentId,
         description: data.description,
         status: data.status,
         keywords: {
-          create: data.keywords?.map((k) => ({ keyword: k })) || [],
+          create: uniqueKeywords.map((k) => ({ keyword: k })),
         },
       },
     });

@@ -86,7 +86,7 @@ model VisualDescriptionKeyword {
   syncHistory         PexelsSyncHistory[]
   visualDescription   VisualDescription   @relation(fields: [visualDescriptionId], references: [id], onDelete: Cascade)
 
-  @@index([visualDescriptionId])
+  @@unique([visualDescriptionId, keyword])
   @@map("vision_iq_visual_description_keywords")
 }
 
