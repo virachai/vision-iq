@@ -111,6 +111,30 @@ describe("PexelsIntegrationService", () => {
       expect(mockedAxios.get).toHaveBeenCalledTimes(2);
     });
 
+    it("should yield correct batch_number when starting from a non-zero startPage", async () => {
+      const startPage = 3;
+      mockedAxios.get.mockResolvedValueOnce({
+        data: {
+          page: startPage,
+          per_page: 5,
+          photos: mockPhotos.slice(0, 5),
+          total_results: 20,
+          next_page: "http://api.pexels.com/v1/search?page=4",
+        },
+      });
+
+      const generator = service.syncPexelsLibrary("test", 5, startPage);
+      const firstBatch = await generator.next();
+
+      expect(firstBatch.value?.batch_number).toBe(3);
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          params: expect.objectContaining({ page: 3 }),
+        }),
+      );
+    });
+
     it("should handle single page correctly", async () => {
       mockedAxios.get.mockResolvedValueOnce({
         data: {

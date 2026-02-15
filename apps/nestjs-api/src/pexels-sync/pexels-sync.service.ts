@@ -124,14 +124,32 @@ export class PexelsSyncService {
 
           // Track page-level progress after each successful batch
           if (syncHistoryId) {
-            await this.prisma.pexelsSyncHistory.update({
+            const currentSync = await this.prisma.pexelsSyncHistory.findUnique({
               where: { id: syncHistoryId },
-              data: {
-                lastPageSynced: batch.batch_number,
-                totalPages: batch.total_batches,
-                totalImages: { increment: batch.images.length },
-              },
+              select: { lastPageSynced: true },
             });
+
+            // ONLY update progress if the new batch number is strictly greater than what's stored
+            if (
+              !currentSync ||
+              batch.batch_number > currentSync.lastPageSynced
+            ) {
+              await this.prisma.pexelsSyncHistory.update({
+                where: { id: syncHistoryId },
+                data: {
+                  lastPageSynced: batch.batch_number,
+                  totalPages: batch.total_batches,
+                  totalImages: { increment: batch.images.length },
+                },
+              });
+              this.logger.log(
+                `Updated progress: page ${batch.batch_number}/${batch.total_batches}`,
+              );
+            } else {
+              this.logger.debug(
+                `Skipping progress update for page ${batch.batch_number} (current lastPageSynced: ${currentSync?.lastPageSynced})`,
+              );
+            }
           }
 
           this.logger.log(

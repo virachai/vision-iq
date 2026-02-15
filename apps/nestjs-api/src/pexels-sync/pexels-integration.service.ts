@@ -89,7 +89,7 @@ export class PexelsIntegrationService {
     }
     let page = startPage;
     let totalResults = 0;
-    let batchNumber = 0;
+    let batchNumber = startPage - 1;
     let totalBatches = 0;
 
     try {
@@ -105,7 +105,7 @@ export class PexelsIntegrationService {
       totalBatches = Math.ceil(totalResults / finalPerPage);
 
       this.logger.log(
-        `Starting sync of ${totalResults} images from Pexels (${totalBatches} batches)`,
+        `Starting sync of ${totalResults} images from Pexels (${totalBatches} batches) from page ${startPage}`,
       );
 
       // Process all pages
