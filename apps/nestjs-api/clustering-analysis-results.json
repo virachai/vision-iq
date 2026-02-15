@@ -1,0 +1,3020 @@
+[
+  {
+    "sceneId": "scene-1",
+    "intent": "A warm, sunny beach scene with happy people.",
+    "candidates": [
+      {
+        "imageId": "img-neutral-14",
+        "url": "https://example.com/neutral-14.jpg",
+        "matchScore": 0.5754958125892375,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5743.220278055218
+          }
+        },
+        "score": 0.5754958125892375,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5743.220278055218
+        },
+        "primaryColor": "#808080",
+        "temp": 5743.220278055218
+      },
+      {
+        "imageId": "img-cold-3",
+        "url": "https://example.com/cold-3.jpg",
+        "matchScore": 0.5713716169232251,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3500.5434206657774
+          }
+        },
+        "score": 0.5713716169232251,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3500.5434206657774
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3500.5434206657774
+      },
+      {
+        "imageId": "img-cold-10",
+        "url": "https://example.com/cold-10.jpg",
+        "matchScore": 0.4659926508590662,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3270.0222057771757
+          }
+        },
+        "score": 0.4659926508590662,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3270.0222057771757
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3270.0222057771757
+      },
+      {
+        "imageId": "img-warm-15",
+        "url": "https://example.com/warm-15.jpg",
+        "matchScore": 0.98418406927234,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8195.701719736002
+          }
+        },
+        "score": 0.98418406927234,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8195.701719736002
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8195.701719736002
+      },
+      {
+        "imageId": "img-warm-17",
+        "url": "https://example.com/warm-17.jpg",
+        "matchScore": 0.8139075583927349,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8587.370989652878
+          }
+        },
+        "score": 0.8139075583927349,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8587.370989652878
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8587.370989652878
+      },
+      {
+        "imageId": "img-cold-6",
+        "url": "https://example.com/cold-6.jpg",
+        "matchScore": 0.5846653077322541,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3085.036164648144
+          }
+        },
+        "score": 0.5846653077322541,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3085.036164648144
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3085.036164648144
+      },
+      {
+        "imageId": "img-warm-11",
+        "url": "https://example.com/warm-11.jpg",
+        "matchScore": 0.9971773741807368,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8935.122070680023
+          }
+        },
+        "score": 0.9971773741807368,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8935.122070680023
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8935.122070680023
+      },
+      {
+        "imageId": "img-warm-8",
+        "url": "https://example.com/warm-8.jpg",
+        "matchScore": 0.9187200304160318,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8836.22989159812
+          }
+        },
+        "score": 0.9187200304160318,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8836.22989159812
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8836.22989159812
+      },
+      {
+        "imageId": "img-neutral-10",
+        "url": "https://example.com/neutral-10.jpg",
+        "matchScore": 0.6053445717870499,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5584.776213438356
+          }
+        },
+        "score": 0.6053445717870499,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5584.776213438356
+        },
+        "primaryColor": "#808080",
+        "temp": 5584.776213438356
+      },
+      {
+        "imageId": "img-neutral-5",
+        "url": "https://example.com/neutral-5.jpg",
+        "matchScore": 0.6355556353004513,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5655.357015595034
+          }
+        },
+        "score": 0.6355556353004513,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5655.357015595034
+        },
+        "primaryColor": "#808080",
+        "temp": 5655.357015595034
+      },
+      {
+        "imageId": "img-warm-12",
+        "url": "https://example.com/warm-12.jpg",
+        "matchScore": 0.8309132863384091,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8627.06976032179
+          }
+        },
+        "score": 0.8309132863384091,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8627.06976032179
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8627.06976032179
+      },
+      {
+        "imageId": "img-warm-10",
+        "url": "https://example.com/warm-10.jpg",
+        "matchScore": 0.9834116640405086,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8408.876754873896
+          }
+        },
+        "score": 0.9834116640405086,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8408.876754873896
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8408.876754873896
+      },
+      {
+        "imageId": "img-warm-4",
+        "url": "https://example.com/warm-4.jpg",
+        "matchScore": 0.9952629999935161,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8052.208011065705
+          }
+        },
+        "score": 0.9952629999935161,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8052.208011065705
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8052.208011065705
+      },
+      {
+        "imageId": "img-cold-13",
+        "url": "https://example.com/cold-13.jpg",
+        "matchScore": 0.41830333494378374,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3621.764877140847
+          }
+        },
+        "score": 0.41830333494378374,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3621.764877140847
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3621.764877140847
+      },
+      {
+        "imageId": "img-warm-2",
+        "url": "https://example.com/warm-2.jpg",
+        "matchScore": 0.8247699161885471,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8528.449980562904
+          }
+        },
+        "score": 0.8247699161885471,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8528.449980562904
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8528.449980562904
+      },
+      {
+        "imageId": "img-cold-12",
+        "url": "https://example.com/cold-12.jpg",
+        "matchScore": 0.43204431800890636,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3258.700859825456
+          }
+        },
+        "score": 0.43204431800890636,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3258.700859825456
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3258.700859825456
+      },
+      {
+        "imageId": "img-neutral-9",
+        "url": "https://example.com/neutral-9.jpg",
+        "matchScore": 0.5795003662141743,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5729.512863790119
+          }
+        },
+        "score": 0.5795003662141743,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5729.512863790119
+        },
+        "primaryColor": "#808080",
+        "temp": 5729.512863790119
+      },
+      {
+        "imageId": "img-warm-13",
+        "url": "https://example.com/warm-13.jpg",
+        "matchScore": 0.9855213502778267,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8092.068237430627
+          }
+        },
+        "score": 0.9855213502778267,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8092.068237430627
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8092.068237430627
+      },
+      {
+        "imageId": "img-warm-0",
+        "url": "https://example.com/warm-0.jpg",
+        "matchScore": 0.8204785910541768,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8998.791294595016
+          }
+        },
+        "score": 0.8204785910541768,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8998.791294595016
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8998.791294595016
+      },
+      {
+        "imageId": "img-neutral-13",
+        "url": "https://example.com/neutral-13.jpg",
+        "matchScore": 0.6471558419994476,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5624.737546105509
+          }
+        },
+        "score": 0.6471558419994476,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5624.737546105509
+        },
+        "primaryColor": "#808080",
+        "temp": 5624.737546105509
+      },
+      {
+        "imageId": "img-warm-3",
+        "url": "https://example.com/warm-3.jpg",
+        "matchScore": 0.86789872181458,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8495.069704538719
+          }
+        },
+        "score": 0.86789872181458,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8495.069704538719
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8495.069704538719
+      },
+      {
+        "imageId": "img-neutral-1",
+        "url": "https://example.com/neutral-1.jpg",
+        "matchScore": 0.5025632263117654,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5535.382915338929
+          }
+        },
+        "score": 0.5025632263117654,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5535.382915338929
+        },
+        "primaryColor": "#808080",
+        "temp": 5535.382915338929
+      },
+      {
+        "imageId": "img-warm-9",
+        "url": "https://example.com/warm-9.jpg",
+        "matchScore": 0.8964181716144294,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8325.374244804214
+          }
+        },
+        "score": 0.8964181716144294,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8325.374244804214
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8325.374244804214
+      },
+      {
+        "imageId": "img-cold-9",
+        "url": "https://example.com/cold-9.jpg",
+        "matchScore": 0.5242048315077352,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3073.9853546785703
+          }
+        },
+        "score": 0.5242048315077352,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3073.9853546785703
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3073.9853546785703
+      },
+      {
+        "imageId": "img-cold-1",
+        "url": "https://example.com/cold-1.jpg",
+        "matchScore": 0.6066924037520314,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3295.5755618949192
+          }
+        },
+        "score": 0.6066924037520314,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3295.5755618949192
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3295.5755618949192
+      },
+      {
+        "imageId": "img-neutral-6",
+        "url": "https://example.com/neutral-6.jpg",
+        "matchScore": 0.5925986428333581,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5766.141992367532
+          }
+        },
+        "score": 0.5925986428333581,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5766.141992367532
+        },
+        "primaryColor": "#808080",
+        "temp": 5766.141992367532
+      },
+      {
+        "imageId": "img-warm-1",
+        "url": "https://example.com/warm-1.jpg",
+        "matchScore": 0.9364305327789589,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8144.402320451061
+          }
+        },
+        "score": 0.9364305327789589,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8144.402320451061
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8144.402320451061
+      },
+      {
+        "imageId": "img-cold-2",
+        "url": "https://example.com/cold-2.jpg",
+        "matchScore": 0.6088325842273508,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3597.187922102945
+          }
+        },
+        "score": 0.6088325842273508,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3597.187922102945
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3597.187922102945
+      },
+      {
+        "imageId": "img-neutral-8",
+        "url": "https://example.com/neutral-8.jpg",
+        "matchScore": 0.622051917199996,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5976.052982118923
+          }
+        },
+        "score": 0.622051917199996,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5976.052982118923
+        },
+        "primaryColor": "#808080",
+        "temp": 5976.052982118923
+      },
+      {
+        "imageId": "img-neutral-12",
+        "url": "https://example.com/neutral-12.jpg",
+        "matchScore": 0.6256078927027501,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5630.085973976433
+          }
+        },
+        "score": 0.6256078927027501,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5630.085973976433
+        },
+        "primaryColor": "#808080",
+        "temp": 5630.085973976433
+      },
+      {
+        "imageId": "img-neutral-3",
+        "url": "https://example.com/neutral-3.jpg",
+        "matchScore": 0.6750643717055604,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5859.008526005376
+          }
+        },
+        "score": 0.6750643717055604,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5859.008526005376
+        },
+        "primaryColor": "#808080",
+        "temp": 5859.008526005376
+      },
+      {
+        "imageId": "img-warm-5",
+        "url": "https://example.com/warm-5.jpg",
+        "matchScore": 0.9266660294101943,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8597.037937337975
+          }
+        },
+        "score": 0.9266660294101943,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8597.037937337975
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8597.037937337975
+      },
+      {
+        "imageId": "img-warm-6",
+        "url": "https://example.com/warm-6.jpg",
+        "matchScore": 0.9405092605551895,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8998.784283520192
+          }
+        },
+        "score": 0.9405092605551895,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8998.784283520192
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8998.784283520192
+      },
+      {
+        "imageId": "img-cold-4",
+        "url": "https://example.com/cold-4.jpg",
+        "matchScore": 0.644202748289037,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3304.5278925944267
+          }
+        },
+        "score": 0.644202748289037,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3304.5278925944267
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3304.5278925944267
+      },
+      {
+        "imageId": "img-neutral-11",
+        "url": "https://example.com/neutral-11.jpg",
+        "matchScore": 0.6807096074328866,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5800.233205214147
+          }
+        },
+        "score": 0.6807096074328866,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5800.233205214147
+        },
+        "primaryColor": "#808080",
+        "temp": 5800.233205214147
+      },
+      {
+        "imageId": "img-cold-5",
+        "url": "https://example.com/cold-5.jpg",
+        "matchScore": 0.5061031023668099,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3520.5411399897257
+          }
+        },
+        "score": 0.5061031023668099,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3520.5411399897257
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3520.5411399897257
+      },
+      {
+        "imageId": "img-warm-7",
+        "url": "https://example.com/warm-7.jpg",
+        "matchScore": 0.9814124022025936,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8514.800140773546
+          }
+        },
+        "score": 0.9814124022025936,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8514.800140773546
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8514.800140773546
+      },
+      {
+        "imageId": "img-neutral-0",
+        "url": "https://example.com/neutral-0.jpg",
+        "matchScore": 0.5522409726108498,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5877.7922477306
+          }
+        },
+        "score": 0.5522409726108498,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5877.7922477306
+        },
+        "primaryColor": "#808080",
+        "temp": 5877.7922477306
+      },
+      {
+        "imageId": "img-warm-14",
+        "url": "https://example.com/warm-14.jpg",
+        "matchScore": 0.9952672484415346,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8854.923868895368
+          }
+        },
+        "score": 0.9952672484415346,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8854.923868895368
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8854.923868895368
+      },
+      {
+        "imageId": "img-warm-16",
+        "url": "https://example.com/warm-16.jpg",
+        "matchScore": 0.833507679703795,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8484.469222364009
+          }
+        },
+        "score": 0.833507679703795,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8484.469222364009
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8484.469222364009
+      },
+      {
+        "imageId": "img-warm-19",
+        "url": "https://example.com/warm-19.jpg",
+        "matchScore": 0.8924719091859612,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8423.17796952859
+          }
+        },
+        "score": 0.8924719091859612,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8423.17796952859
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8423.17796952859
+      },
+      {
+        "imageId": "img-cold-14",
+        "url": "https://example.com/cold-14.jpg",
+        "matchScore": 0.6460078569148521,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3652.7815954074304
+          }
+        },
+        "score": 0.6460078569148521,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3652.7815954074304
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3652.7815954074304
+      },
+      {
+        "imageId": "img-cold-8",
+        "url": "https://example.com/cold-8.jpg",
+        "matchScore": 0.6978065113470515,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3344.9900752237227
+          }
+        },
+        "score": 0.6978065113470515,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3344.9900752237227
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3344.9900752237227
+      },
+      {
+        "imageId": "img-neutral-7",
+        "url": "https://example.com/neutral-7.jpg",
+        "matchScore": 0.5430421778805035,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5927.443468363256
+          }
+        },
+        "score": 0.5430421778805035,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5927.443468363256
+        },
+        "primaryColor": "#808080",
+        "temp": 5927.443468363256
+      },
+      {
+        "imageId": "img-neutral-4",
+        "url": "https://example.com/neutral-4.jpg",
+        "matchScore": 0.5169173779423425,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5920.221534862877
+          }
+        },
+        "score": 0.5169173779423425,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5920.221534862877
+        },
+        "primaryColor": "#808080",
+        "temp": 5920.221534862877
+      },
+      {
+        "imageId": "img-cold-11",
+        "url": "https://example.com/cold-11.jpg",
+        "matchScore": 0.43340091881443116,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3262.9543782153796
+          }
+        },
+        "score": 0.43340091881443116,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3262.9543782153796
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3262.9543782153796
+      },
+      {
+        "imageId": "img-neutral-2",
+        "url": "https://example.com/neutral-2.jpg",
+        "matchScore": 0.6625446976471544,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5878.840030145636
+          }
+        },
+        "score": 0.6625446976471544,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5878.840030145636
+        },
+        "primaryColor": "#808080",
+        "temp": 5878.840030145636
+      },
+      {
+        "imageId": "img-cold-0",
+        "url": "https://example.com/cold-0.jpg",
+        "matchScore": 0.4927677869512333,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3492.6894145846713
+          }
+        },
+        "score": 0.4927677869512333,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3492.6894145846713
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3492.6894145846713
+      },
+      {
+        "imageId": "img-cold-7",
+        "url": "https://example.com/cold-7.jpg",
+        "matchScore": 0.4815026332432904,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3153.108414019466
+          }
+        },
+        "score": 0.4815026332432904,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3153.108414019466
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3153.108414019466
+      },
+      {
+        "imageId": "img-warm-18",
+        "url": "https://example.com/warm-18.jpg",
+        "matchScore": 0.9077795518932313,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8014.797581536272
+          }
+        },
+        "score": 0.9077795518932313,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8014.797581536272
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8014.797581536272
+      }
+    ]
+  },
+  {
+    "sceneId": "scene-2",
+    "intent": "A dark, moody cybercity night.",
+    "candidates": [
+      {
+        "imageId": "img-warm-1",
+        "url": "https://example.com/warm-1.jpg",
+        "matchScore": 0.9891601760158221,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8572.144032633374
+          }
+        },
+        "score": 0.9891601760158221,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8572.144032633374
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8572.144032633374
+      },
+      {
+        "imageId": "img-warm-0",
+        "url": "https://example.com/warm-0.jpg",
+        "matchScore": 0.8532294064786785,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8383.693948500104
+          }
+        },
+        "score": 0.8532294064786785,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8383.693948500104
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8383.693948500104
+      },
+      {
+        "imageId": "img-warm-16",
+        "url": "https://example.com/warm-16.jpg",
+        "matchScore": 0.8847459623280723,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8304.85877118849
+          }
+        },
+        "score": 0.8847459623280723,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8304.85877118849
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8304.85877118849
+      },
+      {
+        "imageId": "img-cold-12",
+        "url": "https://example.com/cold-12.jpg",
+        "matchScore": 0.6861179995640188,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3796.980348990678
+          }
+        },
+        "score": 0.6861179995640188,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3796.980348990678
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3796.980348990678
+      },
+      {
+        "imageId": "img-warm-8",
+        "url": "https://example.com/warm-8.jpg",
+        "matchScore": 0.8785885823574517,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8732.554511327404
+          }
+        },
+        "score": 0.8785885823574517,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8732.554511327404
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8732.554511327404
+      },
+      {
+        "imageId": "img-warm-7",
+        "url": "https://example.com/warm-7.jpg",
+        "matchScore": 0.8159959001431271,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8489.369048898487
+          }
+        },
+        "score": 0.8159959001431271,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8489.369048898487
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8489.369048898487
+      },
+      {
+        "imageId": "img-cold-2",
+        "url": "https://example.com/cold-2.jpg",
+        "matchScore": 0.4689455453255269,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3615.018687595386
+          }
+        },
+        "score": 0.4689455453255269,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3615.018687595386
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3615.018687595386
+      },
+      {
+        "imageId": "img-warm-19",
+        "url": "https://example.com/warm-19.jpg",
+        "matchScore": 0.85237803393615,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8825.867986266812
+          }
+        },
+        "score": 0.85237803393615,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8825.867986266812
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8825.867986266812
+      },
+      {
+        "imageId": "img-warm-5",
+        "url": "https://example.com/warm-5.jpg",
+        "matchScore": 0.8751031949335812,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8671.362142963146
+          }
+        },
+        "score": 0.8751031949335812,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8671.362142963146
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8671.362142963146
+      },
+      {
+        "imageId": "img-warm-17",
+        "url": "https://example.com/warm-17.jpg",
+        "matchScore": 0.9792155451228599,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8455.118402803399
+          }
+        },
+        "score": 0.9792155451228599,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8455.118402803399
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8455.118402803399
+      },
+      {
+        "imageId": "img-warm-11",
+        "url": "https://example.com/warm-11.jpg",
+        "matchScore": 0.9674905080943283,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8738.548799286833
+          }
+        },
+        "score": 0.9674905080943283,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8738.548799286833
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8738.548799286833
+      },
+      {
+        "imageId": "img-cold-10",
+        "url": "https://example.com/cold-10.jpg",
+        "matchScore": 0.47465751341322615,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3962.2963024168675
+          }
+        },
+        "score": 0.47465751341322615,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3962.2963024168675
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3962.2963024168675
+      },
+      {
+        "imageId": "img-warm-15",
+        "url": "https://example.com/warm-15.jpg",
+        "matchScore": 0.9482001621787228,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8595.235011351044
+          }
+        },
+        "score": 0.9482001621787228,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8595.235011351044
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8595.235011351044
+      },
+      {
+        "imageId": "img-warm-13",
+        "url": "https://example.com/warm-13.jpg",
+        "matchScore": 0.8749654258950346,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8464.923809224001
+          }
+        },
+        "score": 0.8749654258950346,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8464.923809224001
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8464.923809224001
+      },
+      {
+        "imageId": "img-cold-14",
+        "url": "https://example.com/cold-14.jpg",
+        "matchScore": 0.5278390368050587,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3200.130565435286
+          }
+        },
+        "score": 0.5278390368050587,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3200.130565435286
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3200.130565435286
+      },
+      {
+        "imageId": "img-neutral-8",
+        "url": "https://example.com/neutral-8.jpg",
+        "matchScore": 0.6577133411396312,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5779.501036095585
+          }
+        },
+        "score": 0.6577133411396312,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5779.501036095585
+        },
+        "primaryColor": "#808080",
+        "temp": 5779.501036095585
+      },
+      {
+        "imageId": "img-neutral-4",
+        "url": "https://example.com/neutral-4.jpg",
+        "matchScore": 0.65978308518756,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5880.942332433792
+          }
+        },
+        "score": 0.65978308518756,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5880.942332433792
+        },
+        "primaryColor": "#808080",
+        "temp": 5880.942332433792
+      },
+      {
+        "imageId": "img-neutral-1",
+        "url": "https://example.com/neutral-1.jpg",
+        "matchScore": 0.5979546067584314,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5538.101989525553
+          }
+        },
+        "score": 0.5979546067584314,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5538.101989525553
+        },
+        "primaryColor": "#808080",
+        "temp": 5538.101989525553
+      },
+      {
+        "imageId": "img-cold-4",
+        "url": "https://example.com/cold-4.jpg",
+        "matchScore": 0.416278781494792,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3126.847504082026
+          }
+        },
+        "score": 0.416278781494792,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3126.847504082026
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3126.847504082026
+      },
+      {
+        "imageId": "img-neutral-13",
+        "url": "https://example.com/neutral-13.jpg",
+        "matchScore": 0.5450297048599252,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5821.240592342457
+          }
+        },
+        "score": 0.5450297048599252,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5821.240592342457
+        },
+        "primaryColor": "#808080",
+        "temp": 5821.240592342457
+      },
+      {
+        "imageId": "img-cold-1",
+        "url": "https://example.com/cold-1.jpg",
+        "matchScore": 0.4362248258537335,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3036.986495625044
+          }
+        },
+        "score": 0.4362248258537335,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3036.986495625044
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3036.986495625044
+      },
+      {
+        "imageId": "img-cold-5",
+        "url": "https://example.com/cold-5.jpg",
+        "matchScore": 0.5961768940526042,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3416.0123976796976
+          }
+        },
+        "score": 0.5961768940526042,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3416.0123976796976
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3416.0123976796976
+      },
+      {
+        "imageId": "img-cold-11",
+        "url": "https://example.com/cold-11.jpg",
+        "matchScore": 0.49968145893288746,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3512.17164112913
+          }
+        },
+        "score": 0.49968145893288746,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3512.17164112913
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3512.17164112913
+      },
+      {
+        "imageId": "img-neutral-2",
+        "url": "https://example.com/neutral-2.jpg",
+        "matchScore": 0.5952883980338644,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5677.893411701852
+          }
+        },
+        "score": 0.5952883980338644,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5677.893411701852
+        },
+        "primaryColor": "#808080",
+        "temp": 5677.893411701852
+      },
+      {
+        "imageId": "img-neutral-6",
+        "url": "https://example.com/neutral-6.jpg",
+        "matchScore": 0.5393053069925636,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5708.323199731059
+          }
+        },
+        "score": 0.5393053069925636,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5708.323199731059
+        },
+        "primaryColor": "#808080",
+        "temp": 5708.323199731059
+      },
+      {
+        "imageId": "img-neutral-7",
+        "url": "https://example.com/neutral-7.jpg",
+        "matchScore": 0.54372602543983,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5515.6225177187835
+          }
+        },
+        "score": 0.54372602543983,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5515.6225177187835
+        },
+        "primaryColor": "#808080",
+        "temp": 5515.6225177187835
+      },
+      {
+        "imageId": "img-warm-6",
+        "url": "https://example.com/warm-6.jpg",
+        "matchScore": 0.9616505627602222,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8466.4036120844
+          }
+        },
+        "score": 0.9616505627602222,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8466.4036120844
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8466.4036120844
+      },
+      {
+        "imageId": "img-warm-3",
+        "url": "https://example.com/warm-3.jpg",
+        "matchScore": 0.9193505409468354,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8384.504210673063
+          }
+        },
+        "score": 0.9193505409468354,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8384.504210673063
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8384.504210673063
+      },
+      {
+        "imageId": "img-neutral-12",
+        "url": "https://example.com/neutral-12.jpg",
+        "matchScore": 0.6722350711324963,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5663.276063651644
+          }
+        },
+        "score": 0.6722350711324963,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5663.276063651644
+        },
+        "primaryColor": "#808080",
+        "temp": 5663.276063651644
+      },
+      {
+        "imageId": "img-warm-12",
+        "url": "https://example.com/warm-12.jpg",
+        "matchScore": 0.8449378090880822,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8738.986757458051
+          }
+        },
+        "score": 0.8449378090880822,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8738.986757458051
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8738.986757458051
+      },
+      {
+        "imageId": "img-neutral-0",
+        "url": "https://example.com/neutral-0.jpg",
+        "matchScore": 0.6251038529601042,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5562.6166283825805
+          }
+        },
+        "score": 0.6251038529601042,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5562.6166283825805
+        },
+        "primaryColor": "#808080",
+        "temp": 5562.6166283825805
+      },
+      {
+        "imageId": "img-cold-6",
+        "url": "https://example.com/cold-6.jpg",
+        "matchScore": 0.5897202405601074,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3248.199695751588
+          }
+        },
+        "score": 0.5897202405601074,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3248.199695751588
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3248.199695751588
+      },
+      {
+        "imageId": "img-neutral-14",
+        "url": "https://example.com/neutral-14.jpg",
+        "matchScore": 0.6202695373603351,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5845.089289628832
+          }
+        },
+        "score": 0.6202695373603351,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5845.089289628832
+        },
+        "primaryColor": "#808080",
+        "temp": 5845.089289628832
+      },
+      {
+        "imageId": "img-warm-4",
+        "url": "https://example.com/warm-4.jpg",
+        "matchScore": 0.839897174549668,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8109.7683074889455
+          }
+        },
+        "score": 0.839897174549668,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8109.7683074889455
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8109.7683074889455
+      },
+      {
+        "imageId": "img-cold-7",
+        "url": "https://example.com/cold-7.jpg",
+        "matchScore": 0.4945360234150888,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3668.4511621681145
+          }
+        },
+        "score": 0.4945360234150888,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3668.4511621681145
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3668.4511621681145
+      },
+      {
+        "imageId": "img-cold-3",
+        "url": "https://example.com/cold-3.jpg",
+        "matchScore": 0.5175653612188784,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3817.6744172528033
+          }
+        },
+        "score": 0.5175653612188784,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3817.6744172528033
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3817.6744172528033
+      },
+      {
+        "imageId": "img-warm-9",
+        "url": "https://example.com/warm-9.jpg",
+        "matchScore": 0.8628475084373035,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8647.727645075756
+          }
+        },
+        "score": 0.8628475084373035,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8647.727645075756
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8647.727645075756
+      },
+      {
+        "imageId": "img-neutral-10",
+        "url": "https://example.com/neutral-10.jpg",
+        "matchScore": 0.5639109309586665,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5789.768036758491
+          }
+        },
+        "score": 0.5639109309586665,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5789.768036758491
+        },
+        "primaryColor": "#808080",
+        "temp": 5789.768036758491
+      },
+      {
+        "imageId": "img-warm-2",
+        "url": "https://example.com/warm-2.jpg",
+        "matchScore": 0.8032797430098263,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8889.339713176578
+          }
+        },
+        "score": 0.8032797430098263,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8889.339713176578
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8889.339713176578
+      },
+      {
+        "imageId": "img-cold-8",
+        "url": "https://example.com/cold-8.jpg",
+        "matchScore": 0.5549106418414804,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3178.9190782629985
+          }
+        },
+        "score": 0.5549106418414804,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3178.9190782629985
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3178.9190782629985
+      },
+      {
+        "imageId": "img-neutral-9",
+        "url": "https://example.com/neutral-9.jpg",
+        "matchScore": 0.6741162918606463,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5603.270256218201
+          }
+        },
+        "score": 0.6741162918606463,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5603.270256218201
+        },
+        "primaryColor": "#808080",
+        "temp": 5603.270256218201
+      },
+      {
+        "imageId": "img-neutral-11",
+        "url": "https://example.com/neutral-11.jpg",
+        "matchScore": 0.6752748047730196,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5637.627613368238
+          }
+        },
+        "score": 0.6752748047730196,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5637.627613368238
+        },
+        "primaryColor": "#808080",
+        "temp": 5637.627613368238
+      },
+      {
+        "imageId": "img-warm-14",
+        "url": "https://example.com/warm-14.jpg",
+        "matchScore": 0.9761563965626656,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8032.300903569695
+          }
+        },
+        "score": 0.9761563965626656,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8032.300903569695
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8032.300903569695
+      },
+      {
+        "imageId": "img-cold-9",
+        "url": "https://example.com/cold-9.jpg",
+        "matchScore": 0.6650154577354256,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3734.695130953211
+          }
+        },
+        "score": 0.6650154577354256,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3734.695130953211
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3734.695130953211
+      },
+      {
+        "imageId": "img-neutral-5",
+        "url": "https://example.com/neutral-5.jpg",
+        "matchScore": 0.5338058982782578,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5517.952673484814
+          }
+        },
+        "score": 0.5338058982782578,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5517.952673484814
+        },
+        "primaryColor": "#808080",
+        "temp": 5517.952673484814
+      },
+      {
+        "imageId": "img-neutral-3",
+        "url": "https://example.com/neutral-3.jpg",
+        "matchScore": 0.572789323309294,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5884.708032658815
+          }
+        },
+        "score": 0.572789323309294,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5884.708032658815
+        },
+        "primaryColor": "#808080",
+        "temp": 5884.708032658815
+      },
+      {
+        "imageId": "img-cold-13",
+        "url": "https://example.com/cold-13.jpg",
+        "matchScore": 0.5870160098725031,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3487.838409583571
+          }
+        },
+        "score": 0.5870160098725031,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3487.838409583571
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3487.838409583571
+      },
+      {
+        "imageId": "img-warm-18",
+        "url": "https://example.com/warm-18.jpg",
+        "matchScore": 0.9753432379656406,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8357.620574300345
+          }
+        },
+        "score": 0.9753432379656406,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8357.620574300345
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8357.620574300345
+      },
+      {
+        "imageId": "img-warm-10",
+        "url": "https://example.com/warm-10.jpg",
+        "matchScore": 0.9906430007559628,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8213.947463347655
+          }
+        },
+        "score": 0.9906430007559628,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8213.947463347655
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8213.947463347655
+      },
+      {
+        "imageId": "img-cold-0",
+        "url": "https://example.com/cold-0.jpg",
+        "matchScore": 0.6110199025541437,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3129.2069286238498
+          }
+        },
+        "score": 0.6110199025541437,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3129.2069286238498
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3129.2069286238498
+      }
+    ]
+  },
+  {
+    "sceneId": "scene-3",
+    "intent": "A corporate office meeting, neutral tones.",
+    "candidates": [
+      {
+        "imageId": "img-warm-4",
+        "url": "https://example.com/warm-4.jpg",
+        "matchScore": 0.851151877720865,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8552.154819699785
+          }
+        },
+        "score": 0.851151877720865,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8552.154819699785
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8552.154819699785
+      },
+      {
+        "imageId": "img-warm-0",
+        "url": "https://example.com/warm-0.jpg",
+        "matchScore": 0.8997409107304177,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8230.925939518262
+          }
+        },
+        "score": 0.8997409107304177,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8230.925939518262
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8230.925939518262
+      },
+      {
+        "imageId": "img-cold-3",
+        "url": "https://example.com/cold-3.jpg",
+        "matchScore": 0.5337071307621679,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3512.3968506052306
+          }
+        },
+        "score": 0.5337071307621679,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3512.3968506052306
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3512.3968506052306
+      },
+      {
+        "imageId": "img-warm-2",
+        "url": "https://example.com/warm-2.jpg",
+        "matchScore": 0.9729013974184115,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8513.43045987684
+          }
+        },
+        "score": 0.9729013974184115,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8513.43045987684
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8513.43045987684
+      },
+      {
+        "imageId": "img-cold-5",
+        "url": "https://example.com/cold-5.jpg",
+        "matchScore": 0.5469892423268632,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3132.855744889545
+          }
+        },
+        "score": 0.5469892423268632,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3132.855744889545
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3132.855744889545
+      },
+      {
+        "imageId": "img-neutral-6",
+        "url": "https://example.com/neutral-6.jpg",
+        "matchScore": 0.5902903162601136,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5949.390932162599
+          }
+        },
+        "score": 0.5902903162601136,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5949.390932162599
+        },
+        "primaryColor": "#808080",
+        "temp": 5949.390932162599
+      },
+      {
+        "imageId": "img-cold-2",
+        "url": "https://example.com/cold-2.jpg",
+        "matchScore": 0.5614343290031172,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3627.975287230529
+          }
+        },
+        "score": 0.5614343290031172,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3627.975287230529
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3627.975287230529
+      },
+      {
+        "imageId": "img-warm-8",
+        "url": "https://example.com/warm-8.jpg",
+        "matchScore": 0.8761238276031666,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8575.827406778957
+          }
+        },
+        "score": 0.8761238276031666,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8575.827406778957
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8575.827406778957
+      },
+      {
+        "imageId": "img-warm-11",
+        "url": "https://example.com/warm-11.jpg",
+        "matchScore": 0.9837088511373652,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8742.6739787176
+          }
+        },
+        "score": 0.9837088511373652,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8742.6739787176
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8742.6739787176
+      },
+      {
+        "imageId": "img-warm-3",
+        "url": "https://example.com/warm-3.jpg",
+        "matchScore": 0.9218627875538594,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8602.953375697278
+          }
+        },
+        "score": 0.9218627875538594,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8602.953375697278
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8602.953375697278
+      },
+      {
+        "imageId": "img-warm-17",
+        "url": "https://example.com/warm-17.jpg",
+        "matchScore": 0.9371604152612807,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8248.375741335381
+          }
+        },
+        "score": 0.9371604152612807,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8248.375741335381
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8248.375741335381
+      },
+      {
+        "imageId": "img-warm-15",
+        "url": "https://example.com/warm-15.jpg",
+        "matchScore": 0.8486473439334176,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8036.940133638148
+          }
+        },
+        "score": 0.8486473439334176,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8036.940133638148
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8036.940133638148
+      },
+      {
+        "imageId": "img-neutral-1",
+        "url": "https://example.com/neutral-1.jpg",
+        "matchScore": 0.5264374985710911,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5866.317983058031
+          }
+        },
+        "score": 0.5264374985710911,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5866.317983058031
+        },
+        "primaryColor": "#808080",
+        "temp": 5866.317983058031
+      },
+      {
+        "imageId": "img-warm-7",
+        "url": "https://example.com/warm-7.jpg",
+        "matchScore": 0.8564714216840124,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8586.816673944291
+          }
+        },
+        "score": 0.8564714216840124,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8586.816673944291
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8586.816673944291
+      },
+      {
+        "imageId": "img-cold-0",
+        "url": "https://example.com/cold-0.jpg",
+        "matchScore": 0.587965146055384,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3165.9056444077487
+          }
+        },
+        "score": 0.587965146055384,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3165.9056444077487
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3165.9056444077487
+      },
+      {
+        "imageId": "img-cold-7",
+        "url": "https://example.com/cold-7.jpg",
+        "matchScore": 0.5268641881284234,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3928.1390862632634
+          }
+        },
+        "score": 0.5268641881284234,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3928.1390862632634
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3928.1390862632634
+      },
+      {
+        "imageId": "img-cold-6",
+        "url": "https://example.com/cold-6.jpg",
+        "matchScore": 0.6495671228882879,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3465.0041470284295
+          }
+        },
+        "score": 0.6495671228882879,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3465.0041470284295
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3465.0041470284295
+      },
+      {
+        "imageId": "img-warm-12",
+        "url": "https://example.com/warm-12.jpg",
+        "matchScore": 0.9032160238507227,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8875.091535053463
+          }
+        },
+        "score": 0.9032160238507227,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8875.091535053463
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8875.091535053463
+      },
+      {
+        "imageId": "img-warm-10",
+        "url": "https://example.com/warm-10.jpg",
+        "matchScore": 0.9859556726290588,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8703.814279778004
+          }
+        },
+        "score": 0.9859556726290588,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8703.814279778004
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8703.814279778004
+      },
+      {
+        "imageId": "img-warm-5",
+        "url": "https://example.com/warm-5.jpg",
+        "matchScore": 0.8647743372982648,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8683.349185326411
+          }
+        },
+        "score": 0.8647743372982648,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8683.349185326411
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8683.349185326411
+      },
+      {
+        "imageId": "img-neutral-4",
+        "url": "https://example.com/neutral-4.jpg",
+        "matchScore": 0.5404893130132977,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5892.0932392052455
+          }
+        },
+        "score": 0.5404893130132977,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5892.0932392052455
+        },
+        "primaryColor": "#808080",
+        "temp": 5892.0932392052455
+      },
+      {
+        "imageId": "img-warm-1",
+        "url": "https://example.com/warm-1.jpg",
+        "matchScore": 0.8795551569559114,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8511.111123518893
+          }
+        },
+        "score": 0.8795551569559114,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8511.111123518893
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8511.111123518893
+      },
+      {
+        "imageId": "img-warm-6",
+        "url": "https://example.com/warm-6.jpg",
+        "matchScore": 0.9445618455344651,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8835.35897655036
+          }
+        },
+        "score": 0.9445618455344651,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8835.35897655036
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8835.35897655036
+      },
+      {
+        "imageId": "img-neutral-8",
+        "url": "https://example.com/neutral-8.jpg",
+        "matchScore": 0.6228261529139085,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5835.9257488763715
+          }
+        },
+        "score": 0.6228261529139085,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5835.9257488763715
+        },
+        "primaryColor": "#808080",
+        "temp": 5835.9257488763715
+      },
+      {
+        "imageId": "img-cold-11",
+        "url": "https://example.com/cold-11.jpg",
+        "matchScore": 0.597035069592302,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3591.4915889895046
+          }
+        },
+        "score": 0.597035069592302,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3591.4915889895046
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3591.4915889895046
+      },
+      {
+        "imageId": "img-cold-9",
+        "url": "https://example.com/cold-9.jpg",
+        "matchScore": 0.5672288361593558,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3840.933874838261
+          }
+        },
+        "score": 0.5672288361593558,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3840.933874838261
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3840.933874838261
+      },
+      {
+        "imageId": "img-warm-18",
+        "url": "https://example.com/warm-18.jpg",
+        "matchScore": 0.8568466388413034,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8528.892271313996
+          }
+        },
+        "score": 0.8568466388413034,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8528.892271313996
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8528.892271313996
+      },
+      {
+        "imageId": "img-cold-13",
+        "url": "https://example.com/cold-13.jpg",
+        "matchScore": 0.6927540061142599,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3713.9063836189093
+          }
+        },
+        "score": 0.6927540061142599,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3713.9063836189093
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3713.9063836189093
+      },
+      {
+        "imageId": "img-cold-12",
+        "url": "https://example.com/cold-12.jpg",
+        "matchScore": 0.4476394686750173,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3508.1478645322163
+          }
+        },
+        "score": 0.4476394686750173,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3508.1478645322163
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3508.1478645322163
+      },
+      {
+        "imageId": "img-neutral-9",
+        "url": "https://example.com/neutral-9.jpg",
+        "matchScore": 0.5641626928849608,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5675.454117368427
+          }
+        },
+        "score": 0.5641626928849608,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5675.454117368427
+        },
+        "primaryColor": "#808080",
+        "temp": 5675.454117368427
+      },
+      {
+        "imageId": "img-neutral-2",
+        "url": "https://example.com/neutral-2.jpg",
+        "matchScore": 0.6692127290003104,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5638.339826325977
+          }
+        },
+        "score": 0.6692127290003104,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5638.339826325977
+        },
+        "primaryColor": "#808080",
+        "temp": 5638.339826325977
+      },
+      {
+        "imageId": "img-warm-13",
+        "url": "https://example.com/warm-13.jpg",
+        "matchScore": 0.879649615466599,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8577.634106466572
+          }
+        },
+        "score": 0.879649615466599,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8577.634106466572
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8577.634106466572
+      },
+      {
+        "imageId": "img-neutral-3",
+        "url": "https://example.com/neutral-3.jpg",
+        "matchScore": 0.5968816014245877,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5524.027883811404
+          }
+        },
+        "score": 0.5968816014245877,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5524.027883811404
+        },
+        "primaryColor": "#808080",
+        "temp": 5524.027883811404
+      },
+      {
+        "imageId": "img-neutral-11",
+        "url": "https://example.com/neutral-11.jpg",
+        "matchScore": 0.5513354367341036,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5771.652038758629
+          }
+        },
+        "score": 0.5513354367341036,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5771.652038758629
+        },
+        "primaryColor": "#808080",
+        "temp": 5771.652038758629
+      },
+      {
+        "imageId": "img-neutral-7",
+        "url": "https://example.com/neutral-7.jpg",
+        "matchScore": 0.5594402992697418,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5967.827276680223
+          }
+        },
+        "score": 0.5594402992697418,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5967.827276680223
+        },
+        "primaryColor": "#808080",
+        "temp": 5967.827276680223
+      },
+      {
+        "imageId": "img-cold-14",
+        "url": "https://example.com/cold-14.jpg",
+        "matchScore": 0.5588390868993707,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3732.6483180635505
+          }
+        },
+        "score": 0.5588390868993707,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3732.6483180635505
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3732.6483180635505
+      },
+      {
+        "imageId": "img-neutral-0",
+        "url": "https://example.com/neutral-0.jpg",
+        "matchScore": 0.5701337193842141,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5733.298515254474
+          }
+        },
+        "score": 0.5701337193842141,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5733.298515254474
+        },
+        "primaryColor": "#808080",
+        "temp": 5733.298515254474
+      },
+      {
+        "imageId": "img-cold-4",
+        "url": "https://example.com/cold-4.jpg",
+        "matchScore": 0.6960974593121393,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3612.756596577416
+          }
+        },
+        "score": 0.6960974593121393,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3612.756596577416
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3612.756596577416
+      },
+      {
+        "imageId": "img-warm-9",
+        "url": "https://example.com/warm-9.jpg",
+        "matchScore": 0.9205021955216528,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8262.295996047356
+          }
+        },
+        "score": 0.9205021955216528,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8262.295996047356
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8262.295996047356
+      },
+      {
+        "imageId": "img-warm-14",
+        "url": "https://example.com/warm-14.jpg",
+        "matchScore": 0.846538395969234,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8483.418920803872
+          }
+        },
+        "score": 0.846538395969234,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8483.418920803872
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8483.418920803872
+      },
+      {
+        "imageId": "img-cold-1",
+        "url": "https://example.com/cold-1.jpg",
+        "matchScore": 0.44613083637113177,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3678.463533772475
+          }
+        },
+        "score": 0.44613083637113177,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3678.463533772475
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3678.463533772475
+      },
+      {
+        "imageId": "img-cold-8",
+        "url": "https://example.com/cold-8.jpg",
+        "matchScore": 0.5067265935412587,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3971.5468055789215
+          }
+        },
+        "score": 0.5067265935412587,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3971.5468055789215
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3971.5468055789215
+      },
+      {
+        "imageId": "img-neutral-13",
+        "url": "https://example.com/neutral-13.jpg",
+        "matchScore": 0.6768054082141122,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5779.581590754995
+          }
+        },
+        "score": 0.6768054082141122,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5779.581590754995
+        },
+        "primaryColor": "#808080",
+        "temp": 5779.581590754995
+      },
+      {
+        "imageId": "img-warm-16",
+        "url": "https://example.com/warm-16.jpg",
+        "matchScore": 0.8594964380463282,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8168.314508289143
+          }
+        },
+        "score": 0.8594964380463282,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8168.314508289143
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8168.314508289143
+      },
+      {
+        "imageId": "img-warm-19",
+        "url": "https://example.com/warm-19.jpg",
+        "matchScore": 0.8352834197282255,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#FFD700",
+            "secondary_color": "#FFA500",
+            "temp": 8876.53401966973
+          }
+        },
+        "score": 0.8352834197282255,
+        "moodDna": {
+          "primary_color": "#FFD700",
+          "secondary_color": "#FFA500",
+          "temp": 8876.53401966973
+        },
+        "primaryColor": "#FFD700",
+        "temp": 8876.53401966973
+      },
+      {
+        "imageId": "img-neutral-12",
+        "url": "https://example.com/neutral-12.jpg",
+        "matchScore": 0.5975848606120497,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5909.56051049302
+          }
+        },
+        "score": 0.5975848606120497,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5909.56051049302
+        },
+        "primaryColor": "#808080",
+        "temp": 5909.56051049302
+      },
+      {
+        "imageId": "img-cold-10",
+        "url": "https://example.com/cold-10.jpg",
+        "matchScore": 0.50652461094848,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#0000FF",
+            "secondary_color": "#4B0082",
+            "temp": 3171.899751585448
+          }
+        },
+        "score": 0.50652461094848,
+        "moodDna": {
+          "primary_color": "#0000FF",
+          "secondary_color": "#4B0082",
+          "temp": 3171.899751585448
+        },
+        "primaryColor": "#0000FF",
+        "temp": 3171.899751585448
+      },
+      {
+        "imageId": "img-neutral-10",
+        "url": "https://example.com/neutral-10.jpg",
+        "matchScore": 0.5280963934970461,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5572.23870579035
+          }
+        },
+        "score": 0.5280963934970461,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5572.23870579035
+        },
+        "primaryColor": "#808080",
+        "temp": 5572.23870579035
+      },
+      {
+        "imageId": "img-neutral-5",
+        "url": "https://example.com/neutral-5.jpg",
+        "matchScore": 0.5018665069190666,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5580.606215610482
+          }
+        },
+        "score": 0.5018665069190666,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5580.606215610482
+        },
+        "primaryColor": "#808080",
+        "temp": 5580.606215610482
+      },
+      {
+        "imageId": "img-neutral-14",
+        "url": "https://example.com/neutral-14.jpg",
+        "matchScore": 0.5522607370797049,
+        "metadata": {
+          "moodDna": {
+            "primary_color": "#808080",
+            "secondary_color": "#FFFFFF",
+            "temp": 5812.169034519135
+          }
+        },
+        "score": 0.5522607370797049,
+        "moodDna": {
+          "primary_color": "#808080",
+          "secondary_color": "#FFFFFF",
+          "temp": 5812.169034519135
+        },
+        "primaryColor": "#808080",
+        "temp": 5812.169034519135
+      }
+    ]
+  }
+]

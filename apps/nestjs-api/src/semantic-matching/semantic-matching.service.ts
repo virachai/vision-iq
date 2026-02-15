@@ -8,6 +8,7 @@ import type {
   SceneIntentDto,
 } from "../alignment/dto/scene-intent.dto";
 import { GeminiAnalysisService } from "../image-analysis/gemini-analysis.service";
+import { ClusteringService } from "./clustering.service";
 
 interface VectorSearchResult {
   id: string;
@@ -37,6 +38,7 @@ export class SemanticMatchingService {
   constructor(
     @Inject(PG_POOL) private readonly pool: Pool,
     private readonly geminiAnalysisService: GeminiAnalysisService,
+    private readonly clusteringService: ClusteringService,
   ) {
     console.log(
       "SemanticMatchingService initialized. Injected pg pool:",
@@ -55,6 +57,7 @@ export class SemanticMatchingService {
   ): Promise<ImageMatch[][]> {
     const results: ImageMatch[][] = [];
     let visualAnchorMood: MoodDna | null = null;
+    let previousSceneMood: MoodDna | null = null;
 
     for (let sceneIndex = 0; sceneIndex < scenes.length; sceneIndex++) {
       const scene = scenes[sceneIndex];
@@ -66,15 +69,17 @@ export class SemanticMatchingService {
         const sceneEmbedding = await this.generateEmbeddingForScene(scene);
 
         // Perform vector + metadata search
+        // Fetch MORE candidates than topK to allow for clustering/filtering
+        const candidatePoolSize = 50;
         const matches = await this.searchImages(
           sceneEmbedding,
           scene,
-          topK,
+          candidatePoolSize,
           isFirstScene ? null : visualAnchorMood,
           moodConsistencyMultiplier,
         );
 
-        // Rank and score images
+        // 1. Rank matches initially
         const rankedMatches = this.rankMatches(
           matches,
           scene,
@@ -83,14 +88,40 @@ export class SemanticMatchingService {
           moodConsistencyMultiplier,
         );
 
-        results.push(rankedMatches);
+        // 2. Apply Clustering Strategy
+        // Group top candidates by mood
+        const clusters =
+          this.clusteringService.groupCandidatesByMood(rankedMatches);
+
+        // Select best cluster based on narrative context (previous mood)
+        // If it's the first scene, we might just pick the strongest individual match's cluster
+        const contextMood = isFirstScene ? null : previousSceneMood;
+        const bestCluster = this.clusteringService.selectBestCluster(
+          clusters,
+          contextMood,
+        );
+
+        // 3. Final Selection
+        // Take top K from the selected cluster
+        // (Or fallback to original ranked list if cluster is too small?
+        // For now, let's just take top K from the cluster, resorting by score)
+        const finalSelection = bestCluster
+          .sort((a, b) => b.matchScore - a.matchScore)
+          .slice(0, topK);
+
+        results.push(finalSelection);
 
         // Capture mood anchor from first image of first scene
-        if (isFirstScene && rankedMatches.length > 0) {
-          visualAnchorMood = rankedMatches[0].metadata?.moodDna || null;
+        if (isFirstScene && finalSelection.length > 0) {
+          visualAnchorMood = finalSelection[0].metadata?.moodDna || null;
           this.logger.debug(
             `Set visual anchor mood: ${JSON.stringify(visualAnchorMood)}`,
           );
+        }
+
+        // Update previous mood for next iteration continuity
+        if (finalSelection.length > 0) {
+          previousSceneMood = finalSelection[0].metadata?.moodDna || null;
         }
       } catch (error) {
         this.logger.error(
@@ -120,7 +151,7 @@ export class SemanticMatchingService {
       const query = `
         SELECT 
           pi.id,
-          pi."pexelsId",
+          pi."pexelsImageId",
           pi.url,
           pi.photographer,
           1 - (ie.embedding::vector <=> $1::vector) as similarity,

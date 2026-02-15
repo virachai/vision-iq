@@ -23,7 +23,7 @@ export interface Composition {
 // ═══════════════════════════════════════════════════════════════════
 
 export interface MoodDna {
-  temp: "warm" | "cold";
+  temp: number | "warm" | "cold";
   primary_color: string; // hex color e.g. "#E8D4C0"
   vibe: string; // e.g., "minimalist", "cinematic", "chaotic"
   emotional_intensity: string; // e.g., "low", "medium", "strong"
