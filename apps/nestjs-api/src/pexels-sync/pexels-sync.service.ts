@@ -62,16 +62,40 @@ export class PexelsSyncService {
       }
     }
 
-    // New sync path: create fresh sync history
+    // New sync path: check for existing sync history before creating to avoid duplicates
     if (!syncHistoryId && keywordId) {
-      const syncHistory = await this.prisma.pexelsSyncHistory.create({
-        data: {
-          keywordId: keywordId,
-          syncStatus: "PROCESSING",
-          syncAttempt: 1,
-        },
+      const existing = await this.prisma.pexelsSyncHistory.findFirst({
+        where: { keywordId },
+        orderBy: { createdAt: "desc" },
       });
-      syncHistoryId = syncHistory.id;
+
+      if (existing) {
+        syncHistoryId = existing.id;
+        startPage = (existing.lastPageSynced ?? 0) + 1;
+        this.logger.log(
+          `Found existing sync history ${syncHistoryId} for keyword ${keywordId}. Resuming from page ${startPage} (attempt ${
+            existing.syncAttempt + 1
+          })`,
+        );
+        // Update status and increment attempt counts
+        await this.prisma.pexelsSyncHistory.update({
+          where: { id: syncHistoryId },
+          data: {
+            syncStatus: "PROCESSING",
+            errorMessage: null,
+            syncAttempt: { increment: 1 },
+          },
+        });
+      } else {
+        const syncHistory = await this.prisma.pexelsSyncHistory.create({
+          data: {
+            keywordId: keywordId,
+            syncStatus: "PROCESSING",
+            syncAttempt: 1,
+          },
+        });
+        syncHistoryId = syncHistory.id;
+      }
     }
 
     try {

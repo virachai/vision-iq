@@ -15,12 +15,18 @@ importers:
       '@google/genai':
         specifier: ^1.41.0
         version: 1.41.0
+      '@prisma/adapter-pg':
+        specifier: ^7.3.0
+        version: 7.4.0
       '@prisma/client':
         specifier: ^7.4.0
         version: 7.4.0(prisma@7.4.0)(typescript@5.7.3)
       dotenv:
         specifier: ^17.3.1
         version: 17.3.1
+      pg:
+        specifier: ^8.16.3
+        version: 8.18.0
     devDependencies:
       '@biomejs/biome':
         specifier: ^1.9.4
