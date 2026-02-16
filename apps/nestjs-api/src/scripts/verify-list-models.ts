@@ -2,6 +2,7 @@ import { GoogleGenAI } from "@google/genai";
 require("dotenv").config();
 
 // ts-node -r dotenv/config verify-list-models.ts
+// ts-node -r dotenv/config ./apps/nestjs-api/src/scripts/verify-list-models.ts
 
 async function run() {
   try {

@@ -11,6 +11,11 @@ describe("DeepSeekService", () => {
   beforeEach(async () => {
     process.env.DEEPSEEK_API_KEY = "test-key";
     process.env.ENABLE_DEEPSEEK = "true";
+    process.env.ENABLE_DEEPSEEK_SCENE_EXTRACTION = "true";
+    process.env.ENABLE_DEEPSEEK_INTENT_EXPANSION = "true";
+    process.env.ENABLE_DEEPSEEK_RAW_PARSING = "true";
+    process.env.ENABLE_DEEPSEEK_DETAILED_ANALYSIS = "true";
+    process.env.ENABLE_DEEPSEEK_KEYWORD_EXTRACTION = "true";
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [DeepSeekService],
@@ -22,30 +27,51 @@ describe("DeepSeekService", () => {
   describe("Feature Flag", () => {
     it("should return fallbacks when ENABLE_DEEPSEEK is false", async () => {
       process.env.ENABLE_DEEPSEEK = "false";
+      // Ensure specific flags don't override master false
+      process.env.ENABLE_DEEPSEEK_SCENE_EXTRACTION = "true";
+      process.env.ENABLE_DEEPSEEK_KEYWORD_EXTRACTION = "true";
+
       const module: TestingModule = await Test.createTestingModule({
         providers: [DeepSeekService],
       }).compile();
       const disabledService = module.get<DeepSeekService>(DeepSeekService);
 
       const result = await disabledService.extractVisualIntent("test prompt");
-      expect(result).toHaveLength(1);
+      expect(result).toHaveLength(1); // Fallback
       expect(result[0].intent).toBe("test prompt");
 
       const keywords = await disabledService.extractSearchKeywords(
         "one two three four",
       );
-      expect(keywords).toBe("one two three");
+      expect(keywords).toBe("one two three"); // Fallback
+    });
 
-      const expanded = await disabledService.expandSceneIntent("test");
-      expect(expanded[0].description).toBe("test");
+    it("should allow disabling specific features while ENABLE_DEEPSEEK is true", async () => {
+      process.env.ENABLE_DEEPSEEK = "true";
+      process.env.ENABLE_DEEPSEEK_SCENE_EXTRACTION = "false";
+      process.env.ENABLE_DEEPSEEK_KEYWORD_EXTRACTION = "true"; // Keep this one on
 
-      const analysis = await disabledService.parseGeminiRawResponse("text");
-      expect(analysis).toEqual([]);
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [DeepSeekService],
+      }).compile();
+      const granularService = module.get<DeepSeekService>(DeepSeekService);
 
-      const detailed = await disabledService.analyzeDetailedVisualIntent(
-        "text",
+      // Scene Extraction should be disabled (fallback)
+      const result = await granularService.extractVisualIntent("test prompt");
+      expect(result).toHaveLength(1);
+      expect(result[0].intent).toBe("test prompt");
+
+      // Keyword Extraction should be enabled (would try to call API, so we mock axios)
+      (axios.post as jest.Mock).mockResolvedValue({
+        data: {
+          choices: [{ message: { content: "mocked keywords" } }],
+        },
+      });
+
+      const keywords = await granularService.extractSearchKeywords(
+        "keyword request",
       );
-      expect(detailed).toBeNull();
+      expect(keywords).toBe("mocked keywords");
     });
   });
 

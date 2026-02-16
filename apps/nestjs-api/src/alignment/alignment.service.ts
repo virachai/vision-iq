@@ -151,7 +151,8 @@ export class AlignmentService {
   async processPendingDeepSeekAnalysis() {
     if (
       process.env.ENABLE_ANALYSIS_CRON === "false" ||
-      process.env.ENABLE_DEEPSEEK === "false"
+      process.env.ENABLE_DEEPSEEK === "false" ||
+      process.env.ENABLE_DEEPSEEK_CRON === "false"
     ) {
       // Shush logger for this very frequent cron job
       return;

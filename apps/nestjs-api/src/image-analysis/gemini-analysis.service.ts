@@ -61,6 +61,10 @@ export class GeminiAnalysisService {
     "models/gemini-2.5-flash-native-audio-preview-12-2025";
   private readonly maxRetries = 3;
   private readonly isEnabled: boolean;
+
+  // Granular flags
+  public readonly isVisionAnalysisEnabled: boolean;
+  public readonly isVisualIntentEnabled: boolean;
   public readonly isEmbeddingEnabled: boolean;
 
   constructor(
@@ -71,7 +75,15 @@ export class GeminiAnalysisService {
     this.ai = new GoogleGenAI({ apiKey });
     this.restAi = new GoogleGenerativeAI(apiKey);
     this.isEnabled = process.env.ENABLE_GEMINI === "true";
-    this.isEmbeddingEnabled = process.env.ENABLE_EMBEDDING === "true";
+
+    // Master switch logic: if isEnabled is false, all sub-flags are false
+    // If master is true, sub-flags default to true unless explicitly disabled
+    this.isVisionAnalysisEnabled =
+      this.isEnabled && process.env.ENABLE_GEMINI_VISION_ANALYSIS !== "false";
+    this.isVisualIntentEnabled =
+      this.isEnabled && process.env.ENABLE_GEMINI_VISUAL_INTENT !== "false";
+    this.isEmbeddingEnabled =
+      this.isEnabled && process.env.ENABLE_EMBEDDING !== "false";
 
     if (!apiKey) {
       this.logger.error("GEMINI_API_KEY not configured.");
@@ -81,6 +93,18 @@ export class GeminiAnalysisService {
       this.logger.log("Gemini analysis is ENABLED");
     } else {
       this.logger.warn("Gemini analysis is DISABLED via ENABLE_GEMINI flag");
+    }
+
+    if (this.isVisionAnalysisEnabled) {
+      this.logger.log("Gemini Vision Analysis is ENABLED");
+    } else {
+      this.logger.log("Gemini Vision Analysis is DISABLED");
+    }
+
+    if (this.isVisualIntentEnabled) {
+      this.logger.log("Gemini Visual Intent Analysis is ENABLED");
+    } else {
+      this.logger.log("Gemini Visual Intent Analysis is DISABLED");
     }
 
     if (this.isEmbeddingEnabled) {
@@ -100,8 +124,8 @@ export class GeminiAnalysisService {
     level: GradeLevel = "none",
     alt?: string,
   ): Promise<{ result: GeminiAnalysisResult; rawResponse: string }> {
-    if (!this.isEnabled) {
-      this.logger.debug("Skipping analyzeImage: Gemini disabled");
+    if (!this.isVisionAnalysisEnabled) {
+      this.logger.debug("Skipping analyzeImage: Vision Analysis disabled");
       return {
         result: normalizeGeminiResult({} as any),
         rawResponse: "Gemini disabled - Fallback returned",
@@ -147,8 +171,8 @@ export class GeminiAnalysisService {
   ): Promise<BatchAnalysisResult[]> {
     if (items.length === 0) return [];
 
-    if (!this.isEnabled) {
-      this.logger.debug("Skipping analyzeImages: Gemini disabled");
+    if (!this.isVisionAnalysisEnabled) {
+      this.logger.debug("Skipping analyzeImages: Vision Analysis disabled");
       return items.map((item) => ({
         id: item.id,
         result: normalizeGeminiResult({} as any),
@@ -334,8 +358,8 @@ export class GeminiAnalysisService {
    * Saves directly to VisualIntentAnalysis table.
    */
   async analyzeVisualIntent(pexelsImageId: string): Promise<void> {
-    if (!this.isEnabled) {
-      this.logger.debug("Skipping analyzeVisualIntent: Gemini disabled");
+    if (!this.isVisualIntentEnabled) {
+      this.logger.debug("Skipping analyzeVisualIntent: Visual Intent disabled");
       return;
     }
     const image = await this.prisma.pexelsImage.findUnique({

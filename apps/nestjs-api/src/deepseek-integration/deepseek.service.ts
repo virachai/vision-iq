@@ -59,6 +59,11 @@ export class DeepSeekService {
   private readonly apiUrl: string;
   private readonly model = "deepseek-chat";
   private readonly isEnabled: boolean;
+  private readonly isSceneExtractionEnabled: boolean;
+  private readonly isIntentExpansionEnabled: boolean;
+  private readonly isRawParsingEnabled: boolean;
+  private readonly isDetailedAnalysisEnabled: boolean;
+  private readonly isKeywordExtractionEnabled: boolean;
 
   constructor() {
     this.apiKey = process.env.DEEPSEEK_API_KEY || "";
@@ -67,15 +72,35 @@ export class DeepSeekService {
       "https://api.deepseek.com/chat/completions";
     this.isEnabled = process.env.ENABLE_DEEPSEEK === "true";
 
+    // Granular flags (default to true if ENABLE_DEEPSEEK is true, unless explicitly disabled)
+    // Master switch (this.isEnabled) must be true for any of these to work.
+    this.isSceneExtractionEnabled =
+      this.isEnabled &&
+      process.env.ENABLE_DEEPSEEK_SCENE_EXTRACTION !== "false";
+    this.isIntentExpansionEnabled =
+      this.isEnabled &&
+      process.env.ENABLE_DEEPSEEK_INTENT_EXPANSION !== "false";
+    this.isRawParsingEnabled =
+      this.isEnabled && process.env.ENABLE_DEEPSEEK_RAW_PARSING !== "false";
+    this.isDetailedAnalysisEnabled =
+      this.isEnabled &&
+      process.env.ENABLE_DEEPSEEK_DETAILED_ANALYSIS !== "false";
+    this.isKeywordExtractionEnabled =
+      this.isEnabled &&
+      process.env.ENABLE_DEEPSEEK_KEYWORD_EXTRACTION !== "false";
+
     if (!this.apiKey) {
       this.logger.warn("DEEPSEEK_API_KEY not configured");
     }
 
     if (this.isEnabled) {
-      this.logger.log("DeepSeek analysis is ENABLED");
+      this.logger.log("DeepSeek integration is ENABLED (Master Switch)");
+      this.logger.log(
+        `Feature Flags: SceneExtraction=${this.isSceneExtractionEnabled}, IntentExpansion=${this.isIntentExpansionEnabled}, RawParsing=${this.isRawParsingEnabled}, DetailedAnalysis=${this.isDetailedAnalysisEnabled}, KeywordExtraction=${this.isKeywordExtractionEnabled}`,
+      );
     } else {
       this.logger.warn(
-        "DeepSeek analysis is DISABLED via ENABLE_DEEPSEEK flag",
+        "DeepSeek integration is DISABLED via ENABLE_DEEPSEEK flag",
       );
     }
   }
@@ -89,8 +114,10 @@ export class DeepSeekService {
    * Single scene per call (as per requirements)
    */
   async extractVisualIntent(rawGeminiText: string): Promise<SceneIntentDto[]> {
-    if (!this.isEnabled) {
-      this.logger.debug("Skipping extractVisualIntent: DeepSeek disabled");
+    if (!this.isSceneExtractionEnabled) {
+      this.logger.debug(
+        "Skipping extractVisualIntent: Feature disabled or Master switch off",
+      );
       return [
         {
           intent: rawGeminiText.substring(0, 100),
@@ -170,8 +197,10 @@ Example:
     intent: string,
     count = 3,
   ): Promise<{ description: string; analysis: unknown }[]> {
-    if (!this.isEnabled) {
-      this.logger.debug("Skipping expandSceneIntent: DeepSeek disabled");
+    if (!this.isIntentExpansionEnabled) {
+      this.logger.debug(
+        "Skipping expandSceneIntent: Feature disabled or Master switch off",
+      );
       return [
         {
           description: intent,
@@ -237,8 +266,10 @@ Example:
   async parseGeminiRawResponse(
     rawText: string,
   ): Promise<GeminiAnalysisResult[]> {
-    if (!this.isEnabled) {
-      this.logger.debug("Skipping parseGeminiRawResponse: DeepSeek disabled");
+    if (!this.isRawParsingEnabled) {
+      this.logger.debug(
+        "Skipping parseGeminiRawResponse: Feature disabled or Master switch off",
+      );
       return [];
     }
     this.logger.debug(
@@ -303,9 +334,9 @@ Return ONLY the valid JSON, no markdown, no explanations.`;
    * Based on a rich textual description of an image.
    */
   async analyzeDetailedVisualIntent(rawDescription: string): Promise<any> {
-    if (!this.isEnabled) {
+    if (!this.isDetailedAnalysisEnabled) {
       this.logger.debug(
-        "Skipping analyzeDetailedVisualIntent: DeepSeek disabled",
+        "Skipping analyzeDetailedVisualIntent: Feature disabled or Master switch off",
       );
       return null;
     }
@@ -377,8 +408,10 @@ Return ONLY the valid JSON, no markdown, no explanations.`;
    * Optimized for Pexels API search
    */
   async extractSearchKeywords(intent: string): Promise<string> {
-    if (!this.isEnabled) {
-      this.logger.debug("Skipping extractSearchKeywords: DeepSeek disabled");
+    if (!this.isKeywordExtractionEnabled) {
+      this.logger.debug(
+        "Skipping extractSearchKeywords: Feature disabled or Master switch off",
+      );
       return intent.split(" ").slice(0, 3).join(" ");
     }
     this.logger.debug(`Extracting keywords for intent: "${intent}"`);
