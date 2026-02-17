@@ -1041,7 +1041,14 @@ CINEMATIC_NOTES:
       //   (error as Error).message,
       // );
       // Fallback: return a safe default object to avoid crashing
-      this.logger.warn(`Raw content was: ${content}`);
+      const firstLine = content?.split(/\r?\n/)[0] ?? "";
+
+      this.logger.warn(
+        `Raw content was: ${
+          firstLine.length > 100 ? `${firstLine.slice(0, 100)}...` : firstLine
+        }`,
+      );
+
       return { result: normalizeGeminiResult({}), rawResponse: content };
     }
   }
