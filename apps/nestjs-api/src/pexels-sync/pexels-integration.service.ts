@@ -199,13 +199,31 @@ export class PexelsIntegrationService {
     } catch (error) {
       const axiosError = error as AxiosError;
 
-      // Handle rate limiting (429) with exponential backoff
+      // Handle rate limiting (429) with exponential backoff or Retry-After header
       if (axiosError.response?.status === 429 && retryCount < maxRetries) {
-        const baseDelay = Number.parseInt(
-          process.env.PEXELS_RETRY_DELAY_MS || "1000",
-          10,
-        );
-        const delay = 2 ** retryCount * baseDelay;
+        let delay = 0;
+        const retryAfter = axiosError.response?.headers?.["retry-after"];
+        const resetTime = axiosError.response?.headers?.["x-ratelimit-reset"];
+
+        if (retryAfter) {
+          delay = Number.parseInt(retryAfter, 10) * 1000;
+        } else if (resetTime) {
+          const resetDate = new Date(Number.parseInt(resetTime, 10) * 1000);
+          delay = resetDate.getTime() - Date.now();
+        }
+
+        // Fallback to exponential backoff if no headers or invalid headers
+        if (!delay || Number.isNaN(delay) || delay < 0) {
+          const baseDelay = Number.parseInt(
+            process.env.PEXELS_RETRY_DELAY_MS || "1000",
+            10,
+          );
+          delay = 2 ** retryCount * baseDelay;
+        }
+
+        // Add a small buffer to be safe
+        delay += 100;
+
         this.logger.warn(`Pexels API rate limited, retrying in ${delay}ms`);
         await new Promise((resolve) => setTimeout(resolve, delay));
         return this.getPexelsPage(query, page, perPage, retryCount + 1);

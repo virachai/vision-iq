@@ -39,6 +39,29 @@ export class PexelsSyncService {
       errors: [],
     };
 
+    // Check for recent 429 errors in history (last 1 hour)
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+    const recent429Error = await this.prisma.pexelsSyncHistory.findFirst({
+      where: {
+        errorMessage: { contains: "429" },
+        updatedAt: { gte: oneHourAgo },
+      },
+      orderBy: { updatedAt: "desc" },
+    });
+
+    if (recent429Error) {
+      this.logger.warn(
+        `Skipping Pexels sync: Recent 429 error found in history (ID: ${recent429Error.id}, Updated: ${recent429Error.updatedAt})`,
+      );
+      return {
+        ...result,
+        status: "failed",
+        errors: [
+          `Skipped due to recent 429 error (found in history ID: ${recent429Error.id})`,
+        ],
+      };
+    }
+
     let syncHistoryId: string | undefined;
     let startPage = 1;
 

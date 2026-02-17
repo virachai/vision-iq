@@ -1,0 +1,19 @@
+
+> nestjs-api@1.0.0 test D:\dev\antigravity\vision-iq\apps\nestjs-api
+> jest "src/pexels-sync/pexels-sync.service.spec.ts"
+
+  console.log
+    Database package: prisma client initialized: true
+
+      at Object.<anonymous> (../../packages/database/src/client.ts:28:9)
+
+PASS src/pexels-sync/pexels-sync.service.spec.ts (9.94 s)
+  PexelsSyncService (Skip Logic)
+    √ should skip sync if a 429 error was found in the last hour (19 ms)
+    √ should NOT skip sync if 429 error is older than 1 hour (4 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       2 passed, 2 total
+Snapshots:   0 total
+Time:        10.073 s
+Ran all test suites matching /src\\pexels-sync\\pexels-sync.service.spec.ts/i.

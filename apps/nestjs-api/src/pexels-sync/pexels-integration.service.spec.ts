@@ -203,5 +203,66 @@ describe("PexelsIntegrationService", () => {
       expect(mockedAxios.get).toHaveBeenCalled();
       expect(mockedAxios.get).toHaveBeenCalledTimes(4);
     });
+
+    it("should respect Retry-After header", async () => {
+      // 1st call fails with 429 and Retry-After: 1 (second)
+      mockedAxios.get.mockRejectedValueOnce({
+        response: {
+          status: 429,
+          headers: { "retry-after": "1" },
+        },
+      });
+
+      // 2nd call succeeds
+      mockedAxios.get.mockResolvedValueOnce({
+        data: {
+          page: 1,
+          per_page: 5,
+          photos: [],
+          total_results: 0,
+        },
+      });
+
+      const start = Date.now();
+      const generator = service.syncPexelsLibrary("test");
+      await generator.next();
+      const end = Date.now();
+
+      expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+      // specific delay check might be flaky, but we can check it waited at least somewhat
+      // 1000ms + 100ms buffer
+      expect(end - start).toBeGreaterThanOrEqual(1000);
+    });
+
+    it("should respect X-Ratelimit-Reset header", async () => {
+      const resetTime = Math.floor(Date.now() / 1000) + 3; // 3 seconds from now
+
+      // 1st call fails with 429 and X-Ratelimit-Reset
+      mockedAxios.get.mockRejectedValueOnce({
+        response: {
+          status: 429,
+          headers: { "x-ratelimit-reset": resetTime.toString() },
+        },
+      });
+
+      // 2nd call succeeds
+      mockedAxios.get.mockResolvedValueOnce({
+        data: {
+          page: 1,
+          per_page: 5,
+          photos: [],
+          total_results: 0,
+        },
+      });
+
+      const start = Date.now();
+      const generator = service.syncPexelsLibrary("test");
+      await generator.next();
+      const end = Date.now();
+
+      expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+      // Should wait around 2-3 seconds
+      expect(end - start).toBeGreaterThanOrEqual(1500);
+    });
   });
 });
